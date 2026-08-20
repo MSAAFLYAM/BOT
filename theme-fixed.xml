@@ -1,0 +1,1854 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<html b:defaultwidgetversion='2' b:layoutsVersion='3' b:responsive='true' b:templateUrl='nestdeal-theme.xml' b:templateVersion='3.0.0' lang='en' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<head>
+  <meta charset='UTF-8'/>
+  <meta content='width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover' name='viewport'/>
+  <meta content='#061329' name='theme-color'/>
+  <meta content='yes' name='apple-mobile-web-app-capable'/>
+  <meta content='black-translucent' name='apple-mobile-web-app-status-bar-style'/>
+
+  <b:if cond='data:blog.metaDescription'>
+    <meta expr:content='data:blog.metaDescription' name='description'/>
+  <b:else/>
+    <meta content='Discover the best Amazon deals, honest product reviews, and curated shopping guides at NestDeal. Save time and money with our handpicked recommendations.' name='description'/>
+  </b:if>
+  <meta expr:content='data:blog.title' name='author'/>
+  <meta content='index, follow' name='robots'/>
+  <b:if cond='data:view.isSearch'>
+    <meta content='noindex, nofollow' name='robots'/>
+  </b:if>
+
+  <title><data:blog.pageTitle/></title>
+  <link expr:href='data:blog.canonicalUrl' rel='canonical'/>
+  <link expr:href='data:blog.blogspotFaviconUrl' rel='icon' type='image/x-icon'/>
+  <link expr:href='data:blog.blogspotFaviconUrl' rel='apple-touch-icon'/>
+
+  <link href='https://fonts.googleapis.com' rel='preconnect'/>
+  <link crossorigin='anonymous' href='https://fonts.gstatic.com' rel='preconnect'/>
+  <link href='https://cdnjs.cloudflare.com' rel='preconnect'/>
+  <link href='https://www.amazon.com' rel='dns-prefetch'/>
+  <link href='https://images-na.ssl-images-amazon.com' rel='dns-prefetch'/>
+
+  <link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap' rel='stylesheet'/>
+  <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css' rel='stylesheet'/>
+
+  <b:include data='blog' name='all-head-content'/>
+
+  <b:if cond='data:view.isSingleItem'>
+    <meta content='article' property='og:type'/>
+    <meta expr:content='data:post.title' property='og:title'/>
+    <meta expr:content='data:blog.metaDescription' property='og:description'/>
+    <b:if cond='data:post.firstImageUrl'>
+      <meta expr:content='data:post.firstImageUrl' property='og:image'/>
+    <b:else/>
+      <meta content='https://placehold.co/1200x630/061329/FF9900?text=NestDeal' property='og:image'/>
+    </b:if>
+  <b:else/>
+    <meta content='website' property='og:type'/>
+    <meta expr:content='data:blog.pageTitle' property='og:title'/>
+    <meta expr:content='data:blog.metaDescription' property='og:description'/>
+    <meta content='https://placehold.co/1200x630/061329/FF9900?text=NestDeal' property='og:image'/>
+  </b:if>
+  <meta expr:content='data:blog.title' property='og:site_name'/>
+  <meta expr:content='data:blog.url' property='og:url'/>
+  <meta content='1200' property='og:image:width'/>
+  <meta content='630' property='og:image:height'/>
+
+  <meta content='summary_large_image' name='twitter:card'/>
+  <meta expr:content='data:blog.title' name='twitter:site'/>
+  <b:if cond='data:view.isSingleItem'>
+    <meta expr:content='data:post.title' name='twitter:title'/>
+    <meta expr:content='data:blog.metaDescription' name='twitter:description'/>
+    <b:if cond='data:post.firstImageUrl'>
+      <meta expr:content='data:post.firstImageUrl' name='twitter:image'/>
+    </b:if>
+  <b:else/>
+    <meta expr:content='data:blog.pageTitle' name='twitter:title'/>
+    <meta expr:content='data:blog.metaDescription' name='twitter:description'/>
+    <meta content='https://placehold.co/1200x630/061329/FF9900?text=NestDeal' name='twitter:image'/>
+  </b:if>
+
+  <script type='application/ld+json'>
+  {
+    &quot;@context&quot;: &quot;https://schema.org&quot;,
+    &quot;@type&quot;: &quot;WebSite&quot;,
+    &quot;name&quot;: &quot;<data:blog.title/>&quot;,
+    &quot;url&quot;: &quot;<data:blog.url/>&quot;,
+    &quot;potentialAction&quot;: {
+      &quot;@type&quot;: &quot;SearchAction&quot;,
+      &quot;target&quot;: {
+        &quot;@type&quot;: &quot;EntryPoint&quot;,
+        &quot;urlTemplate&quot;: &quot;<data:blog.homepageUrl/>search?q={search_term_string}&quot;
+      },
+      &quot;query-input&quot;: &quot;required name=search_term_string&quot;
+    }
+  }
+  </script>
+  <script type='application/ld+json'>
+  {
+    &quot;@context&quot;: &quot;https://schema.org&quot;,
+    &quot;@type&quot;: &quot;Organization&quot;,
+    &quot;name&quot;: &quot;NestDeal&quot;,
+    &quot;url&quot;: &quot;<data:blog.url/>&quot;,
+    &quot;logo&quot;: &quot;<data:blog.blogspotFaviconUrl/>&quot;,
+    &quot;sameAs&quot;: [&quot;https://www.amazon.com&quot;]
+  }
+  </script>
+
+<b:skin><![CDATA[
+/* ============================================================
+NESTDEAL v3.1 — AMAZON AFFILIATE THEME (FULLY FIXED)
+Fixed: Mobile overflow, image display, responsive grid, SEO, a11y
+============================================================ */
+
+:root {
+  --navy: #061329;
+  --navy-light: #08172E;
+  --navy-dark: #040d1f;
+  --orange: #FF9900;
+  --orange-dark: #E68A00;
+  --white: #FFFFFF;
+  --bg: #F7F8FA;
+  --ink: #101828;
+  --ink-soft: #667085;
+  --border: #E4E7EC;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-xs: 6px;
+  --shadow: 0 1px 3px rgba(0,0,0,.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.08);
+  --shadow-lg: 0 12px 28px rgba(0,0,0,.12);
+  --font: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  --max-w: 1240px;
+  --tap-target: 44px;
+}
+
+*, *:before, *:after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  max-width: 100vw;
+  width: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+  position: relative;
+  text-rendering: optimizeLegibility;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+img { max-width: 100%; height: auto; display: block; }
+a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+ul { list-style: none; margin: 0; padding: 0; }
+button {
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font);
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+  color: var(--ink);
+  overflow-wrap: break-word;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 12px;
+  min-width: 0;
+}
+
+/* ═══ BUTTONS ═══ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 14px;
+  padding: 13px 26px;
+  border-radius: var(--radius-sm);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all .25s ease;
+  white-space: nowrap;
+  text-decoration: none;
+  min-height: var(--tap-target);
+  touch-action: manipulation;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(255,153,0,.3); }
+.btn:active { transform: translateY(0); }
+.btn-primary { background: var(--orange); color: var(--white); border-color: var(--orange); }
+.btn-primary:hover { background: var(--orange-dark); border-color: var(--orange-dark); }
+.btn-outline { background: transparent; color: var(--white); border-color: rgba(255,255,255,.4); }
+.btn-outline:hover { border-color: var(--white); background: rgba(255,255,255,.1); }
+.btn-sm { padding: 8px 16px; font-size: 12px; border-radius: var(--radius-xs); }
+
+/* ═══ HEADER ═══ */
+.site-header { background: var(--navy); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,.08); }
+.header-top { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 14px 0; }
+.brand { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.brand-icon { width: 38px; height: 38px; background: var(--orange); border-radius: var(--radius-xs); display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--white); flex-shrink: 0; }
+.brand-text { font-size: 22px; font-weight: 900; color: var(--white); letter-spacing: -.02em; }
+.brand-text span { color: var(--orange); }
+.search-form { flex: 1; display: flex; max-width: 520px; border: 2px solid rgba(255,255,255,.15); border-radius: var(--radius); overflow: hidden; background: rgba(255,255,255,.06); }
+.search-form input { flex: 1; border: none; padding: 12px 16px; font-size: 14px; outline: none; background: transparent; color: var(--white); min-width: 0; }
+.search-form input::placeholder { color: rgba(255,255,255,.5); }
+.search-form button { border: none; background: var(--orange); color: var(--white); width: 48px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background .2s ease; min-height: var(--tap-target); }
+.search-form button:hover { background: var(--orange-dark); }
+.header-right { display: flex; align-items: center; gap: 20px; flex-shrink: 0; }
+.header-tagline { display: none; font-size: 12px; color: rgba(255,255,255,.65); line-height: 1.4; text-align: right; }
+.header-tagline strong { color: var(--orange); }
+.menu-toggle { display: flex; width: 40px; height: 40px; align-items: center; justify-content: center; border: 1.5px solid rgba(255,255,255,.2); border-radius: var(--radius-xs); background: none; cursor: pointer; color: var(--white); min-height: var(--tap-target); min-width: var(--tap-target); }
+.main-nav { background: var(--navy-light); border-top: 1px solid rgba(255,255,255,.06); }
+.main-nav .nav-list { display: none; gap: 8px; }
+.main-nav .nav-list a { display: block; padding: 12px 16px; color: rgba(255,255,255,.7); font-size: 13.5px; font-weight: 600; transition: color .2s ease; border-radius: var(--radius-xs); }
+.main-nav .nav-list a:hover { color: var(--white); background: rgba(255,255,255,.05); }
+
+@media (min-width: 900px) {
+  .search-form { display: flex; }
+  .header-tagline { display: block; }
+  .menu-toggle { display: none; }
+  .main-nav .nav-list { display: flex; }
+}
+
+/* Mobile Drawer */
+.mob-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 190; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+.mob-overlay.is-open { display: block; }
+.mob-drawer { position: fixed; top: 0; right: -300px; left: auto; bottom: 0; width: 280px; background: var(--navy); z-index: 200; overflow-y: auto; transition: right .25s ease; box-shadow: var(--shadow-lg); }
+.mob-drawer.is-open { right: 0; }
+.mob-drawer-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,.1); }
+.mob-drawer-close { background: none; border: none; font-size: 22px; cursor: pointer; color: rgba(255,255,255,.7); min-height: var(--tap-target); min-width: var(--tap-target); }
+.mob-drawer-nav a { display: block; padding: 14px 20px; color: rgba(255,255,255,.85); font-size: 14px; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,.08); transition: color .2s, background .2s; }
+.mob-drawer-nav a:hover { color: var(--orange); background: rgba(255,255,255,.05); }
+
+/* ═══ HERO ═══ */
+.hero { background: var(--navy); padding: 64px 20px; position: relative; overflow: hidden; width: 100%; display: flex; justify-content: center; align-items: center; }
+.hero-container { width: 100%; max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.hero-content { width: 100%; max-width: 820px; margin: 0 auto; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.hero-content h1 { font-size: clamp(32px, 5.2vw, 50px); font-weight: 900; color: var(--white); line-height: 1.18; margin-bottom: 18px; letter-spacing: -0.025em; }
+.hero-content h1 .hl { color: var(--orange); }
+.hero-sub { font-size: clamp(15px, 2.2vw, 18px); color: rgba(255,255,255,.82); line-height: 1.6; margin: 0 auto 32px; max-width: 680px; }
+.hero-cta { display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 14px; width: 100%; margin-bottom: 40px; flex-wrap: wrap; }
+.hero-trust { display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center; gap: 20px 32px; padding-top: 28px; border-top: 1px solid rgba(255,255,255,.12); width: 100%; max-width: 780px; margin: 0 auto; }
+.hero-trust-item { display: flex; align-items: center; gap: 10px; min-width: max-content; flex-shrink: 0; }
+.hero-trust-icon { width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,.08); display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--orange); flex-shrink: 0; }
+.hero-trust-text { display: flex; flex-direction: column; text-align: left; white-space: nowrap; }
+.hero-trust-text strong { display: block; color: var(--white); font-size: 13px; font-weight: 700; line-height: 1.2; }
+.hero-trust-text span { display: block; color: rgba(255,255,255,.55); font-size: 11px; line-height: 1.2; }
+
+@media (max-width: 899px) {
+  .hero { display: none !important; }
+}
+
+/* ═══ BREADCRUMB ═══ */
+.breadcrumb { padding: 12px 0; font-size: 13px; color: var(--ink-soft); }
+.breadcrumb ol { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; list-style: none; margin: 0; padding: 0; }
+.breadcrumb li { display: flex; align-items: center; gap: 6px; }
+.breadcrumb li:not(:last-child)::after { content: '›'; color: var(--border); font-weight: 700; }
+.breadcrumb a { color: var(--orange); font-weight: 600; }
+.breadcrumb a:hover { text-decoration: underline; }
+
+/* ═══ CATEGORY STRIP ═══ */
+.cat-strip { background: var(--white); border-bottom: 1px solid var(--border); padding: 16px 0; }
+.cat-strip-inner { display: flex; gap: 12px; overflow-x: auto; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding: 0 12px; }
+.cat-strip-inner::-webkit-scrollbar { display: none; }
+.cat-item { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: var(--radius-sm); background: var(--bg); border: 1px solid var(--border); white-space: nowrap; flex-shrink: 0; transition: all .2s ease; min-height: var(--tap-target); }
+.cat-item:hover { border-color: var(--orange); background: #fff; transform: translateY(-1px); }
+.cat-icon { color: var(--orange); font-size: 16px; }
+.cat-info .cat-name { display: block; font-size: 13.5px; font-weight: 700; color: var(--ink); }
+
+/* ═══ SECTION HEADINGS ═══ */
+.sec-heading { display: flex; align-items: center; justify-content: space-between; margin: 38px 0 24px; padding: 0 12px; }
+.sec-heading h2 { font-size: clamp(22px, 3vw, 28px); font-weight: 800; }
+.sec-heading h2 .hl { color: var(--orange); }
+
+/* ═══ DEALS GRID ═══ */
+.deals-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; width: 100%; min-width: 0; padding: 0 12px; }
+@media (min-width: 768px) { .deals-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; padding: 0; } }
+@media (min-width: 1024px) { .deals-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; } }
+@media (min-width: 1280px) { .deals-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; } }
+
+/* Blogger post-wrapper normalization — NUCLEAR FIX */
+#main, #Blog1, #Blog1 .widget-content, #Blog1 .blog-posts,
+#Blog1 .blog-posts.hfeed, #Blog1 .post-outer, #Blog1 .post,
+#Blog1 .blog-posts .post-outer-container,
+#Blog1 .date-outer, #Blog1 .date-posts {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  float: none !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+#Blog1 .deals-grid > * { min-width: 0; }
+
+/* ═══ BLOGGER FEED RENDERER ═══ */
+.feed-status { grid-column: 1 / -1; padding: 30px 16px; text-align: center; color: var(--ink-soft); background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); }
+.feed-actions { display: flex; justify-content: center; margin: 28px 12px 8px; }
+.feed-actions .btn { min-width: 190px; }
+.feed-actions.is-hidden { display: none; }
+
+/* ═══ PRODUCT CARD ═══ */
+.product-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-sizing: border-box;
+  transition: border-color .25s ease;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  contain: layout paint;
+}
+.product-card:hover { border-color: var(--orange); }
+.product-card > a { display: flex; flex-direction: column; height: 100%; color: inherit; text-decoration: none; }
+
+.card-media {
+  position: relative;
+  background: #fff;
+  padding: 0;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.card-media img {
+  max-width: 92%;
+  max-height: 92%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  transition: transform .3s ease;
+}
+
+.product-card:hover .card-media img { transform: scale(1.05); }
+
+.card-body { padding: 10px 12px 12px; display: flex; flex-direction: column; flex: 1; gap: 6px; background: var(--white); }
+.card-cat { display: flex; align-items: center; gap: 5px; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--orange); font-weight: 800; }
+.card-cat .amz-icon { font-size: 13px; color: var(--orange); line-height: 1; }
+.card-title { font-size: 13.5px; font-weight: 800; color: var(--ink); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.8em; text-align: center; }
+.card-footer { margin-top: auto; padding-top: 8px; display: flex; justify-content: center; }
+.card-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--orange);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 6px 14px;
+  border-radius: 50px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ═══ WHY SHOP ═══ */
+.why-shop { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px 24px; margin: 48px 12px; }
+.why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-top: 20px; }
+.why-item { display: flex; align-items: center; gap: 14px; }
+.why-icon { width: 44px; height: 44px; border-radius: var(--radius-sm); background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--orange); flex-shrink: 0; }
+
+/* ═══ SINGLE POST — CLEAN UNIFIED DESIGN ═══ */
+.post-single { 
+  background: var(--white); 
+  border-radius: 16px; 
+  border: 1px solid #C5E4EF; 
+  padding: 32px; 
+  margin: 32px 12px; 
+  box-shadow: 0 2px 8px rgba(0,0,0,.04); 
+  overflow: hidden; 
+  word-wrap: break-word; 
+  overflow-wrap: break-word;
+}
+
+.post-hero-grid { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 0; 
+  align-items: stretch; 
+}
+
+.post-title { 
+  font-size: clamp(24px, 4vw, 34px); 
+  margin-bottom: 16px; 
+  color: var(--ink);
+  font-weight: 800;
+  line-height: 1.25; 
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.post-meta { 
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: 12px; 
+  align-items: center; 
+  font-size: 13px; 
+  color: var(--ink-soft); 
+  margin-bottom: 20px; 
+}
+.post-meta span { display: flex; align-items: center; gap: 6px; }
+
+.post-hero-image { 
+  border-radius: 12px; 
+  overflow: hidden; 
+  background: #f9fafb; 
+  width: 100%;
+  max-width: 420px;
+  max-height: 350px;
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  margin: 0 auto 24px;
+  padding: 0;
+  border: 1px solid #C5E4EF;
+}
+.post-hero-image img { 
+  width: auto; 
+  height: auto; 
+  max-width: 100%; 
+  max-height: 340px;
+  object-fit: contain; 
+  background: transparent; 
+}
+
+/* ═══ POST BODY CONTENT — UNIFIED CLEAN STYLE ═══ */
+.post-body-content { 
+  font-size: 16px; 
+  line-height: 1.75; 
+  color: var(--ink); 
+  font-weight: 500;
+  padding-top: 0; 
+  overflow-wrap: break-word; 
+  word-wrap: break-word; 
+}
+.post-body-content img { 
+  max-width: 100% !important; 
+  height: auto !important; 
+  border-radius: 12px; 
+  margin: 16px 0; 
+  display: block; 
+}
+
+/* ═══ PRODUCT IMAGES ═══ */
+.product-images {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.product-images .carousel-item {
+  overflow: hidden;
+  border-radius: 10px;
+  background: #f9fafb;
+}
+.product-images .carousel-item img {
+  transition: transform 0.3s ease;
+  cursor: zoom-in;
+}
+.product-images .carousel-item img:hover {
+  transform: scale(1.08);
+  z-index: 10;
+  position: relative;
+}
+
+/* ═══ ZOOM OVERLAY ON HOVER ═══ */
+.zoom-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+}
+.zoom-container img {
+  transition: transform 0.35s ease;
+}
+.zoom-container:hover img {
+  transform: scale(1.15);
+}
+
+/* ═══ CUSTOMER REVIEWS GRID ═══ */
+.post-body-content section div[style*="grid-template-columns:1fr 1fr"] {
+  gap: 12px;
+}
+
+.post-body-content a { color: var(--orange); text-decoration: underline; font-weight: 700; }
+.post-body-content h1, 
+.post-body-content h2 { 
+  font-size: 22px; 
+  margin: 28px 0 14px; 
+  font-weight: 800;
+  color: var(--ink);
+}
+.post-body-content h3 { 
+  font-size: 18px; 
+  margin: 20px 0 10px; 
+  font-weight: 700;
+}
+.post-body-content p { margin: 0 0 14px; font-weight: 500; }
+.post-body-content strong, .post-body-content b { font-weight: 700; }
+.post-body-content table { display: block; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-collapse: collapse; margin: 16px 0; border-radius: 12px; overflow: hidden; border: 1px solid #C5E4EF; }
+.post-body-content table td, .post-body-content table th { border: 1px solid #C5E4EF; padding: 12px 16px; font-size: 14px; font-weight: 500; }
+.post-body-content table th { background: #F7F8FA; font-weight: 700; }
+.post-body-content iframe, .post-body-content embed, .post-body-content object { max-width: 100%; }
+
+/* ═══ NUCLEAR OVERRIDE: Destroy ALL inline styles in post body ═══ */
+.post-body-content * {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Remove ALL borders from sections inside post body */
+.post-body-content section,
+.post-body-content article,
+.post-body-content div[style*="border"],
+.post-body-content div[style*="border-radius"] {
+  border: none !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,.04) !important;
+}
+
+/* UNIFIED CARD STYLE for all sections */
+.post-body-content section,
+.post-body-content article {
+  max-width: 100% !important;
+  width: 100% !important;
+  padding: 20px !important;
+  margin: 0 0 16px !important;
+  background: #fff !important;
+  border: 1px solid #C5E4EF !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,.04) !important;
+}
+
+/* Override max-width:780px and margin:0 auto */
+.post-body-content [style*="max-width:780px"],
+.post-body-content [style*="max-width: 780px"],
+.post-body-content article[style*="max-width"] {
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.post-body-content [style*="margin:0 auto"],
+.post-body-content [style*="margin: 0 auto"] {
+  margin: 0 0 16px !important;
+  width: 100% !important;
+}
+
+/* RESPONSIVE GRID: Desktop=multi-column, Mobile=single-column */
+@media (min-width: 768px) {
+  .post-body-content section[style*="grid-template-columns"],
+  .post-body-content div[style*="grid-template-columns"] {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 16px !important;
+    width: 100% !important;
+  }
+  .post-body-content section[style*="grid-template-columns:1fr 1fr"],
+  .post-body-content div[style*="grid-template-columns:1fr 1fr"] {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .post-body-content section[style*="repeat(4"],
+  .post-body-content div[style*="repeat(4"] {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .post-body-content section[style*="grid-template-columns"],
+  .post-body-content div[style*="grid-template-columns"] {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: none !important;
+    gap: 12px !important;
+    width: 100% !important;
+  }
+  .post-body-content section[style*="repeat(4"],
+  .post-body-content div[style*="repeat(4"] {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+  /* Product images: horizontal scroll on mobile */
+  .product-images {
+    display: flex !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    gap: 12px !important;
+    padding: 4px 0 !important;
+    grid-template-columns: none !important;
+  }
+  .product-images::-webkit-scrollbar { display: none !important; }
+  .product-images .carousel-item {
+    flex: 0 0 75vw !important;
+    scroll-snap-align: start !important;
+    width: 75vw !important;
+  }
+}
+
+/* All text inside post body should be bold/readable */
+.post-body-content span,
+.post-body-content li,
+.post-body-content td {
+  font-weight: 500;
+}
+
+.post-body-content li strong,
+.post-body-content td strong {
+  font-weight: 700;
+}
+
+/* Sticky CTA for single post on mobile */
+.sticky-cta {
+  display: none;
+  position: fixed;
+  bottom: 70px;
+  left: 12px;
+  right: 12px;
+  z-index: 90;
+  background: var(--navy);
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(255,255,255,.1);
+}
+.sticky-cta .btn { width: 100%; }
+@media (max-width: 767px) {
+  .sticky-cta { display: block; }
+  .post-single { padding: 16px 12px; margin: 0; border-radius: 0; border: none; box-shadow: none; }
+  .post-body-content section,
+  .post-body-content article {
+    padding: 16px !important;
+  }
+}
+
+/* ═══ RELATED POSTS ═══ */
+.related-posts { margin: 40px 12px 0; }
+.related-posts h3 { font-size: 20px; margin-bottom: 20px; }
+.related-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+@media (min-width: 768px) { .related-grid { grid-template-columns: repeat(3, 1fr); } }
+.related-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; transition: all .2s ease; }
+.related-card:hover { border-color: var(--orange); }
+.related-card img { width: 100%; aspect-ratio: 4/3; object-fit: contain; border-radius: var(--radius-xs); margin-bottom: 8px; background: #fff; }
+.related-card h4 { font-size: 13px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* ═══ FOOTER ═══ */
+.site-footer { background: var(--navy); color: rgba(255,255,255,.7); margin-top: 60px; }
+.footer-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 28px 40px; padding: 40px 24px 32px; max-width: var(--max-w); margin: 0 auto; }
+@media (min-width: 768px) { .footer-cols { grid-template-columns: 2fr 1fr 1fr 1fr; } }
+.footer-cols h4 { color: var(--white); font-size: 12px; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.08em; font-weight: 900; border-bottom: 1px solid rgba(255,255,255,.1); padding-bottom: 8px; }
+.footer-cols ul li { margin-bottom: 6px; }
+.footer-cols a { color: rgba(255,255,255,.6); display: inline-flex; align-items: center; gap: 6px; font-size: 13px; transition: color .2s ease; line-height: 1.5; }
+.footer-cols a:hover { color: var(--orange); }
+.footer-disclaimer { max-width: var(--max-w); margin: 0 auto; padding: 0 24px 24px; font-size: 12px; color: rgba(255,255,255,.4); line-height: 1.6; border-top: 1px solid rgba(255,255,255,.06); padding-top: 20px; }
+.footer-disclaimer a { color: var(--orange); }
+.footer-bottom { border-top: 1px solid rgba(255,255,255,.08); padding: 20px 16px; font-size: 12px; text-align: center; color: rgba(255,255,255,.5); }
+
+/* Mobile Bottom Nav */
+.mob-bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 150; background: var(--navy); padding: 10px 0; border-top: 1px solid rgba(255,255,255,.1); }
+.mob-bottom-inner { display: flex; justify-content: space-around; }
+.mob-bottom-nav a { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; color: rgba(255,255,255,.7); min-height: var(--tap-target); min-width: var(--tap-target); justify-content: center; }
+.mob-bottom-nav a:hover { color: var(--orange); }
+@media (max-width: 767px) { .mob-bottom-nav { display: block; } body { padding-bottom: 64px; } }
+
+/* Back to Top */
+.back-to-top {
+  position: fixed;
+  bottom: 80px;
+  right: 16px;
+  z-index: 95;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--orange);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .3s ease, visibility .3s ease, transform .3s ease;
+  transform: translateY(10px);
+}
+.back-to-top.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.back-to-top:hover { background: var(--orange-dark); transform: translateY(-2px); }
+
+/* Infinite Scroll Spinner */
+.inf-spinner {
+  display: none;
+  text-align: center;
+  padding: 24px;
+}
+.inf-spinner.is-visible { display: block; }
+.inf-spinner-inner {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--border);
+  border-top-color: var(--orange);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ═══ MOBILE OVERRIDES ═══ */
+@media (max-width: 899px) {
+  .container { padding: 0 10px; }
+
+  main#home-deals,
+  main.container,
+  main.single-item-page {
+    max-width: 100vw;
+    width: 100%;
+    overflow-x: hidden;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  #Blog1, #Blog1 .widget-content, #Blog1 .blog-posts,
+  #Blog1 .blog-posts.hfeed, #Blog1 .post-outer, #Blog1 .post,
+  #Blog1 .blog-posts .post-outer-container,
+  #Blog1 .blog-posts > *,
+  #Blog1 .date-outer, #Blog1 .date-posts {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    float: none !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  .deals-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 10px !important;
+    overflow: hidden !important;
+  }
+
+  .product-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    min-width: 0 !important;
+  }
+  .product-card > a { width: 100%; min-width: 0; }
+  .card-body { padding: 8px; min-width: 0; }
+  .card-title { font-size: 12px; min-height: auto; -webkit-line-clamp: 2; }
+  .card-media { aspect-ratio: 1 / 1; padding: 0; box-sizing: border-box; }
+  .card-media img { max-width: 92%; max-height: 92%; width: auto; height: auto; object-fit: contain; }
+
+  .sec-heading { padding: 0 10px; margin: 24px 0 16px; }
+  .feed-actions, .blog-pager { padding: 0 10px; margin: 20px 10px 8px; }
+  .why-shop { margin: 24px 10px; padding: 20px 16px; }
+
+  main.container.single-item-page { padding: 0 !important; margin: 0 !important; width: 100% !important; max-width: 100vw !important; }
+  .post-single { 
+    padding: 16px 12px; 
+    margin: 0 !important; 
+    border: none !important; 
+    box-shadow: none !important; 
+    border-radius: 0 !important; 
+    width: 100% !important; 
+    max-width: 100% !important; 
+    overflow: hidden; 
+  }
+  .post-hero-image { 
+    border-radius: 10px; 
+    max-width: 100%;
+    max-height: 280px;
+    margin-bottom: 16px;
+    padding: 0;
+  }
+  .post-hero-image img {
+    max-height: 270px;
+  }
+  .post-body-content { overflow-x: hidden; word-break: break-word; font-size: 15px; }
+  .post-body-content * { max-width: 100% !important; }
+  .post-body-content table { display: block; overflow-x: auto; }
+  .post-title { font-size: 22px; font-weight: 800; }
+  .post-meta { font-size: 12px; gap: 8px; }
+  .comments-section { margin-top: 24px; padding-top: 16px; }
+
+  /* MOBILE: Override inline grid to single column */
+  .post-body-content [style*="display:grid"],
+  .post-body-content [style*="display: grid"] {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: none !important;
+    gap: 12px !important;
+    width: 100% !important;
+  }
+  .post-body-content [style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+  }
+  .post-body-content section[style*="repeat(4"],
+  .post-body-content div[style*="repeat(4"] {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+  .post-body-content article,
+  .post-body-content section {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 16px !important;
+    margin: 0 0 12px !important;
+    border-radius: 10px !important;
+  }
+  .post-body-content [style*="max-width:780px"],
+  .post-body-content [style*="max-width: 780px"] {
+    max-width: 100% !important;
+  }
+  .post-body-content [style*="margin:0 auto"],
+  .post-body-content [style*="margin: 0 auto"] {
+    margin: 0 0 12px !important;
+    width: 100% !important;
+  }
+  .post-body-content [style*="padding:24px"],
+  .post-body-content [style*="padding: 24px"] {
+    padding: 16px !important;
+  }
+  .post-body-content [style*="padding:20px"],
+  .post-body-content [style*="padding: 20px"] {
+    padding: 14px !important;
+  }
+  .post-body-content img {
+    max-width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+  }
+
+  .search-form {
+    border-radius: 50px;
+    border: 2px solid var(--orange) !important;
+    background: rgba(255,255,255,.08);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    max-width: 100%;
+    overflow: hidden;
+  }
+  .search-form input { border-radius: 50px 0 0 50px; padding: 10px 14px; }
+  .search-form button { background: var(--orange); border-radius: 0 50px 50px 0; color: #fff; width: 44px; }
+
+  .product-card:hover { border-color: var(--border) !important; }
+  .product-card:hover .card-media img { transform: none !important; }
+  .cat-item:hover { transform: none !important; border-color: var(--border) !important; }
+  .btn:hover { transform: none !important; }
+
+  .breadcrumb { font-size: 12px; padding: 8px 10px; }
+  .related-posts { margin: 24px 10px 0; }
+  .related-grid { gap: 10px; }
+}
+
+/* Pager */
+.blog-pager { display: flex; justify-content: space-between; gap: 12px; margin: 32px 12px; }
+.blog-pager a { font-weight: 600; font-size: 14px; padding: 12px 20px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); background: var(--white); transition: all .2s; }
+.blog-pager a:hover { border-color: var(--orange); color: var(--orange); }
+
+/* Comments */
+.comments-section { margin-top: 40px; border-top: 1px solid var(--border); padding-top: 24px; }
+.comments-section h4 { font-size: 18px; margin-bottom: 20px; }
+
+@media print {
+  .site-header, .hero, .cat-strip, .mob-bottom-nav, .back-to-top, .sticky-cta, .mob-drawer, .mob-overlay { display: none !important; }
+  .post-single { box-shadow: none; border: 1px solid #ccc; }
+}
+]]></b:skin>
+
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class='site-header' role='banner'>
+  <div class='container header-top'>
+    <a aria-label='NestDeal Home' class='brand' expr:href='data:blog.homepageUrl'>
+      <span aria-hidden='true' class='brand-icon'><i class='fas fa-shopping-bag'/></span>
+      <span class='brand-text'>Nest<span>Deal</span></span>
+    </a>
+    <form aria-label='Site search' class='search-form' expr:action='data:blog.homepageUrl + &quot;search&quot;' method='get' role='search'>
+      <input aria-label='Search products' name='q' placeholder='Search top Amazon deals...' type='text'/>
+      <button aria-label='Submit search' type='submit'><i aria-hidden='true' class='fas fa-search'/></button>
+    </form>
+    <div class='header-right'>
+      <div class='header-tagline'>Curated Deals.<br/>Prices You <strong>Can Trust.</strong></div>
+      <button aria-label='Toggle menu' class='menu-toggle' id='mobMenuToggle' type='button'><i aria-hidden='true' class='fas fa-bars'/></button>
+    </div>
+  </div>
+  <nav aria-label='Main navigation' class='main-nav' role='navigation'>
+    <div class='container'>
+      <ul class='nav-list'>
+        <li><a expr:href='data:blog.homepageUrl'>Home</a></li>
+        <li><a href='/search/label/Best%20Deals'>Best Deals</a></li>
+        <li><a href='/search/label/Home%20%26%20Kitchen'>Home &amp; Kitchen</a></li>
+        <li><a href='/search/label/Beauty%20%26%20Health'>Beauty &amp; Health</a></li>
+        <li><a href='/search/label/Sports%20%26%20Outdoors'>Sports &amp; Outdoors</a></li>
+        <li><a href='/search/label/Tech%20%26%20Gadgets'>Tech &amp; Gadgets</a></li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<div aria-hidden='true' class='mob-overlay' id='mobOverlay'/>
+<div aria-hidden='true' aria-label='Mobile menu' class='mob-drawer' id='mobDrawer' role='dialog'>
+  <div class='mob-drawer-header'>
+    <span class='brand-text'>Nest<span style='color:var(--orange);'>Deal</span></span>
+    <button aria-label='Close menu' class='mob-drawer-close' id='mobDrawerClose' type='button'>&#10005;</button>
+  </div>
+  <nav aria-label='Mobile navigation' class='mob-drawer-nav' role='navigation'>
+    <a expr:href='data:blog.homepageUrl'>Home</a>
+    <a href='/search/label/Best%20Deals'>Best Deals</a>
+    <a href='/search/label/Home%20%26%20Kitchen'>Home &amp; Kitchen</a>
+    <a href='/search/label/Beauty%20%26%20Health'>Beauty &amp; Health</a>
+    <a href='/search/label/Sports%20%26%20Outdoors'>Sports &amp; Outdoors</a>
+    <a href='/search/label/Tech%20%26%20Gadgets'>Tech &amp; Gadgets</a>
+  </nav>
+</div>
+
+<!-- HERO -->
+<b:if cond='!data:view.isSingleItem'>
+<section class='hero'>
+  <div class='hero-container'>
+    <div class='hero-content'>
+      <h1>Smart Deals.<br/><span class='hl'>Better Living.</span></h1>
+      <p class='hero-sub'>Handpicked Amazon deals, honest product reviews, and curated shopping guides &#8212; all in one place.</p>
+      <div class='hero-cta'>
+        <a class='btn btn-primary' href='#home-deals'>Shop Today&#39;s Deals <i aria-hidden='true' class='fas fa-arrow-right'/></a>
+        <a class='btn btn-outline' href='#cat-section'>Browse Categories</a>
+      </div>
+      <div class='hero-trust'>
+        <div class='hero-trust-item'><span aria-hidden='true' class='hero-trust-icon'><i class='fas fa-star'/></span><div class='hero-trust-text'><strong>Verified Reviews</strong><span>100% Unbiased</span></div></div>
+        <div class='hero-trust-item'><span aria-hidden='true' class='hero-trust-icon'><i class='fas fa-tags'/></span><div class='hero-trust-text'><strong>Best Prices</strong><span>Updated Daily</span></div></div>
+        <div class='hero-trust-item'><span aria-hidden='true' class='hero-trust-icon'><i class='fas fa-shield-alt'/></span><div class='hero-trust-text'><strong>Secure Shopping</strong><span>Amazon Verified</span></div></div>
+        <div class='hero-trust-item'><span aria-hidden='true' class='hero-trust-icon'><i class='fas fa-piggy-bank'/></span><div class='hero-trust-text'><strong>Maximum Savings</strong><span>Unbeatable Value</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+</b:if>
+
+<!-- CATEGORY STRIP -->
+<b:if cond='!data:view.isSingleItem'>
+<section class='cat-strip' id='cat-section'>
+  <div class='container cat-strip-inner'>
+    <a class='cat-item' href='/search/label/Home%20%26%20Kitchen'><i aria-hidden='true' class='fas fa-home cat-icon'/><span class='cat-info'><span class='cat-name'>Home &amp; Kitchen</span></span></a>
+    <a class='cat-item' href='/search/label/Beauty%20%26%20Health'><i aria-hidden='true' class='fas fa-spa cat-icon'/><span class='cat-info'><span class='cat-name'>Beauty &amp; Health</span></span></a>
+    <a class='cat-item' href='/search/label/Sports%20%26%20Outdoors'><i aria-hidden='true' class='fas fa-dumbbell cat-icon'/><span class='cat-info'><span class='cat-name'>Sports &amp; Outdoors</span></span></a>
+    <a class='cat-item' href='/search/label/Tech%20%26%20Gadgets'><i aria-hidden='true' class='fas fa-laptop cat-icon'/><span class='cat-info'><span class='cat-name'>Tech &amp; Gadgets</span></span></a>
+    <a class='cat-item' href='/search/label/Best%20Deals'><i aria-hidden='true' class='fas fa-tags cat-icon'/><span class='cat-info'><span class='cat-name'>Best Deals</span></span></a>
+  </div>
+</section>
+</b:if>
+
+<!-- BREADCRUMB (Single Item Only) -->
+<b:if cond='data:view.isSingleItem'>
+<nav aria-label='Breadcrumb' class='breadcrumb container'>
+  <ol itemscope='' itemtype='https://schema.org/BreadcrumbList'>
+    <li itemprop='itemListElement' itemscope='' itemtype='https://schema.org/ListItem'>
+      <a expr:href='data:blog.homepageUrl' itemprop='item'><span itemprop='name'>Home</span></a>
+      <meta content='1' itemprop='position'/>
+    </li>
+    <li itemprop='itemListElement' itemscope='' itemtype='https://schema.org/ListItem'>
+      <span itemprop='name'><data:post.title/></span>
+      <meta content='2' itemprop='position'/>
+    </li>
+  </ol>
+</nav>
+</b:if>
+
+<!-- MAIN CONTENT -->
+<main expr:class='&quot;container&quot; + (data:view.isSingleItem ? &quot; single-item-page&quot; : &quot;&quot;)' id='home-deals' role='main'>
+  <b:section class='main' id='main' showaddelement='yes'>
+    <b:widget id='Blog1' locked='false' title='Blog Posts' type='Blog' version='2' visible='true'>
+      <b:widget-settings>
+        <b:widget-setting name='showDateHeader'>false</b:widget-setting>
+        <b:widget-setting name='commentLabel'>Reviews</b:widget-setting>
+        <b:widget-setting name='style.textcolor'>#ffffff</b:widget-setting>
+        <b:widget-setting name='showShareButtons'>false</b:widget-setting>
+        <b:widget-setting name='showCommentLink'>true</b:widget-setting>
+        <b:widget-setting name='style.urlcolor'>#ffffff</b:widget-setting>
+        <b:widget-setting name='showAuthor'>true</b:widget-setting>
+        <b:widget-setting name='style.linkcolor'>#ffffff</b:widget-setting>
+        <b:widget-setting name='style.unittype'>TextAndImage</b:widget-setting>
+        <b:widget-setting name='style.bgcolor'>#ffffff</b:widget-setting>
+        <b:widget-setting name='timestampLabel'>Published:</b:widget-setting>
+        <b:widget-setting name='reactionsLabel'/>
+        <b:widget-setting name='showAuthorProfile'>false</b:widget-setting>
+        <b:widget-setting name='style.layout'>1x1</b:widget-setting>
+        <b:widget-setting name='showLabels'>true</b:widget-setting>
+        <b:widget-setting name='showLocation'>false</b:widget-setting>
+        <b:widget-setting name='postLabelsLabel'>Tags:</b:widget-setting>
+        <b:widget-setting name='showTimestamp'>true</b:widget-setting>
+        <b:widget-setting name='postsPerAd'>1</b:widget-setting>
+        <b:widget-setting name='showBacklinks'>false</b:widget-setting>
+        <b:widget-setting name='style.bordercolor'>#ffffff</b:widget-setting>
+        <b:widget-setting name='showInlineAds'>false</b:widget-setting>
+        <b:widget-setting name='showReactions'>false</b:widget-setting>
+      </b:widget-settings>
+      <b:includable id='main' var='top'>
+        <b:if cond='data:view.isSingleItem'>
+          <b:loop values='data:posts' var='post'>
+            <b:include data='post' name='postCommentsAndAd'/>
+          </b:loop>
+        <b:else/>
+          <div class='sec-heading'>
+            <h2><span class='hl'>Today&#39;s Best Deals</span></h2>
+          </div>
+          <div class='deals-grid' id='nestdeal-products'>
+            <b:if cond='data:posts'>
+              <b:loop values='data:posts' var='post'>
+                <article class='product-card' itemscope='' itemtype='https://schema.org/Product'>
+                  <a expr:href='data:post.url' itemprop='url'>
+                    <div class='card-media'>
+                      <b:if cond='data:post.featuredImage'>
+                        <img decoding='async' expr:alt='data:post.title' expr:src='resizeImage(data:post.featuredImage, 600)' itemprop='image' loading='lazy'/>
+                      <b:else/>
+                        <img alt='Product placeholder' decoding='async' itemprop='image' loading='lazy' src='https://placehold.co/600x450/F7F8FA/999?text=NestDeal+Product'/>
+                      </b:if>
+                    </div>
+                    <div class='card-body'>
+                      <b:loop index='catI' values='data:post.labels' var='catLabel'>
+                        <b:if cond='data:catI == 0'>
+                          <span class='card-cat'><i aria-hidden='true' class='fab fa-amazon amz-icon'/> <span itemprop='category'><data:catLabel.name/></span></span>
+                        </b:if>
+                      </b:loop>
+                      <h3 class='card-title' itemprop='name'><data:post.title/></h3>
+                      <div class='card-footer'>
+                        <span class='card-btn'><i aria-hidden='true' class='fas fa-external-link-alt'/> View Deal</span>
+                      </div>
+                    </div>
+                  </a>
+                </article>
+              </b:loop>
+            <b:else/>
+              <div class='feed-status'>No published posts yet. Start adding deals!</div>
+            </b:if>
+          </div>
+          <b:if cond='data:olderPageUrl'>
+            <div class='feed-actions' id='feedActions'>
+              <a class='btn btn-primary' expr:href='data:olderPageUrl' id='loadMoreBtn'>Load More Deals</a>
+            </div>
+            <div class='inf-spinner' id='infSpinner'><div class='inf-spinner-inner'/></div>
+          </b:if>
+        </b:if>
+      </b:includable>
+      <b:includable id='aboutPostAuthor'>
+        <div class='author-name'>
+          <a class='g-profile' expr:href='data:post.author.profileUrl' rel='author' title='author profile'>
+            <span><data:post.author.name/></span>
+          </a>
+        </div>
+        <div><span class='author-desc'><data:post.author.aboutMe/></span></div>
+      </b:includable>
+      <b:includable id='addComments'>
+        <a expr:href='data:post.commentsUrl' expr:onclick='data:post.commentsUrlOnclick'><b:message name='messages.postAComment'/></a>
+      </b:includable>
+      <b:includable id='blogThisShare'>
+        <b:with value='&quot;window.open(this.href, \&quot;_blank\&quot;, \&quot;height=270,width=475\&quot;); return false;&quot;' var='onclick'>
+          <b:include name='platformShare'/>
+        </b:with>
+      </b:includable>
+      <b:includable id='bylineByName' var='byline'>
+        <b:switch var='data:byline.name'>
+          <b:case value='share'/><b:include cond='data:post.shareUrl' name='postShareButtons'/>
+          <b:case value='comments'/><b:include cond='data:post.allowComments' name='postCommentsLink'/>
+          <b:case value='location'/><b:include cond='data:post.location' name='postLocation'/>
+          <b:case value='timestamp'/><b:include cond='not data:view.isPage' name='postTimestamp'/>
+          <b:case value='author'/><b:include name='postAuthor'/>
+          <b:case value='labels'/><b:include cond='data:post.labels' name='postLabels'/>
+          <b:case value='icons'/><b:include cond='data:post.emailPostUrl' name='emailPostIcon'/>
+        </b:switch>
+      </b:includable>
+      <b:includable id='bylineRegion' var='regionItems'>
+        <b:loop values='data:regionItems' var='byline'><b:include data='byline' name='bylineByName'/></b:loop>
+      </b:includable>
+      <b:includable id='commentAuthorAvatar'>
+        <div class='avatar-image-container'><img class='author-avatar' expr:src='data:comment.authorAvatarSrc' height='35' width='35'/></div>
+      </b:includable>
+      <b:includable id='commentDeleteIcon' var='comment'>
+        <span expr:class='&quot;item-control &quot; + data:comment.adminClass'>
+          <b:if cond='data:showCmtPopup'>
+            <div class='goog-toggle-button'><div class='goog-inline-block comment-action-icon'/></div>
+          <b:else/>
+            <a class='comment-delete' expr:href='data:comment.deleteUrl' expr:title='data:messages.deleteComment'>
+              <img src='https://resources.blogblog.com/img/icon_delete13.gif'/>
+            </a>
+          </b:if>
+        </span>
+      </b:includable>
+      <b:includable id='commentForm' var='post'>
+        <div class='comment-form'>
+          <a name='comment-form'/>
+          <h4 id='comment-post-message'><data:messages.postAComment/></h4>
+          <b:if cond='data:this.messages.blogComment != &quot;&quot;'><p><data:this.messages.blogComment/></p></b:if>
+          <b:include data='post' name='commentFormIframeSrc'/>
+          <iframe allowtransparency='allowtransparency' class='blogger-iframe-colorize blogger-comment-from-post' expr:height='data:cmtIframeInitialHeight ?: &quot;90px&quot;' frameborder='0' id='comment-editor' name='comment-editor' src='' width='100%'/>
+          <data:post.cmtfpIframe/>
+          <script type='text/javascript'>BLOG_CMT_createIframe(&#39;<data:post.appRpcRelayPath/>&#39;);</script>
+        </div>
+      </b:includable>
+      <b:includable id='commentFormIframeSrc' var='post'>
+        <a expr:href='data:post.commentFormIframeSrc' id='comment-editor-src'/>
+      </b:includable>
+      <b:includable id='commentItem' var='comment'>
+        <div class='comment' expr:id='&quot;c&quot; + data:comment.id'>
+          <b:include cond='data:blog.enabledCommentProfileImages' name='commentAuthorAvatar'/>
+          <div class='comment-block'>
+            <div class='comment-author'>
+              <b:if cond='data:comment.authorUrl'>
+                <b:message name='messages.authorSaidWithLink'>
+                  <b:param expr:value='data:comment.author' name='authorName'/>
+                  <b:param expr:value='data:comment.authorUrl' name='authorUrl'/>
+                </b:message>
+              <b:else/>
+                <b:message name='messages.authorSaid'><b:param expr:value='data:comment.author' name='authorName'/></b:message>
+              </b:if>
+            </div>
+            <div expr:class='&quot;comment-body&quot; + (data:comment.isDeleted ? &quot; deleted&quot; : &quot;&quot;)'><data:comment.body/></div>
+            <div class='comment-footer'>
+              <span class='comment-timestamp'>
+                <a expr:href='data:comment.url' title='comment permalink'><data:comment.timestamp/></a>
+                <b:include data='comment' name='commentDeleteIcon'/>
+              </span>
+            </div>
+          </div>
+        </div>
+      </b:includable>
+      <b:includable id='commentList' var='comments'>
+        <div id='comments-block'><b:loop values='data:comments' var='comment'><b:include data='comment' name='commentItem'/></b:loop></div>
+      </b:includable>
+      <b:includable id='commentPicker' var='post'>
+        <b:if cond='data:post.showThreadedComments'><b:include data='post' name='threadedComments'/><b:else/><b:include data='post' name='comments'/></b:if>
+      </b:includable>
+      <b:includable id='comments' var='post'>
+        <section expr:class='&quot;comments&quot; + (data:post.embedCommentForm ? &quot; embed&quot; : &quot;&quot;)' expr:data-num-comments='data:post.numberOfComments' id='comments'>
+          <a name='comments'/>
+          <b:include name='commentsTitle'/>
+          <div expr:id='data:widget.instanceId + &quot;_comments-block-wrapper&quot;'>
+            <b:include cond='data:post.comments' data='data:post.comments' name='commentList'/>
+          </div>
+          <b:if cond='data:post.commentPagingRequired'>
+            <div class='paging-control-container'>
+              <b:if cond='data:post.hasOlderLinks'>
+                <a expr:class='data:post.oldLinkClass' expr:href='data:post.oldestLinkUrl'><data:messages.oldest/></a>
+                <a expr:class='data:post.oldLinkClass' expr:href='data:post.olderLinkUrl'><data:messages.older/></a>
+              </b:if>
+              <span class='comment-range-text'><data:post.commentRangeText/></span>
+              <b:if cond='data:post.hasNewerLinks'>
+                <a expr:class='data:post.newLinkClass' expr:href='data:post.newerLinkUrl'><data:messages.newer/></a>
+                <a expr:class='data:post.newLinkClass' expr:href='data:post.newestLinkUrl'><data:messages.newest/></a>
+              </b:if>
+            </div>
+          </b:if>
+          <div class='footer'>
+            <b:if cond='data:post.embedCommentForm'>
+              <b:if cond='data:post.allowNewComments'><b:include data='post' name='commentForm'/><b:else/><data:post.noNewCommentsText/></b:if>
+            <b:else/>
+              <b:if cond='data:post.allowComments'><b:include data='post' name='addComments'/></b:if>
+            </b:if>
+          </div>
+          <b:if cond='data:showCmtPopup'>
+            <div id='comment-popup'><iframe allowtransparency='allowtransparency' frameborder='0' id='comment-actions' name='comment-actions' scrolling='no'/></div>
+          </b:if>
+        </section>
+      </b:includable>
+      <b:includable id='commentsLink'>
+        <a class='comment-link' expr:href='data:post.commentsUrl' expr:onclick='data:post.commentsUrlOnclick'>
+          <b:if cond='data:post.numberOfComments &gt; 0'>
+            <b:message name='messages.numberOfComments'><b:param expr:value='data:post.numberOfComments' name='numComments'/></b:message>
+          <b:else/><data:messages.postAComment/></b:if>
+        </a>
+      </b:includable>
+      <b:includable id='commentsLinkIframe'/>
+      <b:includable id='commentsTitle'><h3 class='title'><data:messages.comments/></h3></b:includable>
+      <b:includable id='defaultAdUnit'>
+        <ins class='adsbygoogle' data-ad-format='auto' expr:data-ad-client='data:adClientId ?: data:blog.adsenseClientId' expr:data-host='data:blog.adsenseHostId' expr:style='data:style ?: &quot;display: block;&quot;'>
+          <b:attr cond='not data:blog.analytics4' expr:value='data:blog.analyticsAccountNumber' name='data-analytics-uacct'/>
+        </ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </b:includable>
+      <b:includable id='emailPostIcon'>
+        <span class='byline post-icons'>
+          <span class='item-action'>
+            <a expr:href='data:post.emailPostUrl' expr:title='data:messages.emailPost'>
+              <b:include data='{ iconClass: &quot;touch-icon sharing-icon&quot; }' name='emailIcon'/>
+            </a>
+          </span>
+        </span>
+      </b:includable>
+      <b:includable id='facebookShare'>
+        <b:with value='&quot;window.open(this.href, \&quot;_blank\&quot;, \&quot;height=430,width=640\&quot;); return false;&quot;' var='onclick'>
+          <b:include name='platformShare'/>
+        </b:with>
+      </b:includable>
+      <b:includable id='feedLinks'>
+        <b:if cond='!data:view.isPost'>
+          <b:if cond='data:feedLinks'><div class='blog-feeds'><b:include data='feedLinks' name='feedLinksBody'/></div></b:if>
+        <b:else/>
+          <div class='post-feeds'>
+            <b:loop values='data:posts' var='post'>
+              <b:if cond='data:post.allowComments and data:post.feedLinks'><b:include data='post.feedLinks' name='feedLinksBody'/></b:if>
+            </b:loop>
+          </div>
+        </b:if>
+      </b:includable>
+      <b:includable id='feedLinksBody' var='links'>
+        <div class='feed-links'>
+          <data:messages.subscribeTo/>
+          <b:loop values='data:links' var='f'>
+            <a class='feed-link' expr:href='data:f.url' expr:type='data:f.mimeType' target='_blank'><data:f.name/> (<data:f.feedType/>)</a>
+          </b:loop>
+        </div>
+      </b:includable>
+      <b:includable id='footerBylines'>
+        <b:if cond='data:widgets.Blog.first.footerBylines'>
+          <b:loop index='i' values='data:widgets.Blog.first.footerBylines' var='region'>
+            <b:if cond='not data:region.items.empty'>
+              <div expr:class='&quot;post-footer-line post-footer-line-&quot; + (data:i + 1)'>
+                <b:with value='&quot;footer-&quot; + (data:i + 1)' var='regionName'>
+                  <b:include data='region.items' name='bylineRegion'/>
+                </b:with>
+              </div>
+            </b:if>
+          </b:loop>
+        </b:if>
+      </b:includable>
+      <b:includable id='googlePlusShare'/>
+      <b:includable id='headerByline'>
+        <b:if cond='data:widgets.Blog.first.headerByline'>
+          <div class='post-header'>
+            <div class='post-header-line-1'>
+              <b:with value='&quot;header-1&quot;' var='regionName'>
+                <b:include data='data:widgets.Blog.first.headerByline.items' name='bylineRegion'/>
+              </b:with>
+            </div>
+          </div>
+        </b:if>
+      </b:includable>
+      <b:includable id='homePageLink'>
+        <a class='home-link' expr:href='data:blog.homepageUrl'><data:messages.home/></a>
+      </b:includable>
+      <b:includable id='iframeComments' var='post'/>
+      <b:includable id='inlineAd' var='post'>
+        <b:if cond='!data:view.isPreview'>
+          <b:if cond='data:this.adCode or data:this.adClientId or data:blog.adsenseClientId'>
+            <div class='inline-ad'>
+              <b:if cond='data:this.adCode != &quot;&quot;'><data:this.adCode/><b:else/>
+                <b:include cond='data:this.adClientId or data:blog.adsenseClientId' name='defaultAdUnit'/>
+              </b:if>
+            </div>
+          </b:if>
+        <b:else/>
+          <div class='inline-ad'><div class='inline-ad-placeholder'><span><b:message name='messages.adsGoHere'/></span></div></div>
+        </b:if>
+      </b:includable>
+      <b:includable id='linkShare'>
+        <b:with value='&quot;window.prompt(\&quot;Copy to clipboard: Ctrl+C, Enter\&quot;, \&quot;&quot; + data:originalUrl + &quot;\&quot;); return false;&quot;' var='onclick'>
+          <b:include name='platformShare'/>
+        </b:with>
+      </b:includable>
+      <b:includable id='nextPageLink'>
+        <a class='blog-pager-older-link' expr:href='data:olderPageUrl' expr:id='data:widget.instanceId + &quot;_blog-pager-older-link&quot;' expr:title='data:messages.olderPosts'><data:messages.olderPosts/></a>
+      </b:includable>
+      <b:includable id='otherSharingButton'>
+        <span class='sharing-platform-button sharing-element-other' expr:aria-label='data:messages.shareToOtherApps.escaped' expr:data-url='data:originalUrl' expr:title='data:messages.shareToOtherApps.escaped' role='menuitem' tabindex='-1'>
+          <b:with value='{key: &quot;sharingOther&quot;}' var='platform'><b:include name='sharingPlatformIcon'/></b:with>
+          <span class='platform-sharing-text'><data:messages.shareOtherApps.escaped/></span>
+        </span>
+      </b:includable>
+      <b:includable id='platformShare'>
+        <a expr:class='&quot;goog-inline-block sharing-&quot; + data:platform.key' expr:data-url='data:originalUrl' expr:href='data:shareUrl + &quot;&amp;target=&quot; + data:platform.target' expr:onclick='data:onclick ? data:onclick : &quot;&quot;' expr:title='data:platform.shareMessage' target='_blank'>
+          <span class='share-button-link-text'><data:platform.shareMessage/></span>
+        </a>
+      </b:includable>
+      <b:includable id='post' var='post'>
+        <div class='post'>
+          <b:include data='post' name='postMeta'/>
+          <b:include data='post' name='postTitle'/>
+          <b:include name='headerByline'/>
+          <b:if cond='data:view.isSingleItem'><b:include data='post' name='postBody'/>
+          <b:else/><b:include data='post' name='postBodySnippet'/><b:include data='post' name='postJumpLink'/></b:if>
+          <b:include data='post' name='postFooter'/>
+        </div>
+      </b:includable>
+      <b:includable id='postAuthor'>
+        <span class='byline post-author vcard'>
+          <span class='post-author-label'><data:byline.label/></span>
+          <span class='fn'>
+            <b:if cond='data:post.author.profileUrl'>
+              <meta expr:content='data:post.author.profileUrl'/>
+              <a class='g-profile' expr:href='data:post.author.profileUrl' rel='author' title='author profile'><span><data:post.author.name/></span></a>
+            <b:else/><span><data:post.author.name/></span></b:if>
+          </span>
+        </span>
+      </b:includable>
+      <b:includable id='postBody' var='post'>
+        <div class='post-body entry-content float-container' expr:id='&quot;post-body-&quot; + data:post.id'><data:post.body/></div>
+      </b:includable>
+      <b:includable id='postBodySnippet' var='post'><b:include data='post' name='postBody'/></b:includable>
+      <b:includable id='postCommentsAndAd' var='post'>
+        <article class='post-single' itemscope='' itemtype='https://schema.org/Product'>
+          <h1 class='post-title' itemprop='name'><data:post.title/></h1>
+
+          <div class='post-meta'>
+            <b:if cond='data:post.author'>
+              <span><i aria-hidden='true' class='fas fa-user'/> <data:post.author.name/></span>
+            </b:if>
+            <b:if cond='data:post.date'>
+              <span><i aria-hidden='true' class='fas fa-calendar'/> <data:post.date/></span>
+            </b:if>
+            <b:if cond='data:post.labels'>
+              <span><i aria-hidden='true' class='fas fa-folder'/> 
+                <b:loop index='i' values='data:post.labels' var='label'>
+                  <b:if cond='data:i != 0'>, </b:if>
+                  <a expr:href='data:label.url' rel='tag'><data:label.name/></a>
+                </b:loop>
+              </span>
+            </b:if>
+          </div>
+
+          <!-- FIXED: Single column layout - Image first, then content -->
+          <div class='post-hero-grid'>
+            <!-- Product Image - Always show at top -->
+            <div class='post-hero-image'>
+              <b:if cond='data:post.firstImageUrl'>
+                <img decoding='async' expr:alt='data:post.title' expr:src='resizeImage(data:post.firstImageUrl, 800)' fetchpriority='high' itemprop='image' loading='eager'/>
+              <b:else/>
+                <img alt='Product image' decoding='async' fetchpriority='high' itemprop='image' loading='eager' src='https://placehold.co/800x450/F7F8FA/999?text=No+Image'/>
+              </b:if>
+            </div>
+            
+            <!-- Post Content -->
+            <div class='post-body-content' itemprop='description'><data:post.body/></div>
+          </div>
+
+          <!-- Sticky CTA for mobile -->
+          <div class='sticky-cta' id='stickyCta'>
+            <a class='btn btn-primary' expr:href='data:post.url' rel='nofollow sponsored noopener' target='_blank'>
+              <i aria-hidden='true' class='fab fa-amazon'/> Check Price on Amazon
+            </a>
+          </div>
+
+          <div class='comments-section'>
+            <b:include data='post' name='comments'/>
+          </div>
+        </article>
+
+        <b:if cond='data:post.labels'>
+          <div class='related-posts' id='relatedPosts'>
+            <h3><i aria-hidden='true' class='fas fa-thumbs-up'/> You May Also Like</h3>
+            <div class='related-grid' id='relatedGrid'/>
+          </div>
+          <script type='text/javascript'>
+          //<![CDATA[
+          (function() {
+            var labels = [<b:loop values='data:post.labels' var='label'>"<data:label.name/>",</b:loop>];
+            var currentUrl = "<data:post.url/>";
+            var feedUrl = "/feeds/posts/default/-/" + encodeURIComponent(labels[0]) + "?alt=json-in-script&amp;max-results=4&amp;callback=relatedCallback";
+            window.relatedCallback = function(data) {
+              var entries = data.feed.entry || [];
+              var html = '';
+              var count = 0;
+              for (var i = 0; i < entries.length && count < 3; i++) {
+                var entry = entries[i];
+                var link = '';
+                for (var j = 0; j < entry.link.length; j++) {
+                  if (entry.link[j].rel == 'alternate') { link = entry.link[j].href; break; }
+                }
+                if (link == currentUrl) continue;
+                var title = entry.title.$t;
+                var img = '';
+                if (entry.media$thumbnail) {
+                  img = entry.media$thumbnail.url.replace(/\/s72-c/, '/s400-c');
+                } else {
+                  img = 'https://placehold.co/400x300/F7F8FA/999?text=NestDeal';
+                }
+                html += '<a class="related-card" href="' + link + '"><img src="' + img + '" alt="' + title + '" loading="lazy" decoding="async"/>' + '<h4>' + title + '</h4></a>';
+                count++;
+              }
+              if (html) {
+                document.getElementById('relatedGrid').innerHTML = html;
+              } else {
+                document.getElementById('relatedPosts').style.display = 'none';
+              }
+            };
+            var script = document.createElement('script');
+            script.src = feedUrl;
+            document.head.appendChild(script);
+          })();
+          //]]>
+          </script>
+        </b:if>
+      </b:includable>
+      <b:includable id='postCommentsLink'>
+        <b:if cond='data:view.isMultipleItems'>
+          <span class='byline post-comment-link container'>
+            <b:include cond='data:post.commentSource != 1' name='commentsLink'/>
+          </span>
+        </b:if>
+      </b:includable>
+      <b:includable id='postFooter' var='post'>
+        <div class='post-footer'><b:include name='footerBylines'/><b:include data='post' name='postFooterAuthorProfile'/></div>
+      </b:includable>
+      <b:includable id='postFooterAuthorProfile' var='post'>
+        <b:if cond='data:post.author.aboutMe and data:view.isPost'>
+          <div class='author-profile'>
+            <b:if cond='data:post.author.authorPhoto.url'>
+              <img class='author-image' expr:src='data:post.author.authorPhoto.url' width='50px'/>
+              <div class='author-about'><b:include data='post' name='aboutPostAuthor'/></div>
+            <b:else/><b:include data='post' name='aboutPostAuthor'/></b:if>
+          </div>
+        </b:if>
+      </b:includable>
+      <b:includable id='postHeader' var='post'><b:include name='headerByline'/></b:includable>
+      <b:includable id='postJumpLink' var='post'>
+        <div class='jump-link flat-button'>
+          <a expr:href='data:post.url fragment &quot;more&quot;' expr:title='data:post.title'><b:eval expr='data:blog.jumpLinkMessage'/></a>
+        </div>
+      </b:includable>
+      <b:includable id='postLabels'>
+        <span class='byline post-labels'>
+          <span class='byline-label'><data:byline.label/></span>
+          <b:loop index='i' values='data:post.labels' var='label'>
+            <a expr:href='data:label.url' rel='tag'><data:label.name/></a>
+          </b:loop>
+        </span>
+      </b:includable>
+      <b:includable id='postLocation'>
+        <span class='byline post-location'>
+          <data:byline.label/>
+          <a expr:href='data:post.location.mapsUrl' target='_blank'><data:post.location.name/></a>
+        </span>
+      </b:includable>
+      <b:includable id='postMeta' var='post'><b:include data='post' name='postMetadataJSON'/></b:includable>
+      <b:includable id='postMetadataJSONImage'>
+        &quot;image&quot;: {
+          &quot;@type&quot;: &quot;ImageObject&quot;,
+          <b:if cond='data:post.featuredImage.isResizable'>
+            &quot;url&quot;: &quot;<b:eval expr='resizeImage(data:post.featuredImage, 1200, &quot;1200:630&quot;)'/>&quot;,
+            &quot;height&quot;: 630, &quot;width&quot;: 1200
+          <b:else/>
+            &quot;url&quot;: &quot;<data:post.firstImageUrl/>&quot;,
+            &quot;height&quot;: 630, &quot;width&quot;: 1200
+          </b:if>
+        },
+      </b:includable>
+      <b:includable id='postMetadataJSONPublisher'>
+        &quot;publisher&quot;: {
+          &quot;@type&quot;: &quot;Organization&quot;,
+          &quot;name&quot;: &quot;Blogger&quot;,
+          &quot;logo&quot;: {
+            &quot;@type&quot;: &quot;ImageObject&quot;,
+            &quot;url&quot;: &quot;https://blogger.googleusercontent.com/img/b/U2hvZWJveA/AVvXsEgfMvYAhAbdHksiBA24JKmb2Tav6K0GviwztID3Cq4VpV96HaJfy0viIu8z1SSw_G9n5FQHZWSRao61M3e58ImahqBtr7LiOUS6m_w59IvDYwjmMcbq3fKW4JSbacqkbxTo8B90dWp0Cese92xfLMPe_tg11g/h60/&quot;,
+            &quot;width&quot;: 206, &quot;height&quot;: 60
+          }
+        },
+      </b:includable>
+      <b:includable id='postPagination'>
+        <div class='blog-pager container' id='blog-pager'>
+          <b:include cond='data:newerPageUrl' name='previousPageLink'/>
+          <b:include cond='data:olderPageUrl' name='nextPageLink'/>
+          <b:include cond='data:view.url != data:blog.homepageUrl' name='homePageLink'/>
+        </div>
+      </b:includable>
+      <b:includable id='postReactions'/>
+      <b:includable id='postShareButtons'>
+        <div class='byline post-share-buttons goog-inline-block'>
+          <b:with value='data:sharingId ?: ((data:widget.instanceId ?: &quot;sharing&quot;) + &quot;-&quot; + (data:regionName ?: &quot;byline&quot;) + &quot;-&quot; + data:post.id)' var='sharingId'>
+            <b:include data='{ sharingId: data:sharingId, originalUrl: data:post.url, platforms: data:this.sharing.platforms, shareUrl: data:post.shareUrl, shareTitle: data:post.title }' name='sharingButtons'/>
+          </b:with>
+        </div>
+      </b:includable>
+      <b:includable id='postTimestamp'>
+        <span class='byline post-timestamp'>
+          <data:byline.label/>
+          <b:if cond='data:post.url'>
+            <meta expr:content='data:post.url.canonical'/>
+            <a class='timestamp-link' expr:href='data:post.url' rel='bookmark' title='permanent link'>
+              <time class='published' expr:datetime='data:post.date.iso8601' expr:title='data:post.date.iso8601'><data:post.date/></time>
+            </a>
+          </b:if>
+        </span>
+      </b:includable>
+      <b:includable id='postTitle' var='post'>
+        <a expr:name='data:post.id'/>
+        <b:if cond='data:post.title != &quot;&quot;'>
+          <h3 class='post-title entry-title'>
+            <b:if cond='data:post.link or (data:post.url and data:view.url != data:post.url)'>
+              <a expr:href='data:post.link ?: data:post.url'><data:post.title/></a>
+            <b:else/><data:post.title/></b:if>
+          </h3>
+        </b:if>
+      </b:includable>
+      <b:includable id='previousPageLink'>
+        <a class='blog-pager-newer-link' expr:href='data:newerPageUrl' expr:id='data:widget.instanceId + &quot;_blog-pager-newer-link&quot;' expr:title='data:messages.newerPosts'><data:messages.newerPosts/></a>
+      </b:includable>
+      <b:includable id='sharingButton'>
+        <span expr:aria-label='data:platform.shareMessage' expr:class='&quot;sharing-platform-button sharing-element-&quot; + data:platform.key' expr:data-href='data:shareUrl + &quot;&amp;target=&quot; + data:platform.target' expr:data-url='data:originalUrl' expr:title='data:platform.shareMessage' role='menuitem' tabindex='-1'>
+          <b:include name='sharingPlatformIcon'/>
+          <span class='platform-sharing-text'><data:platform.name/></span>
+        </span>
+      </b:includable>
+      <b:includable id='sharingButtonContent'>
+        <div class='flat-icon-button ripple'><b:include name='shareIcon'/></div>
+      </b:includable>
+      <b:includable id='sharingButtons'>
+        <div class='sharing' expr:aria-owns='&quot;sharing-popup-&quot; + data:sharingId' expr:data-title='data:shareTitle'>
+          <button class='sharing-button touch-icon-button' expr:aria-controls='&quot;sharing-popup-&quot; + data:sharingId' expr:aria-label='data:messages.share.escaped' expr:id='&quot;sharing-button-&quot; + data:sharingId' role='button'>
+            <b:include name='sharingButtonContent'/>
+          </button>
+          <b:include name='sharingButtonsMenu'/>
+        </div>
+      </b:includable>
+      <b:includable id='sharingButtonsMenu'>
+        <div class='share-buttons-container'>
+          <ul aria-hidden='true' class='share-buttons hidden' expr:aria-label='data:messages.share.escaped' expr:id='&quot;sharing-popup-&quot; + data:sharingId' role='menu'>
+            <b:loop values='(data:platforms ?: data:blog.sharing.platforms) filter (p =&gt; p.key not in {&quot;blogThis&quot;})' var='platform'>
+              <li><b:include name='sharingButton'/></li>
+            </b:loop>
+            <li aria-hidden='true' class='hidden'><b:include name='otherSharingButton'/></li>
+          </ul>
+        </div>
+      </b:includable>
+      <b:includable id='sharingPlatformIcon'>
+        <b:include data='{ iconClass: (&quot;touch-icon sharing-&quot; + data:platform.key) }' expr:name='data:platform.key + &quot;Icon&quot;'/>
+      </b:includable>
+      <b:includable id='threadedCommentForm' var='post'>
+        <div class='comment-form'>
+          <a name='comment-form'/>
+          <h4 id='comment-post-message'><data:messages.postAComment/></h4>
+          <b:if cond='data:this.messages.blogComment != &quot;&quot;'><p><data:this.messages.blogComment/></p></b:if>
+          <b:include data='post' name='commentFormIframeSrc'/>
+          <iframe allowtransparency='allowtransparency' class='blogger-iframe-colorize blogger-comment-from-post' expr:height='data:cmtIframeInitialHeight ?: &quot;90px&quot;' frameborder='0' id='comment-editor' name='comment-editor' src='' width='100%'/>
+          <data:post.cmtfpIframe/>
+          <script type='text/javascript'>BLOG_CMT_createIframe(&#39;<data:post.appRpcRelayPath/>&#39;);</script>
+        </div>
+      </b:includable>
+      <b:includable id='threadedCommentJs' var='post'>
+        <script async='async' expr:src='data:post.commentSrc' type='text/javascript'/>
+        <b:template-script inline='true' name='threaded_comments'/>
+        <script type='text/javascript'>
+          blogger.widgets.blog.initThreadedComments(<data:post.commentJso/>, <data:post.commentMsgs/>, <data:post.commentConfig/>);
+        </script>
+      </b:includable>
+      <b:includable id='threadedComments' var='post'>
+        <section class='comments threaded' expr:data-embed='data:post.embedCommentForm' expr:data-num-comments='data:post.numberOfComments' id='comments'>
+          <a name='comments'/>
+          <b:include name='commentsTitle'/>
+          <div class='comments-content'>
+            <b:if cond='data:post.embedCommentForm'><b:include data='post' name='threadedCommentJs'/></b:if>
+            <div id='comment-holder'><data:post.commentHtml/></div>
+          </div>
+          <p class='comment-footer'>
+            <b:if cond='data:post.allowNewComments'><b:include data='post' name='threadedCommentForm'/><b:else/><data:post.noNewCommentsText/></b:if>
+            <b:if cond='data:post.showManageComments'><b:include data='post' name='manageComments'/></b:if>
+          </p>
+          <b:if cond='data:showCmtPopup'>
+            <div id='comment-popup'><iframe allowtransparency='allowtransparency' frameborder='0' id='comment-actions' name='comment-actions' scrolling='no'/></div>
+          </b:if>
+        </section>
+      </b:includable>
+      <b:includable id='tooltipCss'>
+        <style>
+          .post-body a.b-tooltip-container { position: relative; display: inline-block; }
+          .post-body a.b-tooltip-container .b-tooltip { display: block !important; position: absolute; top: 100%; left: 50%; transform: translate(-20%, 1px); visibility: hidden; opacity: 0; z-index: 1; transition: opacity 0.2s ease-in-out; }
+          .post-body a.b-tooltip-container .b-tooltip iframe { width: 200px; height: 198px; max-width: none; border: none; border-radius: 20px; box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.2); }
+          @media (hover: hover) { .post-body a.b-tooltip-container:hover .b-tooltip { visibility: visible; opacity: 1; } }
+        </style>
+      </b:includable>
+    </b:widget>
+  </b:section>
+
+  <b:if cond='!data:view.isSingleItem'>
+    <div class='why-shop'>
+      <h3>Why Shop With NestDeal?</h3>
+      <div class='why-grid'>
+        <div class='why-item'><span aria-hidden='true' class='why-icon'><i class='fas fa-check-circle'/></span><div><strong>Handpicked Deals</strong></div></div>
+        <div class='why-item'><span aria-hidden='true' class='why-icon'><i class='fas fa-star'/></span><div><strong>Authentic Reviews</strong></div></div>
+        <div class='why-item'><span aria-hidden='true' class='why-icon'><i class='fas fa-clock'/></span><div><strong>Save Time &amp; Money</strong></div></div>
+      </div>
+    </div>
+  </b:if>
+</main>
+
+<!-- FOOTER -->
+<footer class='site-footer' role='contentinfo'>
+  <div class='footer-cols'>
+    <div>
+      <div style='display:flex;align-items:center;gap:8px;margin-bottom:12px;'>
+        <span style='background:var(--orange);border-radius:6px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;'><i aria-hidden='true' class='fas fa-shopping-bag'/></span>
+        <span style='font-size:20px;font-weight:900;color:#fff;letter-spacing:-.02em;'>Nest<span style='color:var(--orange);'>Deal</span></span>
+      </div>
+      <p style='font-size:12.5px;line-height:1.65;color:rgba(255,255,255,.55);max-width:220px;'>
+        We curate and review the best Amazon products so you can shop smarter. We are not a store &#8212; we just help you discover great deals.
+      </p>
+      <div style='margin-top:12px;display:flex;gap:12px;'>
+        <a aria-label='Amazon' href='https://www.amazon.com' rel='noopener noreferrer nofollow sponsored' style='color:var(--orange);font-size:20px;' target='_blank'><i aria-hidden='true' class='fab fa-amazon'/></a>
+      </div>
+    </div>
+    <div>
+      <h4>Categories</h4>
+      <ul>
+        <li><a href='/search/label/Home%20%26%20Kitchen'><i aria-hidden='true' class='fas fa-home' style='width:14px;'/> Home &amp; Kitchen</a></li>
+        <li><a href='/search/label/Beauty%20%26%20Health'><i aria-hidden='true' class='fas fa-spa' style='width:14px;'/> Beauty &amp; Health</a></li>
+        <li><a href='/search/label/Sports%20%26%20Outdoors'><i aria-hidden='true' class='fas fa-dumbbell' style='width:14px;'/> Sports &amp; Outdoors</a></li>
+        <li><a href='/search/label/Tech%20%26%20Gadgets'><i aria-hidden='true' class='fas fa-laptop' style='width:14px;'/> Tech &amp; Gadgets</a></li>
+        <li><a href='/search/label/Best%20Deals'><i aria-hidden='true' class='fas fa-tags' style='width:14px;'/> Best Deals</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>About</h4>
+      <ul>
+        <li><a href='/p/about.html'><i aria-hidden='true' class='fas fa-info-circle' style='width:14px;'/> About Us</a></li>
+        <li><a href='/p/how-it-works.html'><i aria-hidden='true' class='fas fa-question-circle' style='width:14px;'/> How It Works</a></li>
+        <li><a href='/p/contact.html'><i aria-hidden='true' class='fas fa-envelope' style='width:14px;'/> Contact Us</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Legal</h4>
+      <ul>
+        <li><a href='/p/affiliate-disclosure.html'><i aria-hidden='true' class='fas fa-handshake' style='width:14px;'/> Affiliate Disclosure</a></li>
+        <li><a href='/p/privacy-policy.html'><i aria-hidden='true' class='fas fa-shield-alt' style='width:14px;'/> Privacy Policy</a></li>
+        <li><a href='/p/disclaimer.html'><i aria-hidden='true' class='fas fa-exclamation-circle' style='width:14px;'/> Disclaimer</a></li>
+        <li><a href='/p/terms.html'><i aria-hidden='true' class='fas fa-file-alt' style='width:14px;'/> Terms of Use</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class='footer-disclaimer'>
+    <strong style='color:rgba(255,255,255,.7);'>Affiliate Disclosure:</strong>
+    NestDeal participates in the Amazon Services LLC Associates Program. When you click our links and make a purchase on Amazon, we may earn a small commission at no extra cost to you.
+    All product reviews are honest and independent. <a href='/p/affiliate-disclosure.html'>Learn more.</a>
+  </div>
+  <div class='footer-bottom'>
+    <p>&#169; <data:blog.pageTitle/> &#8212; All Rights Reserved. &amp;nbsp;|&amp;nbsp; <a href='/p/privacy-policy.html' style='color:rgba(255,255,255,.5);'>Privacy</a> &amp;nbsp;|&amp;nbsp; <a href='/p/disclaimer.html' style='color:rgba(255,255,255,.5);'>Disclaimer</a> &amp;nbsp;|&amp;nbsp; <a href='/p/affiliate-disclosure.html' style='color:rgba(255,255,255,.5);'>Affiliate Disclosure</a></p>
+  </div>
+</footer>
+
+<!-- Mobile Bottom Nav -->
+<nav aria-label='Mobile navigation' class='mob-bottom-nav'>
+  <div class='mob-bottom-inner'>
+    <a aria-label='Home' expr:href='data:blog.homepageUrl'><i aria-hidden='true' class='fas fa-home'/> Home</a>
+    <a aria-label='Categories' href='#cat-section'><i aria-hidden='true' class='fas fa-th-large'/> Categories</a>
+    <a aria-label='Deals' href='/search/label/Best%20Deals'><i aria-hidden='true' class='fas fa-tags'/> Deals</a>
+  </div>
+</nav>
+
+<!-- Back to Top Button -->
+<button aria-label='Back to top' class='back-to-top' id='backToTop' type='button'><i aria-hidden='true' class='fas fa-arrow-up'/></button>
+
+<!-- SCRIPTS -->
+<script type='text/javascript'>
+//<![CDATA[
+(function() {
+  'use strict';
+
+  /* ═══ MOBILE MENU ═══ */
+  var mobToggle = document.getElementById('mobMenuToggle');
+  var mobDrawer = document.getElementById('mobDrawer');
+  var mobOverlay = document.getElementById('mobOverlay');
+  var mobClose = document.getElementById('mobDrawerClose');
+
+  function openMenu() {
+    if (mobDrawer) { mobDrawer.classList.add('is-open'); mobDrawer.setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden'; }
+    if (mobOverlay) { mobOverlay.classList.add('is-open'); mobOverlay.setAttribute('aria-hidden', 'false'); }
+  }
+  function closeMenu() {
+    if (mobDrawer) { mobDrawer.classList.remove('is-open'); mobDrawer.setAttribute('aria-hidden', 'true'); document.body.style.overflow = ''; }
+    if (mobOverlay) { mobOverlay.classList.remove('is-open'); mobOverlay.setAttribute('aria-hidden', 'true'); }
+  }
+  if (mobToggle) mobToggle.addEventListener('click', openMenu);
+  if (mobOverlay) mobOverlay.addEventListener('click', closeMenu);
+  if (mobClose) mobClose.addEventListener('click', closeMenu);
+
+  // Close on swipe right
+  var touchStartX = 0;
+  if (mobDrawer) {
+    mobDrawer.addEventListener('touchstart', function(e){ touchStartX = e.changedTouches[0].screenX; }, {passive:true});
+    mobDrawer.addEventListener('touchend', function(e){ if (e.changedTouches[0].screenX - touchStartX > 60) closeMenu(); }, {passive:true});
+  }
+  // Close on Escape key
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeMenu(); });
+
+  /* ═══ BACK TO TOP ═══ */
+  var backToTop = document.getElementById('backToTop');
+  if (backToTop) {
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 300) backToTop.classList.add('is-visible');
+      else backToTop.classList.remove('is-visible');
+    }, {passive:true});
+    backToTop.addEventListener('click', function() { window.scrollTo({top:0, behavior:'smooth'}); });
+  }
+
+  /* ═══ INFINITE SCROLL ═══ */
+  // Only run on index pages (not single posts or static pages)
+  if (!document.querySelector('.single-item-page')) {
+    var grid = document.getElementById('nestdeal-products');
+    var feedActions = document.getElementById('feedActions');
+    var loadMoreBtn = document.getElementById('loadMoreBtn');
+    var infSpinner = document.getElementById('infSpinner');
+    var nextUrl = loadMoreBtn ? loadMoreBtn.href : null;
+    var isLoading = false;
+    var sentinel = document.createElement('div');
+    sentinel.id = 'inf-scroll-sentinel';
+    sentinel.style.cssText = 'height:2px;margin:0;';
+
+    if (grid && nextUrl) {
+      // Insert sentinel after grid
+      grid.parentNode.insertBefore(sentinel, grid.nextSibling);
+      // Move spinner after sentinel
+      if (infSpinner) grid.parentNode.insertBefore(infSpinner, sentinel.nextSibling);
+
+      function loadMore() {
+        if (isLoading || !nextUrl) return;
+        isLoading = true;
+        if (infSpinner) infSpinner.classList.add('is-visible');
+        if (feedActions) feedActions.style.display = 'none';
+
+        fetch(nextUrl)
+          .then(function(r) { return r.text(); })
+          .then(function(html) {
+            var parser = new DOMParser();
+            var doc = parser.parseFromString(html, 'text/html');
+            var newGrid = doc.getElementById('nestdeal-products');
+            var newCards = newGrid ? newGrid.querySelectorAll('.product-card') : [];
+
+            newCards.forEach(function(card) { grid.appendChild(card); });
+
+            var newBtn = doc.querySelector('#loadMoreBtn');
+            if (newBtn) {
+              nextUrl = newBtn.href;
+              if (feedActions) feedActions.style.display = 'flex';
+            } else {
+              nextUrl = null;
+              if (feedActions) feedActions.style.display = 'none';
+              if (infSpinner) {
+                infSpinner.innerHTML = '<p style="text-align:center;color:var(--ink-soft);padding:20px;font-size:14px;">No more deals to load.</p>';
+                infSpinner.classList.add('is-visible');
+              }
+            }
+
+            isLoading = false;
+            if (infSpinner && nextUrl) infSpinner.classList.remove('is-visible');
+
+            // Update URL for analytics
+            if (window.history && window.history.replaceState && nextUrl) {
+              window.history.replaceState({}, '', nextUrl);
+            }
+          })
+          .catch(function(err) {
+            console.error('Infinite scroll error:', err);
+            isLoading = false;
+            if (infSpinner) infSpinner.classList.remove('is-visible');
+            if (feedActions) feedActions.style.display = 'flex';
+          });
+      }
+
+      if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function(entries) {
+          if (entries[0].isIntersecting && !isLoading && nextUrl) loadMore();
+        }, { rootMargin: '400px' });
+        observer.observe(sentinel);
+      } else {
+        // Fallback: show button
+        if (feedActions) feedActions.style.display = 'flex';
+      }
+    }
+  }
+
+  /* ═══ STICKY CTA HIDE ON SCROLL DOWN (Single Post) ═══ */
+  var stickyCta = document.getElementById('stickyCta');
+  if (stickyCta) {
+    var lastScroll = 0;
+    window.addEventListener('scroll', function() {
+      var currentScroll = window.scrollY;
+      if (currentScroll > lastScroll && currentScroll > 200) {
+        stickyCta.style.transform = 'translateY(120%)';
+        stickyCta.style.transition = 'transform 0.3s ease';
+      } else {
+        stickyCta.style.transform = 'translateY(0)';
+      }
+      lastScroll = currentScroll;
+    }, {passive:true});
+  }
+
+  /* ═══ EXTRACT PRODUCT IMAGE FROM POST BODY ═══ */
+  var heroImage = document.querySelector('.post-hero-image img');
+  if (heroImage && heroImage.src && heroImage.src.indexOf('placehold.co') !== -1) {
+    var postBody = document.querySelector('.post-body-content');
+    if (postBody) {
+      var allImages = postBody.querySelectorAll('img');
+      for (var i = 0; i < allImages.length; i++) {
+        var img = allImages[i];
+        var src = img.getAttribute('src') || '';
+        if (src && src.indexOf('placehold.co') === -1 && src.indexOf('blogblog.com') === -1 && src.indexOf('blogger.googleusercontent.com') === -1) {
+          heroImage.src = src;
+          heroImage.alt = img.alt || heroImage.alt;
+          img.style.display = 'none';
+          break;
+        }
+      }
+    }
+  }
+
+})();
+//]]>
+</script>
+
+</body>
+</html>

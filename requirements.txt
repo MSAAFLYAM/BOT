@@ -1,0 +1,44 @@
+# Telegram Bot
+pyTelegramBotAPI>=4.33.0
+
+# Web Framework
+flask>=3.1.1
+
+# HTTP & Scraping
+requests>=2.32.4
+urllib3>=2.6.0
+beautifulsoup4>=4.14.3
+lxml>=5.4.0
+curl-cffi>=0.13.0
+cloudscraper>=1.2.71
+trafilatura>=2.0.0
+newspaper4k>=0.9.3.1
+
+# Google APIs
+gspread>=6.2.1
+google-auth>=2.40.3
+google-auth-oauthlib>=1.2.2
+google-auth-httplib2>=0.2.0
+google-api-python-client>=2.169.0
+oauth2client>=4.1.3
+
+# Images
+Pillow>=11.2.1
+qrcode[pil]>=8.2
+
+# Browser Automation
+playwright>=1.52.0
+playwright-stealth>=1.0.6
+
+# Environment Variables
+python-dotenv>=1.1.0
+
+# Monitoring
+sentry-sdk>=2.29.1
+
+# Pinterest
+py3-pinterest>=1.1.0
+setuptools>=80.9.0
+wheel>=0.45.1
+gunicorn
+httpx

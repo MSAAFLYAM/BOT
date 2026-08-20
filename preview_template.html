@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NestDeal - Premium Article Template Preview</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #f7f8fa; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #172033; line-height: 1.7; }
+  .container { max-width: 780px; margin: 0 auto; padding: 16px; }
+  
+  /* Hero */
+  .hero { background: #fff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 24px; margin-bottom: 20px; }
+  .hero h1 { font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 800; color: #172033; margin: 0 0 12px; line-height: 1.3; }
+  .rating { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .stars { color: #f59e0b; }
+  .tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .tag { display: inline-flex; align-items: center; gap: 4px; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; color: #374151; }
+  .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+  .product-image { background: #f9fafb; border-radius: 12px; padding: 16px; text-align: center; }
+  .product-image img { width: 100%; max-height: 400px; object-fit: contain; }
+  
+  /* Quick Take */
+  .quick-take { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; }
+  .quick-take-label { font-size: 0.75rem; font-weight: 700; color: #ff9900; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .quick-take p { color: #374151; font-size: 0.95rem; line-height: 1.7; margin: 0 0 16px; }
+  .quick-take-info { border-top: 1px solid #e5e7eb; padding-top: 12px; margin-bottom: 16px; }
+  .quick-take-row { font-size: 0.85rem; color: #6b7280; margin-bottom: 4px; }
+  .quick-take-row strong { color: #172033; }
+  
+  /* CTA Button */
+  .cta-button { display: block; text-align: center; background: #ff9900; color: #fff; text-decoration: none; padding: 14px 24px; border-radius: 8px; font-weight: 700; font-size: 1rem; transition: background 0.2s; }
+  .cta-button:hover { background: #e68a00; }
+  
+  /* Sections */
+  .section { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin: 24px 0; }
+  .section h2 { font-size: 1.1rem; font-weight: 700; color: #172033; margin: 0 0 16px; }
+  
+  /* Features Grid */
+  .features-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 24px 0; }
+  .feature-card { background: #f9fafb; border-radius: 12px; padding: 16px; text-align: center; }
+  .feature-icon { font-size: 1.5rem; margin-bottom: 8px; }
+  .feature-title { font-weight: 600; color: #172033; margin-bottom: 4px; font-size: 0.95rem; }
+  .feature-desc { color: #6b7280; font-size: 0.85rem; }
+  
+  /* Pros & Cons */
+  .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
+  .pros { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 20px; }
+  .cons { background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px; padding: 20px; }
+  .pros h3, .cons h3 { font-size: 0.95rem; font-weight: 700; margin: 0 0 12px; display: flex; align-items: center; gap: 6px; }
+  .pros h3 { color: #166534; }
+  .cons h3 { color: #991b1b; }
+  .pros li, .cons li { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; font-size: 0.95rem; }
+  .pros li span:first-child { color: #059669; }
+  .cons li span:first-child { color: #dc2626; }
+  
+  /* Is It Right For You */
+  .is-right { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .yes-list, .no-list { list-style: none; padding: 0; margin: 0; }
+  .yes-label { font-weight: 600; color: #059669; margin-bottom: 10px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; }
+  .no-label { font-weight: 600; color: #dc2626; margin-bottom: 10px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; }
+  
+  /* Specs Table */
+  .specs-table { width: 100%; border-collapse: collapse; }
+  .specs-table td { padding: 10px 16px; border-bottom: 1px solid #f3f4f6; font-size: 0.9rem; }
+  .specs-table td:first-child { font-weight: 600; color: #374151; background: #f9fafb; width: 40%; }
+  .specs-table td:last-child { color: #6b7280; }
+  
+  /* FAQ */
+  details { margin-bottom: 8px; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; }
+  summary { padding: 14px 16px; cursor: pointer; font-weight: 600; color: #172033; font-size: 0.95rem; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+  summary::-webkit-details-marker { display: none; }
+  details div { padding: 0 16px 14px; color: #6b7280; font-size: 0.95rem; line-height: 1.7; }
+  
+  /* Final CTA */
+  .final-cta { background: #172033; border-radius: 16px; padding: 28px 24px; margin: 24px 0; text-align: center; }
+  .final-cta h2 { color: #fff; margin: 0 0 8px; }
+  .final-cta p { color: #d1d5db; margin: 0 0 16px; font-size: 0.95rem; }
+  
+  /* Footer */
+  footer { padding: 16px 0; margin: 0; border-top: 1px solid #e5e7eb; }
+  footer p { font-size: 0.75rem; color: #9ca3af; margin: 0; line-height: 1.6; }
+  
+  /* Sticky CTA */
+  .sticky-cta { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: #172033; padding: 10px 16px; z-index: 9999; box-shadow: 0 -2px 8px rgba(0,0,0,0.15); }
+  .sticky-inner { display: flex; align-items: center; justify-content: space-between; max-width: 780px; margin: 0 auto; }
+  .sticky-info { flex: 1; overflow: hidden; }
+  .sticky-title { color: #fff; font-size: 0.8rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sticky-price { color: #ff9900; font-weight: 700; font-size: 0.9rem; }
+  .sticky-btn { background: #ff9900; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; flex-shrink: 0; margin-left: 12px; }
+  
+  @media (max-width: 600px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: repeat(2, 1fr); }
+    .pros-cons, .is-right { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  
+  <!-- Breadcrumbs -->
+  <nav style="padding:12px 0;margin-bottom:12px;font-size:0.8rem;color:#9ca3af;">
+    <span style="color:#6b7280;">Home</span>
+    <span style="margin:0 6px;">&#8250;</span>
+    <span style="color:#6b7280;">Sports & Fitness</span>
+    <span style="margin:0 6px;">&#8250;</span>
+    <span style="color:#172033;font-weight:500;">4-Tier Dumbbell Rack</span>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>4-Tier Dumbbell Rack Weight Rack for Home Gym</h1>
+    
+    <div class="rating">
+      <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
+      <span style="font-weight:600;color:#172033;">4.7</span>
+      <span style="color:#6b7280;font-size:0.9rem;">(1,256 reviews)</span>
+    </div>
+    
+    <div class="tags">
+      <span class="tag">&#10003; Space-Saving</span>
+      <span class="tag">&#10003; A-Frame Design</span>
+      <span class="tag">&#10003; Strong & Stable</span>
+    </div>
+    
+    <div class="hero-grid">
+      <div class="product-image">
+        <img src="https://m.media-amazon.com/images/I/61Y75oFmKpL._AC_SL1500_.jpg" alt="4-Tier Dumbbell Rack">
+      </div>
+      
+      <div class="quick-take">
+        <p>A compact and practical solution for keeping dumbbells organized without taking up much floor space. Perfect for any home gym.</p>
+        
+        <div class="quick-take-info">
+          <div class="quick-take-row"><strong>Best for:</strong> Small home gyms</div>
+          <div class="quick-take-row"><strong>Standout:</strong> Space-saving 4-tier design</div>
+          <div class="quick-take-row"><strong>Keep in mind:</strong> Dumbbells not included</div>
+        </div>
+        
+        <div style="margin-bottom:12px;">
+          <span style="font-size:1.4rem;font-weight:800;color:#172033;">$49.99</span>
+          <span style="font-size:0.95rem;color:#9ca3af;text-decoration:line-through;margin-left:8px;">$79.99</span>
+          <span style="background:#dc2626;color:#fff;padding:3px 10px;border-radius:4px;font-size:0.8rem;font-weight:700;margin-left:8px;">SAVE 37%</span>
+        </div>
+        
+        <a href="#" class="cta-button">Check Price on Amazon &#8594;</a>
+        <p style="font-size:0.7rem;color:#9ca3af;text-align:center;margin:8px 0 0;">As an Amazon Associate, I earn from qualifying purchases.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why It Stands Out -->
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">&#127947;</div>
+      <div class="feature-title">4-Tier Storage</div>
+      <div class="feature-desc">Organize multiple weights easily</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#128230;</div>
+      <div class="feature-title">Space Saving</div>
+      <div class="feature-desc">Compact design fits small spaces</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#127968;</div>
+      <div class="feature-title">Easy Access</div>
+      <div class="feature-desc">A-frame structure for quick access</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#128737;</div>
+      <div class="feature-title">Durable Build</div>
+      <div class="feature-desc">Powder-coated metal for long-lasting use</div>
+    </div>
+  </div>
+
+  <!-- Pros & Cons -->
+  <div class="pros-cons">
+    <div class="pros">
+      <h3><span style="background:#059669;color:#fff;width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:0.75rem;">&#10003;</span> Pros</h3>
+      <ul style="list-style:none;padding:0;margin:0;">
+        <li><span>&#10003;</span><span>Compact and space-saving design</span></li>
+        <li><span>&#10003;</span><span>Easy access to all dumbbells</span></li>
+        <li><span>&#10003;</span><span>Sturdy and stable A-frame structure</span></li>
+        <li><span>&#10003;</span><span>Durable powder-coated finish</span></li>
+        <li><span>&#10003;</span><span>Great for home gyms</span></li>
+      </ul>
+    </div>
+    <div class="cons">
+      <h3><span style="background:#dc2626;color:#fff;width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:0.75rem;">&#10007;</span> Cons</h3>
+      <ul style="list-style:none;padding:0;margin:0;">
+        <li><span>&#10007;</span><span>Dumbbells are not included</span></li>
+        <li><span>&#10007;</span><span>Best for lighter to medium weight sets</span></li>
+        <li><span>&#10007;</span><span>Not ideal for commercial gyms</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Is It Right For You -->
+  <section class="section">
+    <h2>Is This Product Right for You?</h2>
+    <div class="is-right">
+      <div>
+        <div class="yes-label">Yes, if you...</div>
+        <ul class="yes-list">
+          <li style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;"><span style="color:#059669;">&#10003;</span><span>Have a small home gym</span></li>
+          <li style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;"><span style="color:#059669;">&#10003;</span><span>Want to keep weights organized</span></li>
+          <li style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;"><span style="color:#059669;">&#10003;</span><span>Prefer a compact storage solution</span></li>
+          <li style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;"><span style="color:#059669;">&#10003;</span><span>Use lighter to medium dumbbells</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="no-label">Look elsewhere, if you...</div>
+        <ul class="no-list">
+          <li style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;"><span style="color:#dc2626;">&#10007;</span><span>Need to store very heavy dumbbells</span></li>
+          <li style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;"><span style="color:#dc2626;">&#10007;</span><span>Want a full dumbbell set included</span></li>
+          <li style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;"><span style="color:#dc2626;">&#10007;</span><span>Need a large commercial rack</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Specifications -->
+  <section class="section">
+    <h2>Product Specifications</h2>
+    <table class="specs-table">
+      <tr><td>Product Type</td><td>Dumbbell Rack</td></tr>
+      <tr><td>Design</td><td>4-Tier A-Frame</td></tr>
+      <tr><td>Material</td><td>Metal</td></tr>
+      <tr><td>Color</td><td>Black</td></tr>
+      <tr><td>Capacity</td><td>Up to 70 kg / 154 lb</td></tr>
+      <tr><td>Dumbbells Included</td><td>No</td></tr>
+    </table>
+    <p style="font-size:0.8rem;color:#9ca3af;margin:12px 0 0;font-style:italic;">*Specifications may vary. Check Amazon for the latest details.</p>
+  </section>
+
+  <!-- What You Should Know -->
+  <section class="section">
+    <h2>What You Should Know</h2>
+    <div style="display:flex;gap:12px;margin-bottom:12px;">
+      <span style="background:#ff9900;color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;flex-shrink:0;">1</span>
+      <div>
+        <div style="font-weight:600;color:#172033;margin-bottom:2px;">Check your dumbbell size</div>
+        <div style="color:#6b7280;font-size:0.9rem;">Make sure your dumbbells fit well on each tier.</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;margin-bottom:12px;">
+      <span style="background:#ff9900;color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;flex-shrink:0;">2</span>
+      <div>
+        <div style="font-weight:600;color:#172033;margin-bottom:2px;">Check the weight capacity</div>
+        <div style="color:#6b7280;font-size:0.9rem;">Ensure your total weight is within the rack's limit.</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;">
+      <span style="background:#ff9900;color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;flex-shrink:0;">3</span>
+      <div>
+        <div style="font-weight:600;color:#172033;margin-bottom:2px;">Rack only, dumbbells not included</div>
+        <div style="color:#6b7280;font-size:0.9rem;">Dumbbells shown in images are not included.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section">
+    <h2>Frequently Asked Questions</h2>
+    <details>
+      <summary>Are dumbbells included? <span style="color:#9ca3af;font-size:1.2rem;">+</span></summary>
+      <div>No. The product is a storage rack only.</div>
+    </details>
+    <details>
+      <summary>Is it suitable for a small home gym? <span style="color:#9ca3af;font-size:1.2rem;">+</span></summary>
+      <div>Yes. Its compact A-frame design is intended to save floor space.</div>
+    </details>
+    <details>
+      <summary>What is the weight capacity? <span style="color:#9ca3af;font-size:1.2rem;">+</span></summary>
+      <div>The listed 4-tier version is specified at up to 70 kg / 154 lb, but verify the current Amazon listing before purchasing.</div>
+    </details>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="final-cta">
+    <h2>Ready to Organize Your Home Gym?</h2>
+    <p>Check the latest price and availability on Amazon.</p>
+    <a href="#" class="cta-button" style="display:inline-block;">Check Price on Amazon &#8594;</a>
+    <p style="font-size:0.75rem;color:#9ca3af;margin:12px 0 0;">Prices and availability may change. Please check Amazon for the latest information.</p>
+  </section>
+
+  <!-- Disclosure -->
+  <footer>
+    <p><strong>Disclosure:</strong> As an Amazon Associate, I earn from qualifying purchases. Product prices and availability are accurate as of the date/time indicated and are subject to change.</p>
+  </footer>
+
+</div>
+
+<!-- Sticky Mobile CTA -->
+<div class="sticky-cta" id="sticky-cta">
+  <div class="sticky-inner">
+    <div class="sticky-info">
+      <div class="sticky-title">4-Tier Dumbbell Rack Weight Rack</div>
+      <div class="sticky-price">$49.99</div>
+    </div>
+    <a href="#" class="sticky-btn">Check Amazon &#8594;</a>
+  </div>
+</div>
+
+<script>
+// Show sticky CTA on mobile after scrolling
+window.addEventListener('scroll', function() {
+  var sticky = document.getElementById('sticky-cta');
+  if (window.innerWidth <= 768) {
+    if (window.pageYOffset > 300) {
+      sticky.style.display = 'block';
+    } else {
+      sticky.style.display = 'none';
+    }
+  } else {
+    sticky.style.display = 'none';
+  }
+});
+</script>
+</body>
+</html>

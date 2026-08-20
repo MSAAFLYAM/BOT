@@ -1,0 +1,38 @@
+# ============================================================
+# requirements_phase2.txt — Phase 2 (Scraping)
+# ============================================================
+# Install: pip install -r requirements_phase2.txt
+groq>=0.11.0
+google-generativeai>=0.8.0
+# ── Phase 1 (already installed, listed for completeness) ──
+fastapi>=0.111.0
+uvicorn[standard]>=0.29.0
+sqlalchemy[asyncio]>=2.0.30
+asyncpg>=0.29.0
+alembic>=1.13.0
+redis[hiredis]>=5.0.0
+pydantic-settings>=2.2.0
+pydantic>=2.7.0
+celery[redis]>=5.4.0
+httpx[http2]>=0.27.0
+
+# ── Phase 2: Fetch layers ──────────────────────────────────
+# curl-cffi: TLS fingerprint impersonation (Cloudflare bypass)
+curl-cffi>=0.7.3
+
+# aiohttp: async HTTP client (alternative TLS profile)
+aiohttp>=3.9.5
+
+# ── Phase 2: Browser automation ───────────────────────────
+# Playwright: JS rendering + stealth
+playwright>=1.44.0
+# NOTE: after install, run: playwright install chromium --with-deps
+
+# ── Phase 2: HTML parsing ──────────────────────────────────
+# BeautifulSoup4 + lxml: fast HTML parser
+beautifulsoup4>=4.12.3
+lxml>=5.2.2
+
+# ── Utilities ─────────────────────────────────────────────
+# Already in Phase 1 but confirming versions
+python-dotenv>=1.0.1
