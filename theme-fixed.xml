@@ -997,7 +997,7 @@ h1, h2, h3, h4 {
 </b:if>
 
 <!-- BREADCRUMB (Single Item Only) -->
-<b:if cond='data:view.isSingleItem'>
+<b:if cond='data:view.isSingleItem and !data:view.isPage'>
 <nav aria-label='Breadcrumb' class='breadcrumb container'>
   <ol itemscope='' itemtype='https://schema.org/BreadcrumbList'>
     <li itemprop='itemListElement' itemscope='' itemtype='https://schema.org/ListItem'>
@@ -1346,6 +1346,7 @@ h1, h2, h3, h4 {
         <article class='post-single' itemscope='' itemtype='https://schema.org/Product'>
           <h1 class='post-title' itemprop='name'><data:post.title/></h1>
 
+          <b:if cond='!data:view.isPage'>
           <div class='post-meta'>
             <b:if cond='data:post.author'>
               <span><i aria-hidden='true' class='fas fa-user'/> <data:post.author.name/></span>
@@ -1362,6 +1363,7 @@ h1, h2, h3, h4 {
               </span>
             </b:if>
           </div>
+          </b:if>
 
           <!-- FIXED: Single column layout - Image first, then content -->
           <div class='post-hero-grid'>
@@ -1378,19 +1380,21 @@ h1, h2, h3, h4 {
             <div class='post-body-content' itemprop='description'><data:post.body/></div>
           </div>
 
+          <b:if cond='!data:view.isPage'>
           <!-- Sticky CTA for mobile -->
           <div class='sticky-cta' id='stickyCta'>
             <a class='btn btn-primary' expr:href='data:post.url' rel='nofollow sponsored noopener' target='_blank'>
               <i aria-hidden='true' class='fab fa-amazon'/> Check Price on Amazon
             </a>
           </div>
+          </b:if>
 
           <div class='comments-section'>
             <b:include data='post' name='comments'/>
           </div>
         </article>
 
-        <b:if cond='data:post.labels'>
+        <b:if cond='data:post.labels and !data:view.isPage'>
           <div class='related-posts' id='relatedPosts'>
             <h3><i aria-hidden='true' class='fas fa-thumbs-up'/> You May Also Like</h3>
             <div class='related-grid' id='relatedGrid'/>
@@ -1663,20 +1667,20 @@ h1, h2, h3, h4 {
     <div>
       <h4>Legal</h4>
       <ul>
-        <li><a href='/p/affiliate-disclosure.html'><i aria-hidden='true' class='fas fa-handshake' style='width:14px;'/> Affiliate Disclosure</a></li>
-        <li><a href='/p/privacy-policy.html'><i aria-hidden='true' class='fas fa-shield-alt' style='width:14px;'/> Privacy Policy</a></li>
-        <li><a href='/p/disclaimer.html'><i aria-hidden='true' class='fas fa-exclamation-circle' style='width:14px;'/> Disclaimer</a></li>
-        <li><a href='/p/terms.html'><i aria-hidden='true' class='fas fa-file-alt' style='width:14px;'/> Terms of Use</a></li>
+        <li><a href='/p/affiliate-disclosure_0434830275.html'><i aria-hidden='true' class='fas fa-handshake' style='width:14px;'/> Affiliate Disclosure</a></li>
+        <li><a href='/p/privacy-policy_01937315203.html'><i aria-hidden='true' class='fas fa-shield-alt' style='width:14px;'/> Privacy Policy</a></li>
+        <li><a href='/p/disclaimer_0696215407.html'><i aria-hidden='true' class='fas fa-exclamation-circle' style='width:14px;'/> Disclaimer</a></li>
+        <li><a href='/p/terms-of-use_0804674462.html'><i aria-hidden='true' class='fas fa-file-alt' style='width:14px;'/> Terms of Use</a></li>
       </ul>
     </div>
   </div>
   <div class='footer-disclaimer'>
     <strong style='color:rgba(255,255,255,.7);'>Affiliate Disclosure:</strong>
     NestDeal participates in the Amazon Services LLC Associates Program. When you click our links and make a purchase on Amazon, we may earn a small commission at no extra cost to you.
-    All product reviews are honest and independent. <a href='/p/affiliate-disclosure.html'>Learn more.</a>
+    All product reviews are honest and independent. <a href='/p/affiliate-disclosure_0434830275.html'>Learn more.</a>
   </div>
   <div class='footer-bottom'>
-    <p>&#169; <data:blog.pageTitle/> &#8212; All Rights Reserved. &amp;nbsp;|&amp;nbsp; <a href='/p/privacy-policy.html' style='color:rgba(255,255,255,.5);'>Privacy</a> &amp;nbsp;|&amp;nbsp; <a href='/p/disclaimer.html' style='color:rgba(255,255,255,.5);'>Disclaimer</a> &amp;nbsp;|&amp;nbsp; <a href='/p/affiliate-disclosure.html' style='color:rgba(255,255,255,.5);'>Affiliate Disclosure</a></p>
+    <p>&#169; <data:blog.pageTitle/> &#8212; All Rights Reserved. &amp;nbsp;|&amp;nbsp; <a href='/p/privacy-policy_01937315203.html' style='color:rgba(255,255,255,.5);'>Privacy</a> &amp;nbsp;|&amp;nbsp; <a href='/p/disclaimer_0696215407.html' style='color:rgba(255,255,255,.5);'>Disclaimer</a> &amp;nbsp;|&amp;nbsp; <a href='/p/affiliate-disclosure_0434830275.html' style='color:rgba(255,255,255,.5);'>Affiliate Disclosure</a></p>
   </div>
 </footer>
 
