@@ -429,24 +429,20 @@ h1, h2, h3, h4 {
 .post-meta span { display: flex; align-items: center; gap: 6px; }
 
 .post-hero-image { 
-  border-radius: 12px; 
   overflow: hidden; 
-  background: #f9fafb; 
   width: 100%;
-  max-width: 420px;
-  max-height: 350px;
   display: flex; 
   align-items: center; 
   justify-content: center; 
   margin: 0 auto 24px;
   padding: 0;
-  border: 1px solid #C5E4EF;
 }
+.page-view .post-hero-image { display: none; }
 .post-hero-image img { 
-  width: auto; 
+  width: 100%; 
   height: auto; 
-  max-width: 100%; 
-  max-height: 340px;
+  display: block;
+}
   object-fit: contain; 
   background: transparent; 
 }
@@ -811,12 +807,13 @@ h1, h2, h3, h4 {
   .post-hero-image { 
     border-radius: 10px; 
     max-width: 100%;
-    max-height: 280px;
     margin-bottom: 16px;
     padding: 0;
   }
+  .page-view .post-hero-image { display: none; }
   .post-hero-image img {
-    max-height: 270px;
+    width: 100%;
+    height: auto;
   }
   .post-body-content { overflow-x: hidden; word-break: break-word; font-size: 15px; }
   .post-body-content * { max-width: 100% !important; }
@@ -996,8 +993,8 @@ h1, h2, h3, h4 {
 </section>
 </b:if>
 
-<!-- BREADCRUMB (Single Item Only) -->
-<b:if cond='data:view.isSingleItem and !data:view.isPage'>
+<!-- BREADCRUMB -->
+<b:if cond='data:view.isPage'>
 <nav aria-label='Breadcrumb' class='breadcrumb container'>
   <ol itemscope='' itemtype='https://schema.org/BreadcrumbList'>
     <li itemprop='itemListElement' itemscope='' itemtype='https://schema.org/ListItem'>
@@ -1013,7 +1010,7 @@ h1, h2, h3, h4 {
 </b:if>
 
 <!-- MAIN CONTENT -->
-<main expr:class='&quot;container&quot; + (data:view.isSingleItem ? &quot; single-item-page&quot; : &quot;&quot;)' id='home-deals' role='main'>
+<main expr:class='&quot;container&quot; + (data:view.isSingleItem ? &quot; single-item-page&quot; : &quot;&quot;) + (data:view.isPage ? &quot; page-view&quot; : &quot;&quot;)' id='home-deals' role='main'>
   <b:section class='main' id='main' showaddelement='yes'>
     <b:widget id='Blog1' locked='false' title='Blog Posts' type='Blog' version='2' visible='true'>
       <b:widget-settings>
