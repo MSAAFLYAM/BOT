@@ -292,231 +292,328 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
         price_display = "Check on Amazon"
 
     # ── SVG Icons ──
-    svg_check = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>'
-    svg_x = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>'
-    svg_info = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>'
-    svg_star = '<svg width="16" height="16" viewBox="0 0 24 24" fill="#FF9900" stroke="#FF9900" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>'
+    svg_check   = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>'
+    svg_x       = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>'
+    svg_info    = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>'
+    svg_star    = '<svg viewBox="0 0 24 24"><path d="M12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'
+    svg_cart    = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>'
+    svg_shield  = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>'
+    svg_clock   = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>'
 
     # ── Build Pros & Cons ──
     pros_list = ai.get("pros", [])
     cons_list = ai.get("cons", [])
-    
-    pros_html = "".join([f'<li class="wr-pc-item"><span class="wr-pc-icon">{svg_check}</span><span>{p}</span></li>' for p in pros_list if p])
-    cons_html = "".join([f'<li class="wr-pc-item"><span class="wr-pc-icon">{svg_x}</span><span>{c}</span></li>' for c in cons_list if c])
-    
+
+    pros_html = "".join([f'<li class="rvw-pc-item"><span class="rvw-pc-icon pros">{svg_check}</span><span>{p}</span></li>' for p in pros_list if p])
+    cons_html = "".join([f'<li class="rvw-pc-item"><span class="rvw-pc-icon cons">{svg_x}</span><span>{c}</span></li>' for c in cons_list if c])
+
     if not cons_html:
-        cons_html = f'<li class="wr-pc-item"><span class="wr-pc-icon">{svg_info}</span><span>No major drawbacks identified for this price range.</span></li>'
+        cons_html = f'<li class="rvw-pc-item"><span class="rvw-pc-icon cons">{svg_info}</span><span>No major drawbacks identified for this price range.</span></li>'
 
     # ── Build Specs Table ──
     specs = ai.get("specs", {})
     specs_rows = ""
     for k, v in specs.items():
         if v and str(v).strip() and v != "N/A":
-            specs_rows += f'<tr><td class="wr-spec-label">{k}</td><td class="wr-spec-value">{v}</td></tr>'
+            specs_rows += f'<tr><td class="rvw-spec-label">{k}</td><td class="rvw-spec-value">{v}</td></tr>'
 
-    # ── Build FAQ ──
+    # ── Build FAQ (accordion) ──
     faq_items = ai.get("faq", [])
     faq_html = ""
-    for faq in faq_items:
+    for i, faq in enumerate(faq_items):
         q, a = faq.get("q", ""), faq.get("a", "")
         if q and a:
-            faq_html += f'<div class="wr-faq-card"><h4 class="wr-faq-q">{q}</h4><p class="wr-faq-a">{a}</p></div>'
+            faq_html += f'<details class="rvw-faq-card"{" open" if i == 0 else ""}><summary class="rvw-faq-q">{q}</summary><p class="rvw-faq-a">{a}</p></details>'
 
     # ── Build "Who is this for" ──
     best_for = ai.get("best_for", [])
-    best_for_html = "".join([f'<li>{svg_check} {item}</li>' for item in best_for if item])
+    best_for_html = "".join([f'<li><span class="rvw-mini-icon">{svg_check}</span>{item}</li>' for item in best_for if item])
 
     # ── Images Setup ──
     main_img = all_images[0] if all_images else ""
     thumbs_html = ""
     if len(all_images) > 1:
-        for img in all_images[1:4]:
-            thumbs_html += f'<img src="{img}" class="wr-thumb" alt="Gallery image" loading="lazy">'
+        for img in all_images[1:5]:
+            thumbs_html += f'<img src="{img}" class="rvw-thumb" alt="Gallery image" loading="lazy">'
+
+    # ── Star rating widget (visual, out of 5) ──
+    def _stars(value: float) -> str:
+        out = ""
+        for i in range(1, 6):
+            fill = "full" if value >= i else ("half" if value >= i - 0.5 else "empty")
+            out += f'<span class="rvw-star {fill}">{svg_star}</span>'
+        return out
+
+    star_rating_html = _stars(rating if rating > 0 else (editor_score / 2))
+
+    # ── Discount badge ──
+    discount_html = ""
+    if has_price and orig_price:
+        try:
+            op = float(re.sub(r"[^\d.]", "", orig_price))
+            cp2 = float(re.sub(r"[^\d.]", "", price))
+            if op > cp2 > 0:
+                pct = round((1 - cp2 / op) * 100)
+                if pct > 0:
+                    discount_html = f'<span class="rvw-discount-badge">-{pct}%</span>'
+        except Exception:
+            discount_html = ""
+
+    orig_price_html = f'<span class="rvw-price-original">{orig_price}</span>' if (orig_price and discount_html) else ""
 
     # ── Current Date for Trust Bar ──
     current_month_year = datetime.now().strftime("%B %Y")
 
     # ═══════════════════════════════════════════════════════════════════════════════
-    # HTML & CSS ASSEMBLY
+    # HTML & CSS ASSEMBLY — "EDITORIAL PICK" TEMPLATE (Amazon-affiliate review standard)
     # ═══════════════════════════════════════════════════════════════════════════════
-    
-    html = f'''
+
+    html = f"""
 <style>
-/* ═══ WORLD-CLASS REVIEW TEMPLATE (WIRECUTTER/RTINGS STYLE) ═══ */
-.wr-review-wrapper {{
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+.rvw-wrapper {{
+    --rvw-ink: #17181c;
+    --rvw-body: #40434c;
+    --rvw-muted: #767a86;
+    --rvw-border: #e6e7eb;
+    --rvw-surface: #f7f7f9;
+    --rvw-card: #ffffff;
+    --rvw-accent: #e8590c;
+    --rvw-accent-dark: #c94a09;
+    --rvw-accent-soft: #fff1e8;
+    --rvw-good: #1a8a5e;
+    --rvw-good-soft: #eafaf3;
+    --rvw-bad: #d6334c;
+    --rvw-bad-soft: #fdeef0;
+    --rvw-gold: #f5a623;
+    --rvw-navy: #171b2e;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    color: #0f172a;
+    color: var(--rvw-body);
     line-height: 1.7;
-    max-width: 100%;
-    margin: 0 auto;
     font-size: 17px;
+    max-width: 100%;
 }}
-.wr-review-wrapper * {{ box-sizing: border-box; }}
-.wr-review-wrapper h2 {{ font-size: 1.75rem; font-weight: 800; color: #0f172a; margin: 2.5rem 0 1rem; letter-spacing: -0.02em; border-bottom: 2px solid #f1f5f9; padding-bottom: 0.5rem; }}
-.wr-review-wrapper h3 {{ font-size: 1.3rem; font-weight: 700; color: #1e293b; margin: 1.5rem 0 0.75rem; }}
-.wr-review-wrapper p {{ margin: 0 0 1.25rem; color: #334155; }}
-.wr-review-wrapper a {{ color: #2563eb; text-decoration: underline; font-weight: 600; text-underline-offset: 2px; }}
-.wr-review-wrapper a:hover {{ color: #1d4ed8; }}
+.rvw-wrapper * {{ box-sizing: border-box; }}
+.rvw-wrapper h2 {{ font-family: 'Poppins', sans-serif; font-size: 1.6rem; font-weight: 800; color: var(--rvw-ink); margin: 2.75rem 0 1.1rem; letter-spacing: -0.01em; }}
+.rvw-wrapper h3 {{ font-family: 'Poppins', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--rvw-ink); margin: 1.5rem 0 0.75rem; }}
+.rvw-wrapper p {{ margin: 0 0 1.25rem; }}
+.rvw-wrapper a {{ color: var(--rvw-accent-dark); text-decoration: underline; font-weight: 600; text-underline-offset: 2px; }}
+.rvw-wrapper a:hover {{ color: var(--rvw-accent); }}
+
+/* Disclosure */
+.rvw-disclosure {{ font-size: 0.8rem; color: var(--rvw-muted); background: var(--rvw-surface); border: 1px solid var(--rvw-border); border-radius: 8px; padding: 10px 14px; margin-bottom: 20px; }}
+.rvw-disclosure a {{ color: var(--rvw-muted); text-decoration: underline; font-weight: 500; }}
 
 /* Trust Bar */
-.wr-trust-bar {{ display: flex; flex-wrap: wrap; gap: 16px; align-items: center; padding: 12px 16px; background: #f8fafc; border-radius: 8px; margin-bottom: 32px; font-size: 0.85rem; color: #475569; font-weight: 500; border: 1px solid #e2e8f0; }}
-.wr-trust-item {{ display: flex; align-items: center; gap: 6px; }}
-.wr-trust-item svg {{ color: #059669; }}
+.rvw-trust-bar {{ display: flex; flex-wrap: wrap; gap: 18px; align-items: center; padding: 0 0 20px; margin-bottom: 12px; border-bottom: 1px solid var(--rvw-border); font-size: 0.85rem; color: var(--rvw-muted); font-weight: 600; }}
+.rvw-trust-item {{ display: flex; align-items: center; gap: 6px; }}
+.rvw-trust-item svg {{ color: var(--rvw-accent); flex-shrink: 0; }}
 
-/* The Bottom Line Box (Hero) */
-.wr-hero-box {{ border: 2px solid #e2e8f0; border-top: 4px solid #FF9900; border-radius: 12px; background: #fff; padding: 32px; margin-bottom: 40px; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05); position: relative; }}
-.wr-hero-badge {{ position: absolute; top: -14px; left: 32px; background: #FF9900; color: #fff; font-weight: 800; padding: 4px 16px; border-radius: 20px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }}
-.wr-hero-grid {{ display: grid; grid-template-columns: 1fr 1.2fr; gap: 32px; align-items: start; }}
-@media (max-width: 768px) {{ .wr-hero-grid {{ grid-template-columns: 1fr; gap: 24px; }} .wr-hero-box {{ padding: 20px; }} .wr-hero-badge {{ left: 20px; }} }}
+/* Hero */
+.rvw-hero {{ background: var(--rvw-card); border: 1px solid var(--rvw-border); border-radius: 16px; padding: 28px; margin: 24px 0 40px; box-shadow: 0 1px 3px rgba(23,24,28,0.04), 0 12px 28px -12px rgba(23,24,28,0.10); }}
+.rvw-hero-grid {{ display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 36px; align-items: start; }}
+@media (max-width: 760px) {{ .rvw-hero-grid {{ grid-template-columns: 1fr; gap: 20px; }} .rvw-hero {{ padding: 18px; border-radius: 14px; }} }}
 
-/* Hero Images */
-.wr-hero-image-container {{ display: flex; flex-direction: column; gap: 12px; }}
-.wr-main-img {{ width: 100%; aspect-ratio: 4/3; object-fit: contain; border-radius: 8px; background: #f8fafc; border: 1px solid #f1f5f9; padding: 16px; }}
-.wr-thumbs-row {{ display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }}
-.wr-thumbs-row::-webkit-scrollbar {{ display: none; }}
-.wr-thumb {{ width: 80px; height: 80px; object-fit: contain; border-radius: 6px; border: 1px solid #e2e8f0; background: #fff; padding: 4px; }}
+.rvw-badge-row {{ display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }}
+.rvw-badge {{ display: inline-flex; align-items: center; gap: 5px; background: var(--rvw-navy); color: #fff; font-family: 'Poppins', sans-serif; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; padding: 6px 12px; border-radius: 999px; }}
+.rvw-badge.alt {{ background: var(--rvw-accent-soft); color: var(--rvw-accent-dark); }}
 
-/* Hero Content */
-.wr-hero-content h2 {{ border: none; margin: 0 0 16px; padding: 0; font-size: 1.5rem; line-height: 1.3; }}
-.wr-score-row {{ display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }}
-.wr-score-circle {{ background: {score_color}; color: #fff; font-weight: 800; font-size: 1.2rem; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 8px; }}
-.wr-score-text {{ font-size: 0.9rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }}
-.wr-hero-intro {{ font-size: 1.05rem; font-weight: 500; color: #334155; line-height: 1.6; margin-bottom: 24px; }}
+.rvw-hero-image-container {{ display: flex; flex-direction: column; gap: 10px; }}
+.rvw-main-img {{ width: 100%; aspect-ratio: 1/1; object-fit: contain; border-radius: 12px; background: var(--rvw-surface); border: 1px solid var(--rvw-border); padding: 18px; }}
+.rvw-thumbs-row {{ display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }}
+.rvw-thumbs-row::-webkit-scrollbar {{ display: none; }}
+.rvw-thumb {{ width: 68px; height: 68px; flex-shrink: 0; object-fit: contain; border-radius: 8px; border: 1px solid var(--rvw-border); background: #fff; padding: 4px; }}
 
-/* CTA Button */
-.wr-btn-container {{ display: flex; flex-direction: column; gap: 8px; margin-top: 24px; }}
-.wr-btn {{ display: flex; align-items: center; justify-content: center; gap: 8px; background: #FF9900; color: #fff !important; text-decoration: none !important; padding: 16px 24px; border-radius: 8px; font-weight: 800; font-size: 1.1rem; transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(255, 153, 0, 0.2); width: 100%; text-align: center; border: none; }}
-.wr-btn:hover {{ background: #E68A00; transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(255, 153, 0, 0.3); }}
-.wr-btn-subtext {{ text-align: center; font-size: 0.8rem; color: #64748b; font-weight: 500; }}
+.rvw-hero-content h1, .rvw-hero-content h2 {{ font-size: 1.45rem; line-height: 1.35; margin: 0 0 10px; }}
 
-/* Pros & Cons Side-by-Side */
-.wr-pc-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 32px 0; }}
-@media (max-width: 768px) {{ .wr-pc-grid {{ grid-template-columns: 1fr; gap: 16px; }} }}
-.wr-pc-box {{ border-radius: 12px; padding: 24px; }}
-.wr-pc-box.pros {{ background: #f0fdf4; border: 1px solid #bbf7d0; }}
-.wr-pc-box.cons {{ background: #fef2f2; border: 1px solid #fecaca; }}
-.wr-pc-title {{ font-size: 1.1rem; font-weight: 800; margin: 0 0 16px; display: flex; align-items: center; gap: 8px; }}
-.wr-pc-box.pros .wr-pc-title {{ color: #166534; }}
-.wr-pc-box.cons .wr-pc-title {{ color: #991b1b; }}
-.wr-pc-list {{ list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }}
-.wr-pc-item {{ display: flex; align-items: flex-start; gap: 12px; font-size: 0.95rem; color: #334155; font-weight: 500; line-height: 1.5; }}
-.wr-pc-icon {{ flex-shrink: 0; margin-top: 2px; }}
+.rvw-rating-row {{ display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }}
+.rvw-stars {{ display: inline-flex; gap: 2px; }}
+.rvw-star svg {{ width: 18px; height: 18px; }}
+.rvw-star.full svg {{ fill: var(--rvw-gold); stroke: var(--rvw-gold); }}
+.rvw-star.half svg {{ fill: var(--rvw-gold); stroke: var(--rvw-gold); opacity: 0.5; }}
+.rvw-star.empty svg {{ fill: none; stroke: var(--rvw-border); stroke-width: 1.5; }}
+.rvw-rating-num {{ font-weight: 800; color: var(--rvw-ink); font-family: 'Poppins', sans-serif; font-size: 0.95rem; }}
+.rvw-review-count {{ font-size: 0.85rem; color: var(--rvw-muted); font-weight: 500; }}
 
-/* Specs Table */
-.wr-specs-table {{ width: 100%; border-collapse: collapse; margin: 24px 0; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; }}
-.wr-specs-table tr:nth-child(even) {{ background: #f8fafc; }}
-.wr-specs-table td {{ padding: 14px 16px; border-bottom: 1px solid #e2e8f0; font-size: 0.95rem; }}
-.wr-spec-label {{ font-weight: 700; color: #0f172a; width: 40%; }}
-.wr-spec-value {{ color: #475569; font-weight: 500; }}
+.rvw-editor-score {{ display: inline-flex; align-items: center; gap: 10px; background: var(--rvw-surface); border: 1px solid var(--rvw-border); border-radius: 10px; padding: 8px 14px; margin: 10px 0 18px; }}
+.rvw-editor-score-num {{ font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 1.3rem; color: var(--rvw-accent-dark); }}
+.rvw-editor-score-label {{ font-size: 0.75rem; color: var(--rvw-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; line-height: 1.3; }}
 
-/* Deep Dive Section */
-.wr-analysis-box {{ background: #fff; border-left: 4px solid #3b82f6; padding: 24px 32px; margin: 32px 0; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05); border-radius: 0 8px 8px 0; }}
-.wr-analysis-box p:last-child {{ margin-bottom: 0; }}
+.rvw-hero-intro {{ font-size: 1.02rem; color: var(--rvw-body); margin-bottom: 20px; }}
+
+.rvw-price-row {{ display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }}
+.rvw-price-current {{ font-family: 'Poppins', sans-serif; font-size: 1.9rem; font-weight: 800; color: var(--rvw-ink); }}
+.rvw-price-original {{ font-size: 1.05rem; color: var(--rvw-muted); text-decoration: line-through; font-weight: 500; }}
+.rvw-discount-badge {{ background: var(--rvw-bad-soft); color: var(--rvw-bad); font-weight: 800; font-size: 0.8rem; padding: 4px 10px; border-radius: 6px; }}
+
+.rvw-btn-container {{ display: flex; flex-direction: column; gap: 9px; }}
+.rvw-btn {{ display: flex; align-items: center; justify-content: center; gap: 9px; background: var(--rvw-accent); color: #fff !important; text-decoration: none !important; padding: 16px 24px; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.05rem; transition: all 0.15s ease; box-shadow: 0 6px 16px -4px rgba(232,89,12,0.45); width: 100%; text-align: center; border: none; }}
+.rvw-btn:hover {{ background: var(--rvw-accent-dark); transform: translateY(-1px); }}
+.rvw-btn-subtext {{ text-align: center; font-size: 0.78rem; color: var(--rvw-muted); font-weight: 500; }}
+
+/* TL;DR box */
+.rvw-tldr {{ background: var(--rvw-navy); color: #e9eaf2; border-radius: 14px; padding: 24px 28px; margin: 32px 0; }}
+.rvw-tldr-label {{ font-family: 'Poppins', sans-serif; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--rvw-gold); margin-bottom: 8px; }}
+.rvw-tldr p {{ color: #e9eaf2; margin: 0; font-size: 1.02rem; }}
+
+/* Pros & Cons */
+.rvw-pc-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 28px 0; }}
+@media (max-width: 760px) {{ .rvw-pc-grid {{ grid-template-columns: 1fr; }} }}
+.rvw-pc-box {{ border-radius: 14px; padding: 22px 24px; border: 1px solid var(--rvw-border); }}
+.rvw-pc-box.pros {{ background: var(--rvw-good-soft); border-color: #c8ecdb; }}
+.rvw-pc-box.cons {{ background: var(--rvw-bad-soft); border-color: #f5cdd4; }}
+.rvw-pc-title {{ font-family: 'Poppins', sans-serif; font-size: 1.02rem; font-weight: 800; margin: 0 0 14px; display: flex; align-items: center; gap: 8px; }}
+.rvw-pc-box.pros .rvw-pc-title {{ color: var(--rvw-good); }}
+.rvw-pc-box.cons .rvw-pc-title {{ color: var(--rvw-bad); }}
+.rvw-pc-list {{ list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 11px; }}
+.rvw-pc-item {{ display: flex; align-items: flex-start; gap: 10px; font-size: 0.94rem; color: var(--rvw-ink); font-weight: 500; line-height: 1.5; }}
+.rvw-pc-icon {{ flex-shrink: 0; margin-top: 2px; display: flex; }}
+.rvw-pc-icon.pros {{ color: var(--rvw-good); }}
+.rvw-pc-icon.cons {{ color: var(--rvw-bad); }}
+
+/* Analysis */
+.rvw-analysis-box {{ background: var(--rvw-surface); border: 1px solid var(--rvw-border); padding: 24px 26px; margin: 28px 0; border-radius: 14px; }}
+.rvw-analysis-box p:last-child {{ margin-bottom: 0; }}
 
 /* Who is this for */
-.wr-target-audience {{ background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 32px 0; }}
-.wr-target-audience ul {{ list-style: none; padding: 0; margin: 16px 0 0; display: flex; flex-direction: column; gap: 12px; }}
-.wr-target-audience li {{ display: flex; align-items: center; gap: 12px; font-weight: 600; color: #334155; }}
+.rvw-target-audience {{ background: var(--rvw-card); border: 1px solid var(--rvw-border); border-radius: 14px; padding: 24px 26px; margin: 28px 0; }}
+.rvw-target-audience ul {{ list-style: none; padding: 0; margin: 14px 0 0; display: flex; flex-direction: column; gap: 11px; }}
+.rvw-target-audience li {{ display: flex; align-items: center; gap: 10px; font-weight: 600; color: var(--rvw-ink); font-size: 0.95rem; }}
+.rvw-mini-icon {{ color: var(--rvw-good); display: flex; flex-shrink: 0; }}
 
-/* FAQ */
-.wr-faq-container {{ display: flex; flex-direction: column; gap: 16px; margin-top: 24px; }}
-.wr-faq-card {{ background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; }}
-.wr-faq-q {{ margin: 0 0 8px; font-size: 1.05rem; color: #0f172a; }}
-.wr-faq-a {{ margin: 0; color: #475569; font-size: 0.95rem; }}
+/* Specs Table */
+.rvw-specs-table {{ width: 100%; border-collapse: collapse; margin: 22px 0; border: 1px solid var(--rvw-border); border-radius: 12px; overflow: hidden; }}
+.rvw-specs-table tr:nth-child(even) {{ background: var(--rvw-surface); }}
+.rvw-specs-table td {{ padding: 13px 16px; border-bottom: 1px solid var(--rvw-border); font-size: 0.92rem; }}
+.rvw-specs-table tr:last-child td {{ border-bottom: none; }}
+.rvw-spec-label {{ font-weight: 700; color: var(--rvw-ink); width: 40%; }}
+.rvw-spec-value {{ color: var(--rvw-body); font-weight: 500; }}
 
-/* Final Verdict Box */
-.wr-verdict-box {{ background: #0f172a; color: #fff; border-radius: 12px; padding: 40px 32px; text-align: center; margin: 48px 0 24px; }}
-.wr-verdict-box h2 {{ color: #fff; border: none; margin-top: 0; font-size: 2rem; }}
-.wr-verdict-box p {{ color: #cbd5e1; font-size: 1.1rem; max-width: 600px; margin: 0 auto 32px; }}
-.wr-verdict-box .wr-btn {{ max-width: 400px; margin: 0 auto; }}
+/* FAQ Accordion */
+.rvw-faq-container {{ display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }}
+.rvw-faq-card {{ background: var(--rvw-card); border: 1px solid var(--rvw-border); border-radius: 10px; padding: 4px 20px; }}
+.rvw-faq-q {{ cursor: pointer; padding: 14px 0; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 0.98rem; color: var(--rvw-ink); list-style: none; }}
+.rvw-faq-q::-webkit-details-marker {{ display: none; }}
+.rvw-faq-q::after {{ content: '+'; float: right; font-size: 1.3rem; color: var(--rvw-accent); font-weight: 400; }}
+.rvw-faq-card[open] .rvw-faq-q::after {{ content: '−'; }}
+.rvw-faq-a {{ margin: 0 0 16px; color: var(--rvw-body); font-size: 0.94rem; }}
+
+/* Final Verdict */
+.rvw-verdict-box {{ background: linear-gradient(135deg, var(--rvw-navy) 0%, #23283f 100%); color: #fff; border-radius: 16px; padding: 40px 32px; text-align: center; margin: 48px 0 24px; }}
+.rvw-verdict-box h2 {{ color: #fff; margin-top: 0; font-size: 1.7rem; }}
+.rvw-verdict-box p {{ color: #c7c9d6; font-size: 1.02rem; max-width: 600px; margin: 0 auto 28px; }}
+.rvw-verdict-box .rvw-btn {{ max-width: 380px; margin: 0 auto; background: var(--rvw-accent); }}
+.rvw-verdict-box .rvw-btn:hover {{ background: var(--rvw-accent-dark); }}
 </style>
 
-<div class="wr-review-wrapper">
+<div class="rvw-wrapper">
 
-    <!-- TRUST SIGNALS -->
-    <div class="wr-trust-bar">
-        <div class="wr-trust-item">{svg_check} <span><strong>Expert Review</strong></span></div>
-        <div class="wr-trust-item">{svg_info} <span>Updated: <strong>{current_month_year}</strong></span></div>
-        <div class="wr-trust-item">{svg_star} <span>Based on <strong>{review_count:,}+</strong> user ratings</span></div>
+    <div class="rvw-disclosure">{svg_shield} As an Amazon Associate, we earn from qualifying purchases. Our editorial team tests and researches products independently of any commercial relationship.</div>
+
+    <div class="rvw-trust-bar">
+        <div class="rvw-trust-item">{svg_shield} <span>Expert Review</span></div>
+        <div class="rvw-trust-item">{svg_clock} <span>Updated {current_month_year}</span></div>
+        <div class="rvw-trust-item">{svg_cart} <span>{review_count:,}+ verified ratings</span></div>
     </div>
 
-    <!-- THE BOTTOM LINE (HERO) -->
-    <div class="wr-hero-box">
-        <div class="wr-hero-badge">Our Top Pick</div>
-        <div class="wr-hero-grid">
-            
-            <div class="wr-hero-image-container">
-                <img src="{main_img}" class="wr-main-img" alt="{short_title}">
-                {f'<div class="wr-thumbs-row">{thumbs_html}</div>' if thumbs_html else ''}
+    <!-- HERO -->
+    <div class="rvw-hero">
+        <div class="rvw-hero-grid">
+
+            <div class="rvw-hero-image-container">
+                <img src="{main_img}" class="rvw-main-img" alt="{short_title}">
+                {f'<div class="rvw-thumbs-row">{thumbs_html}</div>' if thumbs_html else ''}
             </div>
-            
-            <div class="wr-hero-content">
-                <h2>{short_title}</h2>
-                
-                <div class="wr-score-row">
-                    <div class="wr-score-circle">{editor_score}</div>
-                    <div class="wr-score-text">
-                        <div style="color:#0f172a;">Editor's Score</div>
-                        <div style="font-size:0.75rem; font-weight:500;">Out of 10</div>
-                    </div>
+
+            <div class="rvw-hero-content">
+                <div class="rvw-badge-row">
+                    <span class="rvw-badge">{svg_check} Editor's Pick</span>
+                    {f'<span class="rvw-badge alt">Best Value</span>' if editor_score >= 8.5 else ''}
                 </div>
-                
-                <p class="wr-hero-intro">{ai.get("intro", "")}</p>
-                
-                <div class="wr-btn-container">
-                    <a href="{aff_link}" class="wr-btn" target="_blank" rel="nofollow sponsored noopener">
-                        View on Amazon — {price_display}
+
+                <h2>{short_title}</h2>
+
+                <div class="rvw-rating-row">
+                    <span class="rvw-stars">{star_rating_html}</span>
+                    <span class="rvw-rating-num">{rating if rating > 0 else round(editor_score/2,1)}/5</span>
+                    <span class="rvw-review-count">({review_count:,} ratings)</span>
+                </div>
+
+                <div class="rvw-editor-score">
+                    <span class="rvw-editor-score-num">{editor_score}</span>
+                    <span class="rvw-editor-score-label">Editor's<br>Score /10</span>
+                </div>
+
+                <p class="rvw-hero-intro">{ai.get("intro", "")}</p>
+
+                <div class="rvw-price-row">
+                    <span class="rvw-price-current">{price_display}</span>
+                    {orig_price_html}
+                    {discount_html}
+                </div>
+
+                <div class="rvw-btn-container">
+                    <a href="{aff_link}" class="rvw-btn" target="_blank" rel="nofollow sponsored noopener">
+                        {svg_cart} Check Price on Amazon
                     </a>
-                    <div class="wr-btn-subtext">Prices are accurate at the time of publication.</div>
+                    <div class="rvw-btn-subtext">Price accurate as of {current_month_year}. Terms apply.</div>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- TL;DR -->
+    <div class="rvw-tldr">
+        <div class="rvw-tldr-label">Bottom Line</div>
+        <p>{ai.get("verdict", "A strong, well-rounded choice that delivers real value for the price.")}</p>
     </div>
 
     <!-- PROS AND CONS -->
     <h2>The Good and The Bad</h2>
-    <div class="wr-pc-grid">
-        <div class="wr-pc-box pros">
-            <h3 class="wr-pc-title">{svg_check} Reasons to Buy</h3>
-            <ul class="wr-pc-list">{pros_html}</ul>
+    <div class="rvw-pc-grid">
+        <div class="rvw-pc-box pros">
+            <h3 class="rvw-pc-title">{svg_check} What We Like</h3>
+            <ul class="rvw-pc-list">{pros_html}</ul>
         </div>
-        <div class="wr-pc-box cons">
-            <h3 class="wr-pc-title">{svg_x} Reasons to Avoid</h3>
-            <ul class="wr-pc-list">{cons_html}</ul>
+        <div class="rvw-pc-box cons">
+            <h3 class="rvw-pc-title">{svg_x} What Could Be Better</h3>
+            <ul class="rvw-pc-list">{cons_html}</ul>
         </div>
     </div>
 
     <!-- IN-DEPTH ANALYSIS -->
     <h2>In-Depth Analysis</h2>
-    <div class="wr-analysis-box">
+    <div class="rvw-analysis-box">
         <p>{ai.get("why_like", "This product stands out due to its exceptional balance of performance and price. During our evaluation, it consistently met or exceeded expectations for its category.")}</p>
     </div>
 
     <!-- WHO IS THIS FOR -->
-    <div class="wr-target-audience">
-        <h3 style="margin-top:0;">Who should buy this?</h3>
+    <div class="rvw-target-audience">
+        <h3 style="margin-top:0;">Who Should Buy This?</h3>
         <ul>{best_for_html}</ul>
     </div>
 
     <!-- SPECIFICATIONS -->
-    {f'<h2>Key Specifications</h2><table class="wr-specs-table"><tbody>{specs_rows}</tbody></table>' if specs_rows else ''}
+    {f'<h2>Key Specifications</h2><table class="rvw-specs-table"><tbody>{specs_rows}</tbody></table>' if specs_rows else ''}
 
     <!-- FAQ -->
-    {f'<h2>Frequently Asked Questions</h2><div class="wr-faq-container">{faq_html}</div>' if faq_html else ''}
+    {f'<h2>Frequently Asked Questions</h2><div class="rvw-faq-container">{faq_html}</div>' if faq_html else ''}
 
     <!-- FINAL VERDICT -->
-    <div class="wr-verdict-box">
+    <div class="rvw-verdict-box">
         <h2>Final Verdict</h2>
         <p>{ai.get("verdict", "A highly recommended product that delivers excellent value for your money.")} {ai.get("final", "Check the link below for the latest deals.")}</p>
-        <a href="{aff_link}" class="wr-btn" target="_blank" rel="nofollow sponsored noopener">
-            Check Current Price on Amazon
+        <a href="{aff_link}" class="rvw-btn" target="_blank" rel="nofollow sponsored noopener">
+            {svg_cart} Check Current Price on Amazon
         </a>
     </div>
 
 </div>
-'''
+"""
 
     return seo_title, html
+
 
 
 # ── PRE-PUBLISH VALIDATION ─────────────────────────────────────────────────────
