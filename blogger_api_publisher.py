@@ -13,6 +13,7 @@ import logging
 import requests
 import re
 import html as _html
+from urllib.parse import quote_plus as _quote_plus
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
@@ -173,10 +174,13 @@ def _ai_generate_content(title: str, price: str, description: str) -> dict:
         f' "pros": ["3-4 strong pros"],\n'
         f' "cons": ["2-3 honest cons"],\n'
         f' "specs": {{"Brand": "...", "Key Feature": "...", "Weight/Size": "..."}},\n'
+        f' "alternatives": [{{"name": "real competing product name", "reason": "1 sentence why a buyer might prefer it"}} x2],\n'
         f' "verdict": "1 strong concluding sentence",\n'
         f' "faq": [{{"q": "question", "a": "answer"}} for 2 common questions],\n'
         f' "final": "1 sentence Call to Action"}}\n'
-        f"Rules: Be objective, authoritative, and concise. No markdown formatting in the strings."
+        f"Rules: Be objective, authoritative, and concise. No markdown formatting in the strings. "
+        f"Alternative names must be real products shoppers can find on Amazon. "
+        f"Use real Unicode characters (not HTML entities) in visible text."
     )
 
     groq_key = os.environ.get("GROQ_API_KEY", "")
@@ -238,6 +242,7 @@ def _ai_generate_content(title: str, price: str, description: str) -> dict:
                 "Design is functional rather than flashy"
             ],
             "specs": {"Category": "Consumer Goods", "Value Rating": "Excellent", "Ease of Use": "High"},
+            "alternatives": [],
             "verdict": f"The {short_title[:60]} easily earns our recommendation as a top-tier choice that won't break the bank.",
             "faq": [
                 {"q": "Is this worth the investment?", "a": "Yes, given its durability and performance metrics, it offers excellent long-term value."},
@@ -295,6 +300,13 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
     
     # Generate AI content
     ai = _ai_generate_content(title, price, description)
+
+    # Sanitized display strings (AI may emit entities; decode + escape)
+    safe_title   = _safe_text(short_title)
+    safe_intro   = _safe_text(ai.get("intro", ""))
+    safe_why     = _safe_text(ai.get("why_like", ""))
+    safe_verdict = _safe_text(ai.get("verdict", ""))
+    safe_final   = _safe_text(ai.get("final", ""))
     
     # Calculate Editor Score (out of 10) based on Amazon rating
     editor_score = round((rating / 5.0) * 10, 1) if rating > 0 else 9.2
@@ -348,6 +360,42 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
     # ── Build "Who is this for" ──
     best_for = ai.get("best_for", [])
     best_for_html = "".join([f'<li><span class="rvw-mini-icon">{svg_check}</span>{_li_text(item)}</li>' for item in best_for if item])
+
+    # ── Build Alternatives (other Amazon products) + Comparison ──
+    _AFF_TAG = os.environ.get("AFFILIATE_TAG", "dazzledeals00-20")
+    _raw_alts = [a for a in (ai.get("alternatives", []) or [])
+                 if isinstance(a, dict) and str(a.get("name", "")).strip()]
+    _alts = [a for a in _raw_alts
+             if not str(a.get("name", "")).strip().lower().startswith(("alternative to", "comparable", "other option"))][:2]
+    _alt_cards = ""
+    _cmp_cols = ""
+    _cmp_cells = ""
+    for _a in _alts:
+        _an = _safe_text(str(_a.get("name", ""))[:60])
+        _ar = _safe_text(str(_a.get("reason", "") or _a.get("why", "") or "Worth comparing before you decide.")[:160])
+        _au = f"https://www.amazon.com/s?k={_quote_plus(str(_a.get('name', ''))[:60])}&tag={_AFF_TAG}"
+        _alt_cards += (
+            f'<div class="rvw-alt-card"><div class="rvw-alt-label">Alternative</div>'
+            f'<h4>{_an}</h4><p>{_ar}</p>'
+            f'<a class="rvw-btn rvw-btn-alt" href="{_au}" target="_blank" rel="nofollow sponsored noopener">{svg_cart} See Price on Amazon</a></div>'
+        )
+        _cmp_cols += f"<th>{_an}</th>"
+        _cmp_cells += f'<td>{_ar}<br><a href="{_au}" target="_blank" rel="nofollow sponsored noopener">Check price →</a></td>'
+    _alts_html = (
+        f'<h2>Top Alternatives to Consider</h2><p>Not fully convinced? These competing picks are worth a look before you buy.</p><div class="rvw-alt-grid">{_alt_cards}</div>'
+        if _alt_cards else ""
+    )
+    _compare_html = ""
+    if _cmp_cols:
+        _cmp_best = _safe_text(str(best_for[0] if best_for else ai.get("verdict", "This product"))[:120])
+        _cmp_rating = f"{rating}/5" if rating > 0 else f"{round(editor_score/2,1)}/5"
+        _compare_html = (
+            f'<h2>Head-to-Head Comparison</h2><div class="rvw-compare-wrap"><table class="rvw-compare-table">'
+            f'<thead><tr><th>Feature</th><th>{safe_title} <span class="rvw-badge-winner">Reviewed</span></th>{_cmp_cols}</tr></thead>'
+            f'<tbody><tr><td>Best for</td><td class="rvw-winner">{_cmp_best}</td>{_cmp_cells}</tr>'
+            f'<tr><td>Rating</td><td class="rvw-winner">{_cmp_rating}</td>{"<td>Check listing</td>" * len(_alts)}</tr>'
+            f'</tbody></table></div>'
+        )
 
     # ── Images Setup ──
     main_img = all_images[0] if all_images else ""
@@ -525,6 +573,25 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
 .rvw-verdict-box p {{ color: #c7c9d6; font-size: 1.02rem; max-width: 600px; margin: 0 auto 28px; }}
 .rvw-verdict-box .rvw-btn {{ max-width: 380px; margin: 0 auto; background: var(--rvw-accent); }}
 .rvw-verdict-box .rvw-btn:hover {{ background: var(--rvw-accent-dark); }}
+
+/* Alternatives */
+.rvw-alt-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 20px 0 28px; }}
+@media (max-width: 760px) {{ .rvw-alt-grid {{ grid-template-columns: 1fr; }} }}
+.rvw-alt-card {{ background: var(--rvw-card); border: 1px solid var(--rvw-border); border-radius: 14px; padding: 22px 24px; }}
+.rvw-alt-label {{ display: inline-block; font-family: 'Poppins', sans-serif; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--rvw-accent-dark); background: var(--rvw-accent-soft); padding: 4px 12px; border-radius: 999px; margin-bottom: 10px; }}
+.rvw-alt-card h4 {{ font-family: 'Poppins', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--rvw-ink); margin: 0 0 8px; }}
+.rvw-alt-card p {{ font-size: 0.92rem; margin-bottom: 16px; }}
+.rvw-btn-alt {{ font-size: 0.95rem; padding: 13px 20px; }}
+
+/* Comparison table */
+.rvw-compare-wrap {{ overflow-x: auto; margin: 20px 0 28px; border: 1px solid var(--rvw-border); border-radius: 12px; }}
+.rvw-compare-table {{ width: 100%; border-collapse: collapse; min-width: 560px; }}
+.rvw-compare-table th, .rvw-compare-table td {{ padding: 13px 16px; font-size: 0.9rem; text-align: left; border-bottom: 1px solid var(--rvw-border); vertical-align: top; }}
+.rvw-compare-table thead th {{ background: var(--rvw-navy); color: #fff; font-family: 'Poppins', sans-serif; font-size: 0.85rem; }}
+.rvw-compare-table tr:last-child td {{ border-bottom: none; }}
+.rvw-compare-table td:first-child {{ font-weight: 700; color: var(--rvw-ink); white-space: nowrap; }}
+.rvw-winner {{ background: var(--rvw-good-soft); font-weight: 600; }}
+.rvw-badge-winner {{ display: inline-block; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; background: var(--rvw-good); color: #fff; padding: 3px 9px; border-radius: 999px; margin-left: 6px; vertical-align: middle; }}
 </style>
 
 <div class="rvw-wrapper">
@@ -542,7 +609,7 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
         <div class="rvw-hero-grid">
 
             <div class="rvw-hero-image-container">
-                <img src="{main_img}" class="rvw-main-img" alt="{short_title}">
+                <img src="{main_img}" class="rvw-main-img" alt="{safe_title}">
                 {f'<div class="rvw-thumbs-row">{thumbs_html}</div>' if thumbs_html else ''}
             </div>
 
@@ -552,7 +619,7 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
                     {f'<span class="rvw-badge alt">Best Value</span>' if editor_score >= 8.5 else ''}
                 </div>
 
-                <h2>{short_title}</h2>
+                <h2>{safe_title}</h2>
 
                 <div class="rvw-rating-row">
                     <span class="rvw-stars">{star_rating_html}</span>
@@ -565,7 +632,7 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
                     <span class="rvw-editor-score-label">Editor's<br>Score /10</span>
                 </div>
 
-                <p class="rvw-hero-intro">{ai.get("intro", "")}</p>
+                <p class="rvw-hero-intro">{safe_intro}</p>
 
                 <div class="rvw-price-row">
                     <span class="rvw-price-current">{price_display}</span>
@@ -586,7 +653,7 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
     <!-- TL;DR -->
     <div class="rvw-tldr">
         <div class="rvw-tldr-label">Bottom Line</div>
-        <p>{ai.get("verdict", "A strong, well-rounded choice that delivers real value for the price.")}</p>
+        <p>{safe_verdict or "A strong, well-rounded choice that delivers real value for the price."}</p>
     </div>
 
     <!-- PROS AND CONS -->
@@ -605,7 +672,7 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
     <!-- IN-DEPTH ANALYSIS -->
     <h2>In-Depth Analysis</h2>
     <div class="rvw-analysis-box">
-        <p>{ai.get("why_like", "This product stands out due to its exceptional balance of performance and price. During our evaluation, it consistently met or exceeded expectations for its category.")}</p>
+        <p>{safe_why or "This product stands out due to its exceptional balance of performance and price. During our evaluation, it consistently met or exceeded expectations for its category."}</p>
     </div>
 
     <!-- WHO IS THIS FOR -->
@@ -620,10 +687,16 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
     <!-- FAQ -->
     {f'<h2>Frequently Asked Questions</h2><div class="rvw-faq-container">{faq_html}</div>' if faq_html else ''}
 
+    <!-- ALTERNATIVES -->
+    {_alts_html}
+
+    <!-- COMPARISON -->
+    {_compare_html}
+
     <!-- FINAL VERDICT -->
     <div class="rvw-verdict-box">
         <h2>Final Verdict</h2>
-        <p>{ai.get("verdict", "A highly recommended product that delivers excellent value for your money.")} {ai.get("final", "Check the link below for the latest deals.")}</p>
+        <p>{safe_verdict or "A highly recommended product that delivers excellent value for your money."} {safe_final or "Check the link below for the latest deals."}</p>
         <a href="{aff_link}" class="rvw-btn" target="_blank" rel="nofollow sponsored noopener">
             {svg_cart} Check Current Price on Amazon
         </a>
