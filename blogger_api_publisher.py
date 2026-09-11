@@ -405,13 +405,16 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
                  if isinstance(a, dict) and str(a.get("name", "")).strip()]
     _alts = [a for a in _raw_alts
              if not str(a.get("name", "")).strip().lower().startswith(("alternative to", "comparable", "other option"))][:2]
-    _alt_cards = ""
-    _cmp_cols = ""
-    _cmp_cells = ""
+    _alt_items = []
     for _a in _alts:
         _an = _safe_text(str(_a.get("name", ""))[:60])
         _ar = _safe_text(str(_a.get("reason", "") or _a.get("why", "") or "Worth comparing before you decide.")[:160])
         _au = f"https://www.amazon.com/s?k={_quote_plus(str(_a.get('name', ''))[:60])}&tag={_AFF_TAG}"
+        _alt_items.append((_an, _ar, _au))
+    _alt_cards = ""
+    _cmp_cols = ""
+    _cmp_cells = ""
+    for (_an, _ar, _au) in _alt_items:
         _alt_cards += (
             f'<div class="rvw-alt-card"><div class="rvw-alt-label">Alternative</div>'
             f'<h4>{_an}</h4><p>{_ar}</p>'
@@ -431,7 +434,7 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
             f'<h2 id="rvw-compare">Head-to-Head Comparison</h2><div class="rvw-compare-wrap"><table class="rvw-compare-table">'
             f'<thead><tr><th>Feature</th><th>{safe_title} <span class="rvw-badge-winner">Reviewed</span></th>{_cmp_cols}</tr></thead>'
             f'<tbody><tr><td>Best for</td><td class="rvw-winner">{_cmp_best}</td>{_cmp_cells}</tr>'
-            f'<tr><td>Rating</td><td class="rvw-winner">{_cmp_rating}</td>{"<td>Check listing</td>" * len(_alts)}</tr>'
+            f'<tr><td>Rating</td><td class="rvw-winner">{_cmp_rating}</td>{"<td>Check listing</td>" * len(_alt_items)}</tr>'
             f'</tbody></table></div>'
         )
 
@@ -499,6 +502,47 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
 
     # ── Current Date for Trust Bar ──
     current_month_year = datetime.now().strftime("%B %Y")
+
+    # ── Sidebar (sticky buy box + mini scores + more picks + key specs) ──
+    _side_specs = "".join(
+        f'<li><span>{_safe_text(str(k))}</span><strong>{_safe_text(str(v))[:42]}</strong></li>'
+        for k, v in list(specs.items())[:5]
+        if v and str(v).strip() and v != "N/A"
+    )
+    _side_picks = "".join(
+        f'<div class="rvw-side-pick"><a href="{_au}" target="_blank" rel="nofollow sponsored noopener">{_an}</a>'
+        f'<a class="rvw-side-check" href="{_au}" target="_blank" rel="nofollow sponsored noopener">Check price →</a></div>'
+        for (_an, _ar, _au) in _alt_items
+    )
+    _side_img = f'<img src="{main_img}" alt="{safe_title}" loading="lazy">' if main_img else ""
+    _side_picks_card = ""
+    if _side_picks:
+        _side_picks_card = '<div class="rvw-side-card"><h4>More Top Picks</h4>' + _side_picks + "</div>"
+    _side_specs_card = ""
+    if _side_specs:
+        _side_specs_card = '<div class="rvw-side-card"><h4>Key Specs</h4><ul class="rvw-side-specs">' + _side_specs + "</ul></div>"
+    _side_html = (
+        f'<aside class="rvw-sidecol">'
+        f'<div class="rvw-side-card rvw-side-buy">'
+        f'<h4>Today&apos;s Deal</h4>'
+        f'{_side_img}'
+        f'<div class="t">{safe_title[:70]}</div>'
+        f'<div class="rvw-stars">{star_rating_html}</div>'
+        f'<div class="p">{price_display}</div>'
+        f'<a href="{aff_link}" class="rvw-btn" target="_blank" rel="nofollow sponsored noopener">{svg_cart} Check Price on Amazon</a>'
+        f'<div class="rvw-btn-subtext">Updated {current_month_year}</div>'
+        f'</div>'
+        f'<div class="rvw-side-card"><h4>Our Score</h4>'
+        f'<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">'
+        f'<div class="rvw-score-circle sm"><span class="val">{_final_score:.1f}</span><span class="max">/10</span></div>'
+        f'<div class="rvw-recommend {_recommend_cls}" style="margin:0;">{_recommend_text}</div>'
+        f'</div>{_bars_html}</div>'
+        f'{_side_picks_card}'
+        f'{_side_specs_card}'
+        f'<div class="rvw-side-card"><h4>Why Trust Us</h4>'
+        f'<p class="rvw-side-note">Independent testing &amp; research. As an Amazon Associate we earn from qualifying purchases — at no extra cost to you.</p></div>'
+        f'</aside>'
+    )
 
     # ═══════════════════════════════════════════════════════════════════════════════
     # HTML & CSS ASSEMBLY — "EDITORIAL PICK" TEMPLATE (Amazon-affiliate review standard)
@@ -693,6 +737,34 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
 .rvw-toc ul {{ list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px 18px; }}
 .rvw-toc li {{ margin: 0; }}
 .rvw-toc a {{ font-size: 0.88rem; font-weight: 600; }}
+
+/* Two-column layout with filled sticky sidebar */
+.rvw-cols {{ display: grid; grid-template-columns: minmax(0,1fr) 320px; gap: 28px; align-items: start; margin-top: 24px; }}
+@media (max-width: 900px) {{ .rvw-cols {{ grid-template-columns: 1fr; }} }}
+.rvw-maincol {{ min-width: 0; }}
+.rvw-maincol > h2:first-child {{ margin-top: 0; }}
+.rvw-sidecol {{ position: sticky; top: 76px; display: flex; flex-direction: column; gap: 16px; min-width: 0; }}
+@media (max-width: 900px) {{ .rvw-sidecol {{ position: static; }} }}
+.rvw-side-card {{ background: var(--rvw-card); border: 1px solid var(--rvw-border); border-radius: 14px; padding: 18px; }}
+.rvw-side-card h4 {{ font-family: 'Poppins', sans-serif; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 12px; color: var(--rvw-ink); }}
+.rvw-side-buy img {{ width: 100%; aspect-ratio: 1/1; object-fit: contain; background: var(--rvw-surface); border: 1px solid var(--rvw-border); border-radius: 10px; padding: 12px; margin-bottom: 12px; }}
+.rvw-side-buy .t {{ font-weight: 700; font-size: 0.92rem; color: var(--rvw-ink); margin-bottom: 8px; line-height: 1.4; }}
+.rvw-side-buy .rvw-stars {{ margin-bottom: 4px; }}
+.rvw-side-buy .p {{ font-family: 'Poppins', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--rvw-ink); margin: 6px 0 12px; }}
+.rvw-side-buy .rvw-btn {{ font-size: 0.92rem; padding: 13px 16px; }}
+.rvw-score-circle.sm {{ width: 52px; height: 52px; border-width: 3px; }}
+.rvw-score-circle.sm .val {{ font-size: 1rem; }}
+.rvw-side-card .rvw-score-label {{ width: 100px; font-size: 0.72rem; }}
+.rvw-side-pick {{ padding: 10px 0; }}
+.rvw-side-pick + .rvw-side-pick {{ border-top: 1px solid var(--rvw-border); }}
+.rvw-side-pick a:first-child {{ display: block; font-weight: 700; font-size: 0.85rem; color: var(--rvw-ink); text-decoration: none; margin-bottom: 2px; }}
+.rvw-side-check {{ font-size: 0.78rem; font-weight: 700; }}
+.rvw-side-specs {{ list-style: none; padding: 0; margin: 0; }}
+.rvw-side-specs li {{ display: flex; justify-content: space-between; gap: 10px; font-size: 0.78rem; padding: 7px 0; }}
+.rvw-side-specs li + li {{ border-top: 1px solid var(--rvw-border); }}
+.rvw-side-specs span {{ color: var(--rvw-muted); }}
+.rvw-side-specs strong {{ color: var(--rvw-ink); text-align: right; font-weight: 600; }}
+.rvw-side-note {{ font-size: 0.75rem; color: var(--rvw-muted); line-height: 1.6; margin: 0; }}
 </style>
 
 <div class="rvw-wrapper">
@@ -763,6 +835,10 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
         </div>
     </div>
 
+    <!-- MAIN + SIDEBAR -->
+    <div class="rvw-cols">
+    <div class="rvw-maincol">
+
     <!-- SCORES -->
     <div class="rvw-scorebox" id="rvw-scores">
         <div class="rvw-scorebox-head">
@@ -812,6 +888,10 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
 
     <!-- COMPARISON -->
     {_compare_html}
+
+    </div>
+    {_side_html}
+    </div>
 
     <!-- FINAL VERDICT -->
     <div class="rvw-verdict-box" id="rvw-verdict">
