@@ -741,6 +741,13 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
 /* Two-column layout with filled sticky sidebar */
 .rvw-cols {{ display: grid; grid-template-columns: minmax(0,1fr) 320px; gap: 28px; align-items: start; margin-top: 24px; }}
 @media (max-width: 900px) {{ .rvw-cols {{ grid-template-columns: 1fr; }} }}
+/* Theme compat: theme already reserves a 320px sidebar (.review-layout).
+   When our article brings its own sidebar, collapse the theme one to avoid
+   double sidebars squeezing the content on PC. */
+@media (min-width: 900px) {{
+  .review-layout:has(.rvw-sidecol) {{ grid-template-columns: minmax(0,1fr) !important; }}
+  .review-layout:has(.rvw-sidecol) .review-sidebar {{ display: none !important; }}
+}}
 .rvw-maincol {{ min-width: 0; }}
 .rvw-maincol > h2:first-child {{ margin-top: 0; }}
 .rvw-sidecol {{ position: sticky; top: 76px; display: flex; flex-direction: column; gap: 16px; min-width: 0; }}
