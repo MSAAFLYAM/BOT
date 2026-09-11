@@ -12,12 +12,32 @@ import os
 import logging
 import requests
 import re
+import html as _html
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
 # Set to True during bulk fix to skip Telegram alerts
 SKIP_TELEGRAM_ALERT = False
+
+
+def _safe_text(s) -> str:
+    """Decode entities repeatedly (AI double-encodes), then escape safely."""
+    t = str(s or "")
+    for _ in range(3):
+        u = _html.unescape(t)
+        if u == t:
+            break
+        t = u
+    return _html.escape(t, quote=True)
+
+
+_LEAD_SYM = re.compile(r'^[✓✗✔✘×✖\-–—•*+\s]+')
+
+
+def _li_text(s) -> str:
+    """List-item text: decoded, leading symbols stripped (markup adds icons)."""
+    return _LEAD_SYM.sub('', _safe_text(s)).strip()
 
 # ── Image transformation ─────────────────────────────────────────────────────
 try:
@@ -304,8 +324,8 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
     pros_list = ai.get("pros", [])
     cons_list = ai.get("cons", [])
 
-    pros_html = "".join([f'<li class="rvw-pc-item"><span class="rvw-pc-icon pros">{svg_check}</span><span>{p}</span></li>' for p in pros_list if p])
-    cons_html = "".join([f'<li class="rvw-pc-item"><span class="rvw-pc-icon cons">{svg_x}</span><span>{c}</span></li>' for c in cons_list if c])
+    pros_html = "".join([f'<li class="rvw-pc-item"><span class="rvw-pc-icon pros">{svg_check}</span><span>{_li_text(p)}</span></li>' for p in pros_list if p])
+    cons_html = "".join([f'<li class="rvw-pc-item"><span class="rvw-pc-icon cons">{svg_x}</span><span>{_li_text(c)}</span></li>' for c in cons_list if c])
 
     if not cons_html:
         cons_html = f'<li class="rvw-pc-item"><span class="rvw-pc-icon cons">{svg_info}</span><span>No major drawbacks identified for this price range.</span></li>'
@@ -315,7 +335,7 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
     specs_rows = ""
     for k, v in specs.items():
         if v and str(v).strip() and v != "N/A":
-            specs_rows += f'<tr><td class="rvw-spec-label">{k}</td><td class="rvw-spec-value">{v}</td></tr>'
+            specs_rows += f'<tr><td class="rvw-spec-label">{_safe_text(k)}</td><td class="rvw-spec-value">{_safe_text(v)}</td></tr>'
 
     # ── Build FAQ (accordion) ──
     faq_items = ai.get("faq", [])
@@ -323,11 +343,11 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
     for i, faq in enumerate(faq_items):
         q, a = faq.get("q", ""), faq.get("a", "")
         if q and a:
-            faq_html += f'<details class="rvw-faq-card"{" open" if i == 0 else ""}><summary class="rvw-faq-q">{q}</summary><p class="rvw-faq-a">{a}</p></details>'
+            faq_html += f'<details class="rvw-faq-card"{" open" if i == 0 else ""}><summary class="rvw-faq-q">{_safe_text(q)}</summary><p class="rvw-faq-a">{_safe_text(a)}</p></details>'
 
     # ── Build "Who is this for" ──
     best_for = ai.get("best_for", [])
-    best_for_html = "".join([f'<li><span class="rvw-mini-icon">{svg_check}</span>{item}</li>' for item in best_for if item])
+    best_for_html = "".join([f'<li><span class="rvw-mini-icon">{svg_check}</span>{_li_text(item)}</li>' for item in best_for if item])
 
     # ── Images Setup ──
     main_img = all_images[0] if all_images else ""
