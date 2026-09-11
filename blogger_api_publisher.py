@@ -174,6 +174,7 @@ def _ai_generate_content(title: str, price: str, description: str) -> dict:
         f' "pros": ["3-4 strong pros"],\n'
         f' "cons": ["2-3 honest cons"],\n'
         f' "specs": {{"Brand": "...", "Key Feature": "...", "Weight/Size": "..."}},\n'
+        f' "scores": {{"value": 8.5, "build": 9.0, "features": 8.0, "ease": 8.5}},\n'
         f' "alternatives": [{{"name": "real competing product name", "reason": "1 sentence why a buyer might prefer it"}} x2],\n'
         f' "verdict": "1 strong concluding sentence",\n'
         f' "faq": [{{"q": "question", "a": "answer"}} for 2 common questions],\n'
@@ -242,6 +243,7 @@ def _ai_generate_content(title: str, price: str, description: str) -> dict:
                 "Design is functional rather than flashy"
             ],
             "specs": {"Category": "Consumer Goods", "Value Rating": "Excellent", "Ease of Use": "High"},
+            "scores": {},
             "alternatives": [],
             "verdict": f"The {short_title[:60]} easily earns our recommendation as a top-tier choice that won't break the bank.",
             "faq": [
@@ -311,6 +313,42 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
     # Calculate Editor Score (out of 10) based on Amazon rating
     editor_score = round((rating / 5.0) * 10, 1) if rating > 0 else 9.2
     score_color = "#059669" if editor_score >= 8.5 else "#d97706"
+
+    # ── Criteria scores (Value / Build / Features / Ease) + Final score ──
+    _CRITERIA = [("value", "Value for Money"), ("build", "Build Quality"),
+                 ("features", "Features"), ("ease", "Ease of Use")]
+    _raw_scores = ai.get("scores", {}) or {}
+    _base = editor_score if editor_score else 7.5
+    _gen_offsets = {"value": 0.0, "build": 0.3, "features": -0.2, "ease": 0.1}
+    _scores = {}
+    for _k, _label in _CRITERIA:
+        try:
+            _v = float(_raw_scores.get(_k, ""))
+            if not (1 <= _v <= 10):
+                raise ValueError
+        except (ValueError, TypeError):
+            _v = _base + _gen_offsets[_k]
+        _scores[_k] = round(max(1.0, min(10.0, _v)), 1)
+    _final_score = round(sum(_scores.values()) / len(_scores), 1)
+    _recommend = "buy" if _final_score >= 8.0 else ("consider" if _final_score >= 6.0 else "skip")
+    _recommend_text = {"buy": "We Recommend", "consider": "Worth Considering", "skip": "We Say Skip It"}[_recommend]
+    _recommend_cls = _recommend
+    _bars_html = ""
+    for _k, _label in _CRITERIA:
+        _v = _scores[_k]
+        _cls = "high" if _v >= 7.5 else ("mid" if _v >= 5 else "low")
+        _bars_html += (
+            f'<div class="rvw-score-row"><span class="rvw-score-label">{_label}</span>'
+            f'<div class="rvw-score-track"><div class="rvw-score-fill {_cls}" style="width:{min(100, _v * 10):.0f}%"></div></div>'
+            f'<span class="rvw-score-val">{_v:.1f}</span></div>'
+        )
+    # Hidden data span: live theme JS renders sidebar verdict card + score bars
+    _nd_span = (
+        f'<span data-nd-review data-score="{_final_score:.1f}" data-recommend="{_recommend}" '
+        f'data-verdict="{_safe_text(ai.get("verdict", ""))}" data-amazon-url="{aff_link}" '
+        f'data-score-value="{_scores["value"]:.1f}" data-score-build="{_scores["build"]:.1f}" '
+        f'data-score-features="{_scores["features"]:.1f}" style="display:none"></span>'
+    )
     
     # Price formatting
     has_price = bool(price and price != "N/A" and price.strip())
@@ -382,7 +420,7 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
         _cmp_cols += f"<th>{_an}</th>"
         _cmp_cells += f'<td>{_ar}<br><a href="{_au}" target="_blank" rel="nofollow sponsored noopener">Check price →</a></td>'
     _alts_html = (
-        f'<h2>Top Alternatives to Consider</h2><p>Not fully convinced? These competing picks are worth a look before you buy.</p><div class="rvw-alt-grid">{_alt_cards}</div>'
+        f'<h2 id="rvw-alts">Top Alternatives to Consider</h2><p>Not fully convinced? These competing picks are worth a look before you buy.</p><div class="rvw-alt-grid">{_alt_cards}</div>'
         if _alt_cards else ""
     )
     _compare_html = ""
@@ -390,12 +428,23 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
         _cmp_best = _safe_text(str(best_for[0] if best_for else ai.get("verdict", "This product"))[:120])
         _cmp_rating = f"{rating}/5" if rating > 0 else f"{round(editor_score/2,1)}/5"
         _compare_html = (
-            f'<h2>Head-to-Head Comparison</h2><div class="rvw-compare-wrap"><table class="rvw-compare-table">'
+            f'<h2 id="rvw-compare">Head-to-Head Comparison</h2><div class="rvw-compare-wrap"><table class="rvw-compare-table">'
             f'<thead><tr><th>Feature</th><th>{safe_title} <span class="rvw-badge-winner">Reviewed</span></th>{_cmp_cols}</tr></thead>'
             f'<tbody><tr><td>Best for</td><td class="rvw-winner">{_cmp_best}</td>{_cmp_cells}</tr>'
             f'<tr><td>Rating</td><td class="rvw-winner">{_cmp_rating}</td>{"<td>Check listing</td>" * len(_alts)}</tr>'
             f'</tbody></table></div>'
         )
+
+    # ── TOC extra links (only for sections that exist) ──
+    _toc_extra = ""
+    if specs_rows:
+        _toc_extra += '<li><a href="#rvw-specs">Specifications</a></li>'
+    if _alt_cards:
+        _toc_extra += '<li><a href="#rvw-alts">Alternatives</a></li>'
+    if _cmp_cols:
+        _toc_extra += '<li><a href="#rvw-compare">Comparison</a></li>'
+    if faq_html:
+        _toc_extra += '<li><a href="#rvw-faq">FAQ</a></li>'
 
     # ── Images Setup ──
     main_img = all_images[0] if all_images else ""
@@ -403,6 +452,25 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
     if len(all_images) > 1:
         for img in all_images[1:5]:
             thumbs_html += f'<img src="{img}" class="rvw-thumb" alt="Gallery image" loading="lazy">'
+
+    # ── JSON-LD Review schema (SEO rich results) ──
+    import json as _json
+    _ld = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": short_title,
+        "description": (ai.get("intro", "") or "")[:300],
+        "review": {
+            "@type": "Review",
+            "reviewRating": {"@type": "Rating", "ratingValue": _final_score, "bestRating": 10},
+            "author": {"@type": "Organization", "name": "NestDeal"},
+        },
+    }
+    if main_img:
+        _ld["image"] = main_img
+    if rating > 0 and review_count >= 5:
+        _ld["aggregateRating"] = {"@type": "AggregateRating", "ratingValue": round(rating, 1), "reviewCount": review_count}
+    _ld_html = '<script type="application/ld+json">' + _json.dumps(_ld, ensure_ascii=False).replace("<", "\\u003c") + '</script>'
 
     # ── Star rating widget (visual, out of 5) ──
     def _stars(value: float) -> str:
@@ -460,7 +528,9 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
     color: var(--rvw-body);
     line-height: 1.7;
     font-size: 17px;
-    max-width: 100%;
+    width: 100%;
+    max-width: 1160px;
+    margin: 0 auto;
 }}
 .rvw-wrapper * {{ box-sizing: border-box; }}
 .rvw-wrapper h2 {{ font-family: 'Poppins', sans-serif; font-size: 1.6rem; font-weight: 800; color: var(--rvw-ink); margin: 2.75rem 0 1.1rem; letter-spacing: -0.01em; }}
@@ -592,9 +662,41 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
 .rvw-compare-table td:first-child {{ font-weight: 700; color: var(--rvw-ink); white-space: nowrap; }}
 .rvw-winner {{ background: var(--rvw-good-soft); font-weight: 600; }}
 .rvw-badge-winner {{ display: inline-block; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; background: var(--rvw-good); color: #fff; padding: 3px 9px; border-radius: 999px; margin-left: 6px; vertical-align: middle; }}
+
+/* Score box (criteria ratings + final) */
+.rvw-scorebox {{ background: var(--rvw-card); border: 1px solid var(--rvw-border); border-radius: 16px; overflow: hidden; margin: 28px 0; }}
+.rvw-scorebox-head {{ display: flex; align-items: center; justify-content: space-between; gap: 16px; background: var(--rvw-navy); color: #fff; padding: 16px 22px; }}
+.rvw-scorebox-head h2 {{ color: #fff; margin: 0; font-size: 1.1rem; }}
+.rvw-score-circle {{ width: 64px; height: 64px; border-radius: 50%; border: 4px solid var(--rvw-gold); display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(245,166,35,.08); flex-shrink: 0; }}
+.rvw-score-circle .val {{ font-family: 'Poppins', sans-serif; font-size: 1.25rem; font-weight: 800; color: #fff; line-height: 1; }}
+.rvw-score-circle .max {{ font-size: 0.65rem; color: rgba(255,255,255,.6); }}
+.rvw-scorebox-body {{ padding: 20px 22px; }}
+.rvw-scorebox-body p:last-child {{ margin-bottom: 0; }}
+.rvw-recommend {{ display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 700; margin-bottom: 14px; }}
+.rvw-recommend.buy {{ background: var(--rvw-good-soft); color: var(--rvw-good); border: 1px solid #c8ecdb; }}
+.rvw-recommend.consider {{ background: var(--rvw-accent-soft); color: var(--rvw-accent-dark); border: 1px solid #FDE68A; }}
+.rvw-recommend.skip {{ background: var(--rvw-bad-soft); color: var(--rvw-bad); border: 1px solid #f5cdd4; }}
+.rvw-score-row {{ display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }}
+.rvw-score-row:last-child {{ margin-bottom: 0; }}
+.rvw-score-label {{ font-size: 0.8rem; color: var(--rvw-muted); font-weight: 600; width: 120px; flex-shrink: 0; }}
+@media (max-width: 480px) {{ .rvw-score-label {{ width: 96px; }} }}
+.rvw-score-track {{ flex: 1; height: 8px; background: var(--rvw-surface); border: 1px solid var(--rvw-border); border-radius: 5px; overflow: hidden; }}
+.rvw-score-fill {{ height: 100%; border-radius: 5px; background: var(--rvw-accent); }}
+.rvw-score-fill.low {{ background: #EF4444; }}
+.rvw-score-fill.mid {{ background: var(--rvw-accent); }}
+.rvw-score-fill.high {{ background: var(--rvw-good); }}
+.rvw-score-val {{ font-size: 0.8rem; font-weight: 800; color: var(--rvw-ink); width: 30px; text-align: right; }}
+
+/* Table of contents */
+.rvw-toc {{ background: var(--rvw-surface); border: 1px solid var(--rvw-border); border-radius: 12px; padding: 18px 22px; margin: 20px 0 8px; }}
+.rvw-toc-title {{ font-family: 'Poppins', sans-serif; font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--rvw-ink); margin-bottom: 10px; }}
+.rvw-toc ul {{ list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px 18px; }}
+.rvw-toc li {{ margin: 0; }}
+.rvw-toc a {{ font-size: 0.88rem; font-weight: 600; }}
 </style>
 
 <div class="rvw-wrapper">
+    {_nd_span}{_ld_html}
 
     <div class="rvw-disclosure">{svg_shield} As an Amazon Associate, we earn from qualifying purchases. Our editorial team tests and researches products independently of any commercial relationship.</div>
 
@@ -602,6 +704,17 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
         <div class="rvw-trust-item">{svg_shield} <span>Expert Review</span></div>
         <div class="rvw-trust-item">{svg_clock} <span>Updated {current_month_year}</span></div>
         <div class="rvw-trust-item">{svg_cart} <span>{review_count:,}+ verified ratings</span></div>
+    </div>
+
+    <!-- TOC -->
+    <div class="rvw-toc">
+        <div class="rvw-toc-title">In This Review</div>
+        <ul>
+            <li><a href="#rvw-scores">Our Scores</a></li>
+            <li><a href="#rvw-pros">Pros &amp; Cons</a></li>
+            {_toc_extra}
+            <li><a href="#rvw-verdict">Final Verdict</a></li>
+        </ul>
     </div>
 
     <!-- HERO -->
@@ -650,14 +763,21 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
         </div>
     </div>
 
-    <!-- TL;DR -->
-    <div class="rvw-tldr">
-        <div class="rvw-tldr-label">Bottom Line</div>
-        <p>{safe_verdict or "A strong, well-rounded choice that delivers real value for the price."}</p>
+    <!-- SCORES -->
+    <div class="rvw-scorebox" id="rvw-scores">
+        <div class="rvw-scorebox-head">
+            <h2>Our Scores</h2>
+            <div class="rvw-score-circle"><span class="val">{_final_score:.1f}</span><span class="max">/10</span></div>
+        </div>
+        <div class="rvw-scorebox-body">
+            <div class="rvw-recommend {_recommend_cls}">{(svg_check if _recommend == "buy" else (svg_x if _recommend == "skip" else svg_info))} {_recommend_text}</div>
+            <p>{safe_verdict or "A strong, well-rounded choice that delivers real value for the price."}</p>
+            {_bars_html}
+        </div>
     </div>
 
     <!-- PROS AND CONS -->
-    <h2>The Good and The Bad</h2>
+    <h2 id="rvw-pros">The Good and The Bad</h2>
     <div class="rvw-pc-grid">
         <div class="rvw-pc-box pros">
             <h3 class="rvw-pc-title">{svg_check} What We Like</h3>
@@ -682,10 +802,10 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
     </div>
 
     <!-- SPECIFICATIONS -->
-    {f'<h2>Key Specifications</h2><table class="rvw-specs-table"><tbody>{specs_rows}</tbody></table>' if specs_rows else ''}
+    {f'<h2 id="rvw-specs">Key Specifications</h2><table class="rvw-specs-table"><tbody>{specs_rows}</tbody></table>' if specs_rows else ''}
 
     <!-- FAQ -->
-    {f'<h2>Frequently Asked Questions</h2><div class="rvw-faq-container">{faq_html}</div>' if faq_html else ''}
+    {f'<h2 id="rvw-faq">Frequently Asked Questions</h2><div class="rvw-faq-container">{faq_html}</div>' if faq_html else ''}
 
     <!-- ALTERNATIVES -->
     {_alts_html}
@@ -694,7 +814,7 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
     {_compare_html}
 
     <!-- FINAL VERDICT -->
-    <div class="rvw-verdict-box">
+    <div class="rvw-verdict-box" id="rvw-verdict">
         <h2>Final Verdict</h2>
         <p>{safe_verdict or "A highly recommended product that delivers excellent value for your money."} {safe_final or "Check the link below for the latest deals."}</p>
         <a href="{aff_link}" class="rvw-btn" target="_blank" rel="nofollow sponsored noopener">
