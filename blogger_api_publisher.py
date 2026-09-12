@@ -158,12 +158,17 @@ def test_connection() -> bool:
 
 # ── BUILD HTML ARTICLE ─────────────────────────────────────────────────────────
 
-def _ai_generate_content(title: str, price: str, description: str) -> dict:
+def _ai_generate_content(title: str, price: str, description: str, feedback: str = "") -> dict:
     """Generate product-specific content via AI (Groq/OpenRouter) with fallback."""
     import os, httpx, json
 
     short_title = title[:80]
+    feedback_block = f"\n\n{feedback[:2500]}" if feedback else ""
     prompt = (
+        f"You are a STRICT, independent consumer advocate (not a salesperson) for a world-class review site.\n"
+        f"Product: {short_title}\nPrice: {price}\nDescription: {description[:400] if description else 'N/A'}\n"
+        f"{feedback_block}\n\n"
+        f"Return ONLY valid JSON with this exact structure:\n"
         f"You are an expert product reviewer for a world-class tech and lifestyle site (like Wirecutter or RTINGS).\n"
         f"Write a highly professional, honest, and direct review for:\n"
         f"Title: {short_title}\nPrice: {price}\n\n"
@@ -179,8 +184,12 @@ def _ai_generate_content(title: str, price: str, description: str) -> dict:
         f' "verdict": "1 strong concluding sentence",\n'
         f' "faq": [{{"q": "question", "a": "answer"}} for 2 common questions],\n'
         f' "final": "1 sentence Call to Action"}}\n'
-        f"Rules: Be objective, authoritative, and concise. No markdown formatting in the strings. "
-        f"Alternative names must be real products shoppers can find on Amazon. "
+        f"STRICT HONESTY RULES: you protect buyers, you never sell. "
+        f"If the real feedback shows repeated complaints (too expensive, defects, weak battery, bad app, misleading listing, slow, poor support...), "
+        f"say clearly the product is NOT good, explain the causes, and set scores below 6 with a 'skip' verdict. "
+        f"Every con MUST come from the real feedback above when provided -- quote the actual complaints. "
+        f"Never invent statistics: use ONLY the provided rating/review count. "
+        f"No markdown in the strings. Alternative names must be real products on Amazon. "
         f"Use real Unicode characters (not HTML entities) in visible text."
     )
 
@@ -300,8 +309,14 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
     seo_title = _truncate_title(title, 70)
     short_title = _truncate_title(title, 80)
     
-    # Generate AI content
-    ai = _ai_generate_content(title, price, description)
+    # Generate AI content (enriched with real buyer feedback, best-effort)
+    try:
+        import review_enrichment as _enrich_mod
+        _feedback = _enrich_mod.gather(product)
+    except Exception as _e:
+        logger.info(f"[enrich] skipped: {_e}")
+        _feedback = ""
+    ai = _ai_generate_content(title, price, description, feedback=_feedback)
 
     # Sanitized display strings (AI may emit entities; decode + escape)
     safe_title   = _safe_text(short_title)
@@ -449,12 +464,8 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
     if faq_html:
         _toc_extra += '<li><a href="#rvw-faq">FAQ</a></li>'
 
-    # ── Images Setup ──
+    # ── Images Setup (single featured picture only) ──
     main_img = all_images[0] if all_images else ""
-    thumbs_html = ""
-    if len(all_images) > 1:
-        for img in all_images[1:5]:
-            thumbs_html += f'<img src="{img}" class="rvw-thumb" alt="Gallery image" loading="lazy">'
 
     # ── JSON-LD Review schema (SEO rich results) ──
     import json as _json
@@ -602,6 +613,7 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
 .rvw-badge.alt {{ background: var(--rvw-accent-soft); color: var(--rvw-accent-dark); }}
 
 .rvw-hero-image-container {{ display: flex; flex-direction: column; gap: 10px; }}
+.rvw-hero .rvw-main-img {{ margin-bottom: 22px; }}
 .rvw-main-img {{ width: 100%; aspect-ratio: 1/1; object-fit: contain; border-radius: 12px; background: var(--rvw-surface); border: 1px solid var(--rvw-border); padding: 18px; }}
 .rvw-thumbs-row {{ display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }}
 .rvw-thumbs-row::-webkit-scrollbar {{ display: none; }}
@@ -779,12 +791,6 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
 
     <div class="rvw-disclosure">{svg_shield} As an Amazon Associate, we earn from qualifying purchases. Our editorial team tests and researches products independently of any commercial relationship.</div>
 
-    <div class="rvw-trust-bar">
-        <div class="rvw-trust-item">{svg_shield} <span>Expert Review</span></div>
-        <div class="rvw-trust-item">{svg_clock} <span>Updated {current_month_year}</span></div>
-        <div class="rvw-trust-item">{svg_cart} <span>{review_count:,}+ verified ratings</span></div>
-    </div>
-
     <!-- TOC -->
     <div class="rvw-toc">
         <div class="rvw-toc-title">In This Review</div>
@@ -796,48 +802,35 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
         </ul>
     </div>
 
-    <!-- HERO -->
+    <!-- HERO: featured picture first, then key facts -->
     <div class="rvw-hero">
-        <div class="rvw-hero-grid">
+        <img src="{main_img}" class="rvw-main-img" alt="{safe_title}">
 
-            <div class="rvw-hero-image-container">
-                <img src="{main_img}" class="rvw-main-img" alt="{safe_title}">
-                {f'<div class="rvw-thumbs-row">{thumbs_html}</div>' if thumbs_html else ''}
+        <div class="rvw-hero-content">
+            <div class="rvw-rating-row">
+                <span class="rvw-stars">{star_rating_html}</span>
+                <span class="rvw-rating-num">{rating if rating > 0 else round(editor_score/2,1)}/5</span>
+                <span class="rvw-review-count">({review_count:,} ratings)</span>
             </div>
 
-            <div class="rvw-hero-content">
-                <div class="rvw-badge-row">
-                    <span class="rvw-badge">{svg_check} Editor's Pick</span>
-                    {f'<span class="rvw-badge alt">Best Value</span>' if editor_score >= 8.5 else ''}
-                </div>
+            <div class="rvw-editor-score">
+                <span class="rvw-editor-score-num">{editor_score}</span>
+                <span class="rvw-editor-score-label">Editor's<br>Score /10</span>
+            </div>
 
-                <h2>{safe_title}</h2>
+            <p class="rvw-hero-intro">{safe_intro}</p>
 
-                <div class="rvw-rating-row">
-                    <span class="rvw-stars">{star_rating_html}</span>
-                    <span class="rvw-rating-num">{rating if rating > 0 else round(editor_score/2,1)}/5</span>
-                    <span class="rvw-review-count">({review_count:,} ratings)</span>
-                </div>
+            <div class="rvw-price-row">
+                <span class="rvw-price-current">{price_display}</span>
+                {orig_price_html}
+                {discount_html}
+            </div>
 
-                <div class="rvw-editor-score">
-                    <span class="rvw-editor-score-num">{editor_score}</span>
-                    <span class="rvw-editor-score-label">Editor's<br>Score /10</span>
-                </div>
-
-                <p class="rvw-hero-intro">{safe_intro}</p>
-
-                <div class="rvw-price-row">
-                    <span class="rvw-price-current">{price_display}</span>
-                    {orig_price_html}
-                    {discount_html}
-                </div>
-
-                <div class="rvw-btn-container">
-                    <a href="{aff_link}" class="rvw-btn" target="_blank" rel="nofollow sponsored noopener">
-                        {svg_cart} Check Price on Amazon
-                    </a>
-                    <div class="rvw-btn-subtext">Price accurate as of {current_month_year}. Terms apply.</div>
-                </div>
+            <div class="rvw-btn-container">
+                <a href="{aff_link}" class="rvw-btn" target="_blank" rel="nofollow sponsored noopener">
+                    {svg_cart} Check Price on Amazon
+                </a>
+                <div class="rvw-btn-subtext">Price accurate as of {current_month_year}. Terms apply.</div>
             </div>
         </div>
     </div>

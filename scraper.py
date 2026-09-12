@@ -758,8 +758,7 @@ def _extract_customer_reviews(soup: BeautifulSoup) -> list[dict]:
                 if not star_match:
                     continue
                 stars = float(star_match.group(1))
-                if stars < 4.0:
-                    continue  # Skip reviews below 4 stars
+                # Keep ALL ratings (critical 1-3★ included: needed for honest cons)
 
                 # Extract review title
                 title_el = el.select_one("[data-hook='review-title'] span, .review-title span, a[data-hook='review-title']")
@@ -791,7 +790,7 @@ def _extract_customer_reviews(soup: BeautifulSoup) -> list[dict]:
                 for item in data:
                     if item.get("@type") == "Review":
                         rating = item.get("reviewRating", {}).get("ratingValue", 0)
-                        if float(rating) >= 4.0:
+                        if float(rating) >= 1.0:
                             reviews.append({
                                 "stars": float(rating),
                                 "title": item.get("name", ""),
@@ -801,7 +800,15 @@ def _extract_customer_reviews(soup: BeautifulSoup) -> list[dict]:
         except Exception:
             pass
 
-    return reviews[:5]  # Return top 5 reviews (4+ stars only)
+    # Balanced mix: 3 most critical + 3 most positive (honest pros AND cons)
+    seen = set()
+    mixed = []
+    for r in sorted(reviews, key=lambda x: x.get("stars", 5))[:3] + sorted(reviews, key=lambda x: -x.get("stars", 0))[:3]:
+        key = (r.get("title", "") + r.get("body", ""))[:60]
+        if key not in seen:
+            seen.add(key)
+            mixed.append(r)
+    return mixed[:6]
 
 
 # ─────────────────────────────────────────────
