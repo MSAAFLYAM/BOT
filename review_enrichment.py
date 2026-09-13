@@ -13,11 +13,97 @@ from __future__ import annotations
 
 import logging
 import re
+import json
+import os
 
 logger = logging.getLogger(__name__)
 
 _REDDIT_URL = "https://www.reddit.com/search.json"
 _UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) NestDealBot/1.0 (review research)"
+
+# ── Unified Groq configuration (Part A2 — same settings everywhere) ──────────
+GROQ_CONFIG = {
+    "model": "openai/gpt-oss-20b",  # llama-3.1-70b-versatile as fallback
+    "max_tokens": 2000,
+    "temperature": 0.3,  # low for reliable JSON
+    "reasoning_effort": "low"  # avoid burning tokens on thinking
+}
+
+
+def _extract_json_safe(text: str) -> str:
+    """Extract the first valid JSON object/array from text, even if truncated."""
+    if not text:
+        return "{}"
+    # Attempt 1: direct JSON
+    try:
+        json.loads(text)
+        return text
+    except Exception:
+        pass
+    # Attempt 2: from code block
+    match = re.search(r'```(?:json)?\s*([\s\S]*?)```', text)
+    if match:
+        candidate = match.group(1).strip()
+        try:
+            json.loads(candidate)
+            return candidate
+        except Exception:
+            pass
+    # Attempt 3: first balanced { or [
+    for start_char, end_char in [('{', '}'), ('[', ']')]:
+        start = text.find(start_char)
+        if start == -1:
+            continue
+        depth = 0
+        for i, c in enumerate(text[start:], start):
+            if c == start_char:
+                depth += 1
+            elif c == end_char:
+                depth -= 1
+                if depth == 0:
+                    candidate = text[start:i + 1]
+                    try:
+                        json.loads(candidate)
+                        return candidate
+                    except Exception:
+                        break
+    return "{}"  # empty fallback
+
+
+def call_groq_safe(prompt: str, expect_json: bool = False) -> str:
+    """Call Groq with unified config and safe (truncated-JSON) handling."""
+    key = os.environ.get("GROQ_API_KEY", "")
+    if not key:
+        return "{}" if expect_json else ""
+    try:
+        import httpx
+        r = httpx.post(
+            "https://api.groq.com/openai/v1/chat/completions",
+            headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+            json={
+                "model": GROQ_CONFIG["model"],
+                "messages": [{"role": "user", "content": prompt}],
+                "max_tokens": GROQ_CONFIG["max_tokens"],
+                "temperature": GROQ_CONFIG["temperature"],
+                "reasoning_effort": GROQ_CONFIG["reasoning_effort"],
+            },
+            timeout=30,
+        )
+        if r.status_code != 200:
+            return "{}" if expect_json else ""
+        text = r.json()["choices"][0]["message"]["content"] or ""
+    except Exception as e:
+        logger.info(f"[groq_safe] call failed: {e}")
+        return "{}" if expect_json else ""
+
+    # Remove thinking tags
+    text = re.sub(r"<thinking>[\s\S]*?</thinking>", "", text, flags=re.DOTALL)
+    text = re.sub(r" thinking.*? response", "", text, flags=re.DOTALL)
+    text = text.strip()
+
+    if not expect_json:
+        return text
+    return _extract_json_safe(text)
 
 
 def _short_query(title: str) -> str:
@@ -129,23 +215,12 @@ def generate_faqs(product_title: str, category: str, features: list,
     groq_key = os.environ.get("GROQ_API_KEY", "")
     if groq_key:
         try:
-            import httpx
-            r = httpx.post(
-                "https://api.groq.com/openai/v1/chat/completions",
-                headers={"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"},
-                json={"model": "qwen/qwen3.6-27b", "messages": [{"role": "user", "content": prompt}],
-                       "max_tokens": 800, "temperature": 0.3},
-                timeout=25,
-            )
-            if r.status_code == 200:
-                text = r.json()["choices"][0]["message"]["content"].strip()
-                text = re.sub(r"<think>[\s\S]*?</think>", "", text).strip()
-                text = re.sub(r"^```json\n?|\n?```$", "", text).strip()
-                if text:
-                    faqs = json.loads(text)
-                    if isinstance(faqs, list) and len(faqs) >= 3:
-                        return [{"question": f.get("question", ""), "answer": f.get("answer", "")}
-                                for f in faqs[:5] if f.get("question") and f.get("answer")]
+            text = call_groq_safe(prompt, expect_json=True)
+            if text and text != "{}":
+                faqs = json.loads(text)
+                if isinstance(faqs, list) and len(faqs) >= 3:
+                    return [{"question": f.get("question", ""), "answer": f.get("answer", "")}
+                            for f in faqs[:5] if f.get("question") and f.get("answer")]
         except Exception as e:
             logger.info(f"[faqs] Groq failed: {e}")
 
@@ -194,23 +269,13 @@ def extract_pros_cons_from_reviews(reviews: list, rating: float) -> dict:
         groq_key = os.environ.get("GROQ_API_KEY", "")
         if groq_key:
             try:
-                import httpx
                 prompt = (
                     f"Extract 3-5 pros from these positive customer reviews:\n{reviews_text}\n\n"
                     f"Return JSON only: [\"pro1\", \"pro2\", ...]\n"
                     f"Rules: Each pro must be a single clear sentence. No HTML entities, no symbols."
                 )
-                r = httpx.post(
-                    "https://api.groq.com/openai/v1/chat/completions",
-                    headers={"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"},
-                    json={"model": "qwen/qwen3.6-27b", "messages": [{"role": "user", "content": prompt}],
-                           "max_tokens": 300, "temperature": 0.3},
-                    timeout=20,
-                )
-                if r.status_code == 200:
-                    text = r.json()["choices"][0]["message"]["content"].strip()
-                    text = re.sub(r"<think>[\s\S]*?</think>", "", text).strip()
-                    text = re.sub(r"^```json\n?|\n?```$", "", text).strip()
+                text = call_groq_safe(prompt, expect_json=True)
+                if text and text != "{}":
                     items = json.loads(text)
                     if isinstance(items, list):
                         pros = [str(p).strip() for p in items if p and len(str(p).strip()) > 5][:5]
@@ -225,23 +290,13 @@ def extract_pros_cons_from_reviews(reviews: list, rating: float) -> dict:
         groq_key = os.environ.get("GROQ_API_KEY", "")
         if groq_key:
             try:
-                import httpx
                 prompt = (
                     f"Extract 3-5 cons from these negative customer reviews:\n{reviews_text}\n\n"
                     f"Return JSON only: [\"con1\", \"con2\", ...]\n"
                     f"Rules: Each con must be a single clear sentence. No HTML entities, no symbols."
                 )
-                r = httpx.post(
-                    "https://api.groq.com/openai/v1/chat/completions",
-                    headers={"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"},
-                    json={"model": "qwen/qwen3.6-27b", "messages": [{"role": "user", "content": prompt}],
-                           "max_tokens": 300, "temperature": 0.3},
-                    timeout=20,
-                )
-                if r.status_code == 200:
-                    text = r.json()["choices"][0]["message"]["content"].strip()
-                    text = re.sub(r"<think>[\s\S]*?</think>", "", text).strip()
-                    text = re.sub(r"^```json\n?|\n?```$", "", text).strip()
+                text = call_groq_safe(prompt, expect_json=True)
+                if text and text != "{}":
                     items = json.loads(text)
                     if isinstance(items, list):
                         cons = [str(c).strip() for c in items if c and len(str(c).strip()) > 5][:5]

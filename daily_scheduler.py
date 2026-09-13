@@ -87,21 +87,19 @@ def _is_asin_used(asin: str) -> bool:
         return asin in data.get("asins", [])
 
 
-# -- Default keywords by niche (§3) — Smart Home / Home Security only --
+# -- Default keywords by niche (§3) — Site identity: Amazon Gadgets Reviews (general) --
 DEFAULT_KEYWORDS = {
-    "Smart Home": [
-        "smart plug", "smart light strip", "home assistant green",
-        "matter smart switch", "zigbee sensor", "smart thermostat",
-        "curtain opener", "smart garage opener",
+    "Gadgets": [
+        "wireless earbuds", "robot vacuum", "air fryer",
+        "portable charger", "smart watch fitness", "desk lamp led",
     ],
-    "Home Security": [
-        "video doorbell", "security camera", "smart lock",
-        "doorbell camera wireless", "outdoor security camera",
-        "fingerprint deadbolt", "wifi door lock",
+    "Tech": [
+        "bluetooth speaker", "mechanical keyboard", "gaming mouse",
+        "webcam 1080p", "power bank fast charging", "smart plug",
     ],
-    "Smart Devices": [
-        "water leak detector", "smart smoke detector",
-        "led strip lights smart", "smart sensor",
+    "Home & Kitchen": [
+        "electric kettle", "coffee maker", "air purifier",
+        "kitchen scale digital", "garlic press", "insulated water bottle",
     ],
 }
 

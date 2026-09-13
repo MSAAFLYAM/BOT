@@ -19,7 +19,7 @@ OPENROUTER_MODELS = [
     "mistralai/mistral-small-3.1-24b-instruct:free",
     "qwen/qwen3-8b:free",
 ]
-GROQ_MODEL = "qwen/qwen3.6-27b"
+GROQ_MODEL = "openai/gpt-oss-20b"
 
 _key_idx = 0
 def _groq_key():
@@ -34,19 +34,29 @@ def _groq_key():
 def _call_groq(prompt: str, max_tokens: int = 600) -> str:
     key = _groq_key()
     if not key: return ""
+    try:
+        from review_enrichment import call_groq_safe
+        text = call_groq_safe(prompt, expect_json=False)
+        # ensure thinking/code fences removed for plain text too
+        import re as _re
+        text = _re.sub(r"^```\w*\n?|\n?```$", "", text).strip()
+        if text:
+            return text
+    except Exception as e:
+        logger.warning(f"[content] Groq unified call failed: {e}")
     for model in [GROQ_MODEL, "openai/gpt-oss-20b", "qwen/qwen3.8-27b"]:
         try:
             r = httpx.post(
                 "https://api.groq.com/openai/v1/chat/completions",
                 headers={"Authorization": f"Bearer {key}","Content-Type":"application/json"},
-                json={"model": model, "messages":[{"role":"user","content":prompt}], "max_tokens": max_tokens, "temperature":0.5},
+                json={"model": model, "messages":[{"role":"user","content":prompt}], "max_tokens": max_tokens, "temperature":0.3, "reasoning_effort":"low"},
                 timeout=25,
             )
             if r.status_code == 200:
                 text = (r.json()["choices"][0]["message"]["content"] or "").strip()
                 import re as _re
-                text = _re.sub(r"<think>[\s\S]*?</think>", "", text, flags=_re.DOTALL).strip()
-                text = _re.sub(r"<think>[\s\S]*$", "", text, flags=_re.DOTALL).strip()
+                text = _re.sub(r"<thinking>[\s\S]*?</thinking>", "", text, flags=_re.DOTALL).strip()
+                text = _re.sub(r"^```\w*\n?|\n?```$", "", text).strip()
                 if text:
                     return text
             elif r.status_code in (400, 404):

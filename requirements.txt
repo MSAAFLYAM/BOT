@@ -45,3 +45,6 @@ httpx
 
 # Trend Discovery (Google Trends, no API key)
 pytrends==4.9.2
+requests>=2.31.0
+groq>=0.4.0
+# camoufox (optional — only if a browser fallback is needed)

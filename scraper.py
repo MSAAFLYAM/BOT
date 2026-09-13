@@ -256,6 +256,24 @@ def _normalize_price_to_usd(price_str: str) -> str:
     return ""
 
 
+def validate_price(price_str: str, product_title: str) -> str:
+    """Verify price reasonableness based on product category.
+
+    Flags suspicious values (e.g. > $500 for earbuds) so callers can
+    re-scrape with a different layer instead of publishing a wrong price.
+    """
+    try:
+        price = float(str(price_str).replace('$', '').replace(',', '').strip())
+    except (ValueError, TypeError):
+        return price_str
+    if price <= 0:
+        return price_str
+    title_lower = (product_title or '').lower()
+    if price > 500 and any(k in title_lower for k in ['earbuds', 'earbud', 'tws']):
+        print(f"[PRICE WARNING] Suspicious price ${price} for earbuds — verify scrape")
+    return price_str
+
+
 def extract_asin(url: str) -> str | None:
     patterns = [
         r"/dp/([A-Z0-9]{10})",
@@ -680,50 +698,50 @@ def _extract_image(soup: BeautifulSoup) -> str:
     return _upgrade_image(best)
 
 
-def select_product_images(raw_images: list[str], max_images: int = 2) -> dict:
+def select_product_images(raw_images: list, max_images: int = 2) -> dict:
     """
-    From a list of Amazon image URLs, pick diverse hero + secondary images.
-    Avoids thumbnails, tiny images, and similar white-background shots.
+    Pick two DIFFERENT images from a list of Amazon image URLs.
+    Strict rule: hero != secondary (completely different URL after normalization).
     Returns: {'hero': str, 'secondary': str|None, 'all_selected': list[str]}
     """
     if not raw_images:
         return {'hero': '', 'secondary': None, 'all_selected': []}
 
-    MAIN_INDICATORS = ['_MAIN_', 'main', 'primary', 'cover', 'landingImage']
-    SECONDARY_INDICATORS = ['PT01', 'PT02', 'PT03', 'lifestyle', 'in_use',
-                            'angle', 'side', 'back', 'detail', 'feature',
-                            'context', 'ifestyle', 'ifestyleShot']
-    AVOID_INDICATORS = ['THUMB', 'thumb', '_SS40_', '_SS30_', '_SS20_']
+    # Normalize URLs (remove query params) for strict comparison
+    def normalize(url: str) -> str:
+        return url.split('?')[0].split('._')[0] if url else ''
 
-    def _score(url: str, prefer_main: bool) -> int:
-        score = 0
-        indicators = MAIN_INDICATORS if prefer_main else SECONDARY_INDICATORS
-        for ind in indicators:
-            if ind.lower() in url.lower():
-                score += 10
-        for avoid in AVOID_INDICATORS:
-            if avoid.lower() in url.lower():
-                score -= 20
-        for size in ['2000', '1500', '1200', '1000']:
-            if size in url:
-                score += 5
-        if '_AC_' in url:
-            score += 3
-        if 'images/I/' in url:
-            score += 2
-        return score
+    MAIN_KEYWORDS   = ['_MAIN_', 'main', 'primary']
+    SECOND_KEYWORDS = ['PT01', 'PT02', 'PT03', 'lifestyle', 'in_use', 'angle', 'back', 'side']
+    AVOID_KEYWORDS  = ['THUMB', '_SS', '_AC_US', 'thumb', 'icon']
 
-    hero = max(raw_images, key=lambda u: _score(u, prefer_main=True))
-    remaining = [img for img in raw_images if img != hero]
-    secondary = None
-    if remaining:
-        secondary = max(remaining, key=lambda u: _score(u, prefer_main=False))
+    def score(url: str, want_main: bool) -> int:
+        s = 0
+        keywords = MAIN_KEYWORDS if want_main else SECOND_KEYWORDS
+        for k in keywords:
+            if k in url: s += 10
+        for k in AVOID_KEYWORDS:
+            if k in url: s -= 15
+        for size in ['2000', '1500', '1200', '1000', '800']:
+            if size in url: s += 3; break
+        return s
 
-    selected = [img for img in [hero, secondary] if img]
+    hero = max(raw_images, key=lambda u: score(u, want_main=True))
+    hero_norm = normalize(hero)
+
+    # Strict rule: secondary must be different from hero
+    candidates = [img for img in raw_images
+                  if img != hero and normalize(img) != hero_norm]
+
+    if candidates:
+        secondary = max(candidates, key=lambda u: score(u, want_main=False))
+    else:
+        secondary = None  # better than repeating the same image
+
     return {
         'hero': hero,
         'secondary': secondary,
-        'all_selected': selected[:max_images],
+        'all_selected': [img for img in [hero, secondary] if img][:max_images],
     }
 
 
@@ -1072,7 +1090,7 @@ def scrape_product(url: str) -> dict | None:
         last_scrape_error = "لم يُعثر على عنوان المنتج"
         return None
 
-    price = _extract_price(soup)
+    price = validate_price(price, title)
     img   = _extract_image(soup)
     all_imgs = _extract_all_images(soup)
     orig  = _extract_original_price(soup)
@@ -1103,6 +1121,43 @@ def scrape_product(url: str) -> dict | None:
         "availability":   _extract_availability(soup),
         "features":       _extract_features(soup),
     }
+
+    # ═══ V3 ENRICHMENT (Part C1) — never crashes the pipeline when offline ═══
+    try:
+        from long_term_extractor import extract_long_term_experience
+        product['long_term'] = extract_long_term_experience(customer_reviews)
+    except Exception as _e:
+        logger.info(f"[V3] long_term skipped: {_e}")
+        product['long_term'] = {}
+
+    try:
+        from multi_price_builder import build_multi_platform_links
+        product['multi_price_links'] = build_multi_platform_links(title, asin)
+    except Exception as _e:
+        logger.info(f"[V3] multi_price skipped: {_e}")
+        product['multi_price_links'] = []
+
+    try:
+        from specs_groups import extract_specs_with_groq, detect_category
+        _cat = detect_category(title, product.get('category', ''))
+        product['specs_values'] = extract_specs_with_groq(title, product.get('features', []), _cat)
+    except Exception as _e:
+        logger.info(f"[V3] specs skipped: {_e}")
+        product['specs_values'] = {}
+
+    try:
+        _cur = product.get('price_numeric', 0) or 0
+        product['alternatives'] = scrape_alternatives(asin, title, _cur)
+    except Exception as _e:
+        logger.info(f"[V3] alternatives skipped: {_e}")
+        product['alternatives'] = []
+
+    try:
+        from review_enrichment import generate_faqs
+        product['faqs'] = generate_faqs(title, product.get('category', ''), product.get('features', []))
+    except Exception as _e:
+        logger.info(f"[V3] faqs skipped: {_e}")
+        product['faqs'] = []
 
     if not is_valid_product(product):
         last_scrape_error = "بيانات المنتج غير مكتملة (لا عنوان أو سعر)"
@@ -1215,40 +1270,31 @@ def scrape_alternatives(asin: str, product_title: str, current_price: float) -> 
 
     # Layer 2: Groq AI fallback
     if len(alternatives) < 2:
-        groq_key = os.environ.get("GROQ_API_KEY", "")
-        if groq_key:
-            try:
-                import httpx, json as _json
-                prompt = (
-                    f"Suggest 2 real Amazon alternatives to '{product_title}' priced around ${current_price:.0f}. "
-                    f"One cheaper option and one premium option. "
-                    f"Return JSON only: [{{'name': '...', 'search_query': '...', 'estimated_price': '...', 'type': 'cheaper|better'}}]"
-                )
-                r = httpx.post(
-                    "https://api.groq.com/openai/v1/chat/completions",
-                    headers={"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"},
-                    json={"model": "qwen/qwen3.6-27b", "messages": [{"role": "user", "content": prompt}], "max_tokens": 400, "temperature": 0.3},
-                    timeout=20,
-                )
-                if r.status_code == 200:
-                    raw = r.json()["choices"][0]["message"]["content"].strip()
-                    raw = re.sub(r"<think>[\s\S]*?</think>", "", raw).strip()
-                    raw = re.sub(r"^```json\n?|\n?```$", "", raw).strip()
-                    items = _json.loads(raw)
-                    for item in items:
-                        sq = item.get("search_query", item.get("name", ""))
-                        search_url = f"https://www.amazon.com/s?k={quote(sq)}&tag={AFF_TAG}"
-                        alternatives.append({
-                            "name": item.get("name", sq),
-                            "price": item.get("estimated_price", "Check price"),
-                            "rating": 0,
-                            "review_count": 0,
-                            "asin": "",
-                            "url": search_url,
-                            "type": item.get("type", "similar"),
-                        })
-            except Exception as e:
-                logger.info(f"[alternatives] Groq fallback failed: {e}")
+        try:
+            from review_enrichment import call_groq_safe
+            import json as _json
+            prompt = (
+                f"Suggest 2 real Amazon alternatives to '{product_title}' priced around ${current_price:.0f}. "
+                f"One cheaper option and one premium option. "
+                f"Return JSON only: [{{'name': '...', 'search_query': '...', 'estimated_price': '...', 'type': 'cheaper|better'}}]"
+            )
+            raw = call_groq_safe(prompt, expect_json=True)
+            if raw and raw != "{}":
+                items = _json.loads(raw)
+                for item in items:
+                    sq = item.get("search_query", item.get("name", ""))
+                    search_url = f"https://www.amazon.com/s?k={quote(sq)}&tag={AFF_TAG}"
+                    alternatives.append({
+                        "name": item.get("name", sq),
+                        "price": item.get("estimated_price", "Check price"),
+                        "rating": 0,
+                        "review_count": 0,
+                        "asin": "",
+                        "url": search_url,
+                        "type": item.get("type", "similar"),
+                    })
+        except Exception as e:
+            logger.info(f"[alternatives] Groq fallback failed: {e}")
 
     return alternatives[:3]
 

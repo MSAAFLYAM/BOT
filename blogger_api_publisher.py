@@ -160,7 +160,39 @@ def test_connection() -> bool:
 
 def _ai_generate_content(title: str, price: str, description: str, feedback: str = "") -> dict:
     """Generate product-specific content via AI (Groq/OpenRouter) with fallback."""
-    import os, httpx, json
+
+    def _extract_json(text: str) -> dict:
+        """Strict JSON parse with thinking-block and truncation recovery."""
+        import json as _json, re as _re
+
+        t = _re.sub(r"<thinking>[\s\S]*?</thinking>", "", text or "").strip()
+        t = _re.sub(r"^```json\s*|\s*```$", "", t).strip()
+        try:
+            out = _json.loads(t)
+            if isinstance(out, dict):
+                return out
+        except Exception:
+            pass
+        # Recovery: find first '{' .. last balanced '}' region
+        start = t.find("{")
+        if start >= 0:
+            depth = 0
+            for i in range(start, len(t)):
+                if t[i] == "{":
+                    depth += 1
+                elif t[i] == "}":
+                    depth -= 1
+                    if depth == 0:
+                        cand = t[start:i + 1]
+                        try:
+                            out = _json.loads(cand)
+                            if isinstance(out, dict):
+                                return out
+                        except Exception:
+                            continue
+        return {}
+
+    import os, json
 
     short_title = title[:80]
     feedback_block = f"\n\n{feedback[:2500]}" if feedback else ""
@@ -200,24 +232,18 @@ def _ai_generate_content(title: str, price: str, description: str, feedback: str
 
     if groq_key:
         try:
-            r = httpx.post(
-                "https://api.groq.com/openai/v1/chat/completions",
-                headers={"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"},
-                json={"model": "qwen/qwen3.6-27b", "messages": [{"role": "user", "content": prompt}], "max_tokens": 1200, "temperature": 0.3},
-                timeout=25,
-            )
-            if r.status_code == 200:
-                text = r.json()["choices"][0]["message"]["content"].strip()
-                text = re.sub(r"<think>[\s\S]*?</think>", "", text).strip()
-                text = re.sub(r"<think>[\s\S]*$", "", text).strip()
-                text = re.sub(r"^```json\n?|\n?```$", "", text).strip()
-                if text:
-                    result = json.loads(text)
+            from review_enrichment import call_groq_safe
+            raw = call_groq_safe(prompt, expect_json=True)
+            if raw and raw != "{}":
+                parsed = json.loads(raw) if isinstance(raw, str) else raw
+                if isinstance(parsed, dict):
+                    result = parsed
         except Exception as e:
             logger.warning(f"[ai_content] Groq failed: {e}")
 
     if not result and openrouter_key:
         try:
+            import httpx
             r = httpx.post(
                 "https://openrouter.ai/api/v1/chat/completions",
                 headers={"Authorization": f"Bearer {openrouter_key}", "Content-Type": "application/json"},
@@ -1023,6 +1049,668 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
 
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+#  V3 ARTICLE (GSMArena-inspired) — nested prefixes: nd3- to avoid Blogger clash
+# ═══════════════════════════════════════════════════════════════════════════════
+
+ARTICLE_CSS_V3 = """<style>
+/* === NestDeal V3 CSS — GSMArena-inspired === */
+/* prefix: nd3- to avoid theme Blogger conflict */
+:root{
+  --nd3-bg:#F6F7F9;
+  --nd3-card:#FFFFFF;
+  --nd3-text:#14161A;
+  --nd3-muted:#5A6170;
+  --nd3-border:#E3E6EA;
+  --nd3-cta:#FF9900;
+  --nd3-cta-hover:#e68900;
+  --nd3-good:#0E9357;
+  --nd3-bad:#D23641;
+  --nd3-warn:#E8A33D;
+  --nd3-blue:#1A73E8;
+  --nd3-radius:12px;
+  --nd3-shadow:0 1px 2px rgba(20,22,26,.04),0 4px 12px rgba(20,22,26,.04);
+}
+
+/* RESET */
+.nd3-wrap *{box-sizing:border-box;margin:0;padding:0}
+.nd3-wrap{font-family:system-ui,-apple-system,sans-serif;font-size:16px;color:var(--nd3-text);line-height:1.6;background:var(--nd3-bg);padding:0}
+
+/* CARD */
+.nd3-card{background:var(--nd3-card);border-radius:var(--nd3-radius);box-shadow:var(--nd3-shadow);padding:20px;margin-bottom:20px;border:1px solid var(--nd3-border)}
+
+/* BREADCRUMB */
+.nd3-breadcrumb{font-size:13px;color:var(--nd3-muted);margin-bottom:16px}
+.nd3-breadcrumb a{color:var(--nd3-blue);text-decoration:none}
+.nd3-breadcrumb span{margin:0 6px}
+
+/* HERO */
+.nd3-hero{display:grid;grid-template-columns:1fr;gap:20px}
+@media(min-width:700px){.nd3-hero{grid-template-columns:340px 1fr}}
+.nd3-hero-img{width:100%;border-radius:10px;aspect-ratio:4/3;object-fit:contain;background:#fff}
+.nd3-hero-info h1{font-size:1.4rem;font-weight:800;line-height:1.3;margin-bottom:12px}
+@media(min-width:700px){.nd3-hero-info h1{font-size:1.7rem}}
+
+/* MINI SPEC STRIP */
+.nd3-spec-strip{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.nd3-spec-chip{background:var(--nd3-bg);border:1px solid var(--nd3-border);border-radius:6px;padding:4px 10px;font-size:12px;font-weight:600;color:var(--nd3-muted)}
+
+/* PRICE ROW */
+.nd3-price-row{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:12px 0}
+.nd3-price{font-size:1.8rem;font-weight:800;color:var(--nd3-text)}
+.nd3-list-price{font-size:1rem;color:var(--nd3-muted);text-decoration:line-through}
+.nd3-discount{background:var(--nd3-bad);color:#fff;border-radius:4px;padding:2px 8px;font-size:13px;font-weight:700}
+
+/* BADGES */
+.nd3-badge{display:inline-block;padding:5px 14px;border-radius:20px;font-size:13px;font-weight:700;color:#fff;margin-bottom:10px}
+.nd3-badge-rec{background:var(--nd3-good)}
+.nd3-badge-check{background:var(--nd3-warn)}
+.nd3-badge-skip{background:var(--nd3-bad)}
+
+/* CTA BUTTON */
+.nd3-cta{display:block;background:var(--nd3-cta);color:#000!important;text-align:center;padding:13px 20px;border-radius:10px;font-weight:800;font-size:1rem;text-decoration:none!important;margin:14px 0;transition:background .2s}
+.nd3-cta:hover{background:var(--nd3-cta-hover)}
+.nd3-cta-sm{font-size:.85rem;padding:8px 14px}
+
+/* STICKY TOC — CSS only, no JS */
+.nd3-toc{position:sticky;top:0;z-index:99;background:var(--nd3-card);border-bottom:1px solid var(--nd3-border);overflow-x:auto;white-space:nowrap;padding:0 4px;-webkit-overflow-scrolling:touch}
+.nd3-toc-inner{display:inline-flex;gap:0}
+.nd3-toc a{display:inline-block;padding:12px 14px;font-size:13px;font-weight:600;color:var(--nd3-muted);text-decoration:none;border-bottom:2px solid transparent;transition:all .2s}
+.nd3-toc a:hover{color:var(--nd3-text);border-bottom-color:var(--nd3-cta)}
+
+/* VERDICT BOX */
+.nd3-verdict-box{border-radius:var(--nd3-radius);padding:20px 24px;border-left:4px solid}
+.nd3-verdict-rec{background:#f0fdf4;border-color:var(--nd3-good)}
+.nd3-verdict-check{background:#fffbeb;border-color:var(--nd3-warn)}
+.nd3-verdict-skip{background:#fef2f2;border-color:var(--nd3-bad)}
+.nd3-verdict-title{font-size:1.1rem;font-weight:800;margin-bottom:10px}
+.nd3-verdict-text{font-size:.95rem;color:var(--nd3-muted);line-height:1.7}
+.nd3-verdict-alt{margin-top:12px;font-size:.9rem;font-weight:600;padding:8px 12px;background:rgba(0,0,0,.04);border-radius:8px}
+
+/* SCORE CIRCLE */
+.nd3-score-wrap{text-align:center;margin:20px 0}
+.nd3-score-circle{width:88px;height:88px;border-radius:50%;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:800}
+.nd3-score-big{font-size:1.8rem;line-height:1}
+.nd3-score-sub{font-size:.65rem;opacity:.85}
+
+/* SCORE BARS */
+.nd3-scores-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 20px}
+@media(max-width:500px){.nd3-scores-grid{grid-template-columns:1fr}}
+.nd3-score-item{}
+.nd3-score-label{display:flex;justify-content:space-between;font-size:.85rem;font-weight:600;margin-bottom:5px}
+.nd3-bar-track{height:7px;background:var(--nd3-border);border-radius:4px;overflow:hidden}
+.nd3-bar-fill{height:100%;border-radius:4px}
+
+/* MULTI PRICE TABLE */
+.nd3-price-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.9rem}
+.nd3-price-table th{background:var(--nd3-text);color:#fff;padding:10px 12px;text-align:left;font-size:.85rem}
+.nd3-price-table td{padding:10px 12px;border-bottom:1px solid var(--nd3-border);vertical-align:middle}
+.nd3-price-table tr:hover td{background:var(--nd3-bg)}
+.nd3-best-price-badge{background:var(--nd3-good);color:#fff;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;margin-left:6px}
+.nd3-platform-name{font-weight:700}
+.nd3-trust-ok{color:var(--nd3-good);font-size:12px}
+.nd3-trust-warn{color:var(--nd3-warn);font-size:12px}
+
+/* IMAGE GALLERY */
+.nd3-gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:16px 0}
+.nd3-gallery img{width:100%;border-radius:8px;aspect-ratio:1;object-fit:contain;background:#fff;border:1px solid var(--nd3-border);cursor:pointer}
+.nd3-img-label{text-align:center;font-size:11px;color:var(--nd3-muted);margin-top:4px}
+
+/* LONG TERM EXPERIENCE */
+.nd3-timeline{display:flex;flex-direction:column;gap:16px;margin:16px 0}
+.nd3-timeline-item{display:grid;grid-template-columns:80px 1fr;gap:12px;align-items:start}
+.nd3-timeline-badge{background:var(--nd3-bg);border:2px solid var(--nd3-border);border-radius:8px;padding:6px 4px;text-align:center;font-size:11px;font-weight:700;color:var(--nd3-muted)}
+.nd3-timeline-quote{background:var(--nd3-bg);border-radius:10px;padding:12px 16px;font-size:.9rem;font-style:italic;color:var(--nd3-muted);border-left:3px solid var(--nd3-border)}
+.nd3-timeline-source{font-size:11px;font-weight:700;color:var(--nd3-good);margin-top:6px;font-style:normal}
+
+/* PROS CONS */
+.nd3-pros-cons{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+@media(max-width:500px){.nd3-pros-cons{grid-template-columns:1fr}}
+.nd3-pros,.nd3-cons{background:var(--nd3-bg);border-radius:var(--nd3-radius);padding:16px}
+.nd3-pros h4{color:var(--nd3-good);font-size:1rem;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.nd3-cons h4{color:var(--nd3-bad);font-size:1rem;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.nd3-list{list-style:none;padding:0}
+.nd3-list li{padding:7px 0;font-size:.9rem;border-bottom:1px solid var(--nd3-border);display:flex;gap:8px;align-items:start}
+.nd3-list li:last-child{border-bottom:none}
+.nd3-pro-icon{color:var(--nd3-good);font-weight:900;flex-shrink:0}
+.nd3-con-icon{color:var(--nd3-bad);font-weight:900;flex-shrink:0}
+.nd3-review-source{font-size:11px;color:var(--nd3-muted);margin-top:4px}
+
+/* WHO FOR */
+.nd3-who{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+@media(max-width:500px){.nd3-who{grid-template-columns:1fr}}
+.nd3-who-good,.nd3-who-bad{background:var(--nd3-bg);border-radius:10px;padding:14px 16px}
+.nd3-who-good h4{color:var(--nd3-good);margin-bottom:10px;font-size:.95rem}
+.nd3-who-bad h4{color:var(--nd3-bad);margin-bottom:10px;font-size:.95rem}
+
+/* SPECS TABLE */
+.nd3-specs-container{margin:16px 0}
+.nd3-spec-group{margin-bottom:20px}
+.nd3-spec-group-header{background:var(--nd3-text);color:#fff;padding:8px 14px;font-size:.8rem;font-weight:800;letter-spacing:.08em;border-radius:8px 8px 0 0}
+.nd3-specs-table{width:100%;border-collapse:collapse}
+.nd3-spec-row td{padding:9px 14px;border-bottom:1px solid var(--nd3-border);font-size:.9rem}
+.nd3-spec-row:last-child td{border-bottom:none}
+.nd3-spec-label{font-weight:600;color:var(--nd3-muted);width:40%}
+.nd3-spec-value{color:var(--nd3-text)}
+.nd3-spec-highlight td{background:#f0fdf4}
+.nd3-spec-highlight .nd3-spec-value{color:var(--nd3-good);font-weight:700}
+
+/* ALTERNATIVES */
+.nd3-alts{display:grid;grid-template-columns:1fr;gap:14px;margin:16px 0}
+@media(min-width:600px){.nd3-alts{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}}
+.nd3-alt-card{background:var(--nd3-bg);border:1px solid var(--nd3-border);border-radius:var(--nd3-radius);padding:16px}
+.nd3-alt-type{font-size:11px;font-weight:700;color:var(--nd3-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.nd3-alt-name{font-weight:700;font-size:.95rem;margin-bottom:6px}
+.nd3-alt-price{font-size:1.1rem;font-weight:800;color:var(--nd3-good);margin-bottom:4px}
+.nd3-alt-rating{font-size:.85rem;color:var(--nd3-muted);margin-bottom:10px}
+
+/* COMPARISON TABLE */
+.nd3-compare{width:100%;border-collapse:collapse;margin:16px 0;font-size:.88rem}
+.nd3-compare th{background:var(--nd3-text);color:#fff;padding:10px 12px;text-align:left}
+.nd3-compare th:first-child{width:30%}
+.nd3-compare td{padding:9px 12px;border-bottom:1px solid var(--nd3-border)}
+.nd3-compare tr:nth-child(even) td{background:var(--nd3-bg)}
+.nd3-compare td:first-child{font-weight:600;color:var(--nd3-muted);font-size:.82rem}
+.nd3-compare td.nd3-current{font-weight:700;background:#f0f9ff!important}
+
+/* FAQ */
+.nd3-faq{margin:16px 0}
+.nd3-faq-item{border:1px solid var(--nd3-border);border-radius:10px;margin-bottom:8px;overflow:hidden}
+.nd3-faq-q{padding:14px 16px;font-weight:700;font-size:.9rem;background:var(--nd3-bg);cursor:default}
+.nd3-faq-a{padding:12px 16px;font-size:.9rem;color:var(--nd3-muted);border-top:1px solid var(--nd3-border)}
+
+/* FINAL VERDICT */
+.nd3-final-verdict{text-align:center;padding:28px 20px}
+.nd3-final-score{font-size:3.5rem;font-weight:900;line-height:1}
+.nd3-final-reco{font-size:1.1rem;font-weight:700;margin:10px 0}
+.nd3-final-text{font-size:.95rem;color:var(--nd3-muted);max-width:600px;margin:10px auto 20px}
+
+/* STICKY MOBILE BAR */
+.nd3-mobile-bar{display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--nd3-border);padding:10px 16px;z-index:1000;align-items:center;justify-content:space-between;gap:10px}
+@media(max-width:700px){.nd3-mobile-bar{display:flex}}
+.nd3-mobile-price{font-weight:800;font-size:1.1rem}
+.nd3-mobile-cta{background:var(--nd3-cta);color:#000!important;padding:10px 18px;border-radius:8px;font-weight:800;text-decoration:none!important;font-size:.9rem;white-space:nowrap}
+
+/* DISCLAIMER */
+.nd3-disclaimer{font-size:.75rem;color:var(--nd3-muted);border-top:1px solid var(--nd3-border);margin-top:28px;padding-top:14px;text-align:center}
+
+/* SECTION TITLES */
+.nd3-section-title{font-size:1.2rem;font-weight:800;color:var(--nd3-text);margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--nd3-border)}
+
+/* UTILITY */
+.nd3-stars{color:#FFB800;letter-spacing:1px}
+.nd3-tag{display:inline-block;background:var(--nd3-bg);border:1px solid var(--nd3-border);border-radius:4px;padding:2px 8px;font-size:12px;margin:2px}
+.nd3-update-date{font-size:12px;color:var(--nd3-muted);margin-top:6px}
+
+/* META DESCRIPTION — first text node for Blogger SEO excerpt */
+.nd3-meta-summary{font-size:.92rem;color:var(--nd3-muted);line-height:1.7;margin-bottom:20px;padding:14px 18px;background:var(--nd3-card);border:1px solid var(--nd3-border);border-radius:var(--nd3-radius)}
+</style>"""
+
+
+def _build_article_v3(product: dict, description: str) -> tuple[str, str]:
+    """
+    V3 article builder — GSMArena-inspired, nd3-prefixed CSS.
+
+    Same signature as _build_article so publish_post / scripts don't break.
+    Internally generates AI content from (title, price, description) and
+    enriches the product dict with V3 fields (verdict, scores, pros/cons,
+    long_term, multi_price_links, specs, alternatives, faqs).
+
+    Returns: (seo_title, html)
+    """
+    import json as _json
+    from datetime import datetime
+
+    title        = product.get("title", "Product") or "Product"
+    price        = product.get("price", "") or ""
+    img_url      = product.get("img_url", "") or ""
+    secondary_img_url = product.get("secondary_img_url", "") or ""
+    rating       = float(product.get("rating", 0) or 0)
+    review_count = int(product.get("review_count", 0) or 0)
+    asin         = product.get("asin", "")
+    clean_url    = product.get("clean_url", "")
+    aff_link     = product.get("aff_link", "") or ""
+    features     = product.get("features", []) or []
+    category     = product.get("category", "")
+    customer_reviews = product.get("customer_reviews", []) or []
+
+    if not aff_link:
+        import scraper as _s
+        aff_link = _s.build_affiliate_url(clean_url)
+
+    # ── AI content ────────────────────────────────────────────────────────────
+    try:
+        import review_enrichment as _rm
+        _feedback = _rm.gather(product)
+    except Exception:
+        _feedback = ""
+
+    ai = _ai_generate_content(title, price, description, feedback=_feedback)
+
+    # ── Real pros/cons from reviews (override AI when available) ───────────────
+    _review_pc = {}
+    if customer_reviews:
+        try:
+            _review_pc = _rm.extract_pros_cons_from_reviews(customer_reviews, rating)
+        except Exception:
+            _review_pc = {}
+    _pros_source = _review_pc.get("source", "ai_generated")
+    pros_list = _review_pc.get("pros") or ai.get("pros", [])
+    cons_list = _review_pc.get("cons") or ai.get("cons", [])
+
+    # ── Verdict & Score ───────────────────────────────────────────────────────
+    _raw_scores = ai.get("scores", {}) or {}
+    _base = round((rating / 5.0) * 10, 1) if rating > 0 else 7.5
+    _offsets = {"value": 0.0, "build": 0.3, "features": -0.2, "ease": 0.1}
+    scores = {}
+    for _k in ["value", "build", "features", "ease"]:
+        try:
+            _v = float(_raw_scores.get(_k, ""))
+            if not (1 <= _v <= 10):
+                raise ValueError
+        except (ValueError, TypeError):
+            _v = _base + _offsets[_k]
+        scores[_k] = round(max(1.0, min(10.0, _v)), 1)
+
+    verdict_score = round(sum(scores.values()) / len(scores), 1)
+    badge_label = "RECOMMENDED" if verdict_score >= 8.0 else ("CHECK ALTERNATIVES" if verdict_score >= 6.0 else "SKIP")
+    final_reco  = "Buy it" if verdict_score >= 8.0 else ("Wait for a sale" if verdict_score >= 6.0 else "Look elsewhere")
+
+    # ── Build verdict summary (3 sentences, first paragraph for meta desc) ─────
+    verdict_raw  = _safe_text(ai.get("verdict", ""))
+    final_raw    = _safe_text(ai.get("final", ""))
+    intro_raw    = _safe_text(ai.get("intro", ""))
+    verdict_summary = (verdict_raw + " " + final_raw).strip() if verdict_raw else (intro_raw or f"{title} offers solid value for the price.")
+    # Ensure at least ~160 chars for meta description
+    if len(verdict_summary) < 120 and intro_raw:
+        verdict_summary = (intro_raw + " " + verdict_raw).strip()
+    meta_desc = f"{title[:60]} review: {verdict_summary[:100]}. Editor Score {verdict_score}/10. Is it worth buying?"
+
+    # ── Long-term experience (from C1 scraper enrichment) ──────────────────────
+    long_term = product.get("long_term", {})
+    if not long_term:
+        try:
+            from long_term_extractor import extract_long_term_experience
+            long_term = extract_long_term_experience(customer_reviews)
+        except Exception:
+            long_term = {}
+
+    # ── Multi-platform price links (from C1 scraper enrichment) ────────────────
+    multi_links = product.get("multi_price_links", [])
+    if not multi_links:
+        try:
+            from multi_price_builder import build_multi_platform_links
+            multi_links = build_multi_platform_links(title, asin)
+        except Exception:
+            multi_links = []
+
+    # ── Specs (from C1 scraper enrichment) ─────────────────────────────────────
+    specs_values = product.get("specs_values", {})
+    if not specs_values:
+        try:
+            from specs_groups import extract_specs_with_groq, detect_category, build_specs_table_html as _spec_tbl
+            cat = detect_category(title, category)
+            specs_values = extract_specs_with_groq(title, features, cat)
+        except Exception:
+            specs_values = {}
+    try:
+        from specs_groups import detect_category, build_specs_table_html as _spec_tbl
+        cat = detect_category(title, category)
+        specs_html = _spec_tbl(product, specs_values)
+    except Exception:
+        specs_html = ""
+
+    # ── Alternatives (from C1 scraper enrichment, or AI fallback) ──────────────
+    alternatives = product.get("alternatives", [])
+    if not alternatives:
+        try:
+            from scraper import scrape_alternatives
+            cur_price = float(str(price).replace("$", "").replace(",", "").strip() or "0")
+            alternatives = scrape_alternatives(asin, title, cur_price)
+        except Exception:
+            alternatives = []
+
+    # ── FAQs ───────────────────────────────────────────────────────────────────
+    faqs = product.get("faqs", [])
+    if not faqs:
+        try:
+            from review_enrichment import generate_faqs
+            faqs = generate_faqs(title, category, features)
+        except Exception:
+            faqs = []
+    ai_faqs = ai.get("faq", [])
+    if not faqs and ai_faqs:
+        faqs = [{"question": f.get("q", f.get("question", "")), "answer": f.get("a", f.get("answer", ""))} for f in ai_faqs]
+
+    # ── Who for / who not for ─────────────────────────────────────────────────
+    best_for = ai.get("best_for", [])
+    who_for = product.get("who_for", best_for[:3] if best_for else [])
+    who_not_for = product.get("who_not_for", cons_list[:3])
+
+    # ── Helpers ────────────────────────────────────────────────────────────────
+    now = datetime.now().strftime("%B %Y")
+    seo_title = title[:60] + (f" Review ({now})" if len(title) > 50 else " Review")
+    if len(seo_title) > 70:
+        seo_title = seo_title[:67] + "..."
+
+    full_short = title[:60]
+    rating_str = f"{rating}/5" if rating else "N/A"
+    full_stars = "★" * int(rating) + "☆" * (5 - int(rating))
+    badge_cls = "nd3-badge-rec" if badge_label == "RECOMMENDED" else ("nd3-badge-skip" if badge_label == "SKIP" else "nd3-badge-check")
+    verdict_cls = "nd3-verdict-rec" if badge_label == "RECOMMENDED" else ("nd3-verdict-skip" if badge_label == "SKIP" else "nd3-verdict-check")
+    score_color = "#0E9357" if verdict_score >= 7.5 else ("#E8A33D" if verdict_score >= 5.5 else "#D23641")
+
+    # ── Discount badge ─────────────────────────────────────────────────────────
+    discount_html = ""
+    list_price_str = product.get("original_price", "") or product.get("list_price", "") or ""
+    try:
+        curr = float(str(price).replace("$", "").replace(",", "").strip() or "0")
+        orig = float(str(list_price_str).replace("$", "").replace(",", "").strip() or "0")
+        if orig > curr > 0:
+            pct = int((orig - curr) / orig * 100)
+            discount_html = f'<span class="nd3-discount">-{pct}%</span>'
+    except Exception:
+        pass
+
+    # ── Image gallery HTML ─────────────────────────────────────────────────────
+    hero_img_tag = f'<img class="nd3-hero-img" src="{_safe_text(img_url)}" alt="{_safe_text(title)}" loading="eager" />'
+    gallery_inner = f'<div>{hero_img_tag}</div>'
+    if secondary_img_url and secondary_img_url != img_url:
+        gallery_inner += f'''
+            <div>
+                <img src="{_safe_text(secondary_img_url)}" alt="{_safe_text(title)}" loading="lazy" />
+                <div class="nd3-img-label">Alternative angle</div>
+            </div>'''
+
+    # ── Multi-price table rows ─────────────────────────────────────────────────
+    price_rows_html = ""
+    for mp in multi_links:
+        is_primary = mp.get("primary")
+        best = '<span class="nd3-best-price-badge">Best Price</span>' if is_primary else ""
+        trust_cls = "nd3-trust-ok" if "Trusted" in mp.get("trust_badge", "") else "nd3-trust-warn"
+        price_display = price if is_primary else (mp.get("price") or "—")
+        price_rows_html += f'''
+        <tr>
+            <td><span class="nd3-platform-name">{mp.get("flag","")} {mp.get("platform","")}</span>{best}</td>
+            <td><strong>{price_display}</strong></td>
+            <td><span class="{trust_cls}">{mp.get("trust_badge","")}</span></td>
+            <td><a href="{_safe_text(mp.get("url",""))}" class="nd3-cta nd3-cta-sm" target="_blank" rel="nofollow sponsored noopener">Check Price</a></td>
+        </tr>'''
+
+    # ── Long-term timeline ─────────────────────────────────────────────────────
+    lt_html = ""
+    if long_term and long_term.get("has_long_term_data"):
+        periods = [("after_1_month", "After 1 Month"), ("after_3_months", "After 3 Months"), ("after_6_months", "After 6 Months")]
+        lt_items = ""
+        for key, label in periods:
+            data = long_term.get(key)
+            if data and data.get("quote"):
+                lt_stars = "★" * int(data.get("rating", 4))
+                lt_items += f'''
+                <div class="nd3-timeline-item">
+                    <div class="nd3-timeline-badge">{label}</div>
+                    <div class="nd3-timeline-quote">
+                        "{_safe_text(data["quote"])}"
+                        <div class="nd3-timeline-source">{lt_stars} Verified Amazon Buyer</div>
+                    </div>
+                </div>'''
+        if lt_items:
+            lt_html = f'<div class="nd3-timeline">{lt_items}</div>'
+    if not lt_html:
+        lt_html = '<p style="color:var(--nd3-muted);font-size:.9rem">Insufficient long-term review data available for this product.</p>'
+
+    # ── Pros / Cons ────────────────────────────────────────────────────────────
+    source_note = '✓ Based on verified buyer reviews' if _pros_source == "real_reviews" else 'AI analysis of product features'
+    pros_items = "\n".join(f'<li><span class="nd3-pro-icon">+</span><span>{_safe_text(p)}</span></li>' for p in pros_list[:5])
+    cons_items = "\n".join(f'<li><span class="nd3-con-icon">-</span><span>{_safe_text(c)}</span></li>' for c in cons_list[:5])
+
+    who_for_items = "\n".join(f'<li><span class="nd3-pro-icon">✓</span> {_safe_text(w)}</li>' for w in who_for[:3])
+    who_not_items = "\n".join(f'<li><span class="nd3-con-icon">✗</span> {_safe_text(w)}</li>' for w in who_not_for[:3])
+
+    # ── Score bars ─────────────────────────────────────────────────────────────
+    bar_cfg = [("value", "Value for Money"), ("build", "Build Quality"), ("features", "Features"), ("ease", "Ease of Use")]
+    score_bars_html = ""
+    for bk, bl in bar_cfg:
+        bv = scores.get(bk, 6.0)
+        bc = "#0E9357" if bv >= 7.5 else ("#E8A33D" if bv >= 5.5 else "#D23641")
+        score_bars_html += f'''
+        <div class="nd3-score-item">
+            <div class="nd3-score-label"><span>{bl}</span><span>{bv}/10</span></div>
+            <div class="nd3-bar-track"><div class="nd3-bar-fill" style="width:{bv*10}%;background:{bc}"></div></div>
+        </div>'''
+
+    # ── Alternatives cards + compare table ─────────────────────────────────────
+    alt_cards = ""
+    compare_rows = ""
+    for alt in alternatives[:3]:
+        alt_type = {"cheaper": "Cheaper Option", "better": "Premium Pick", "similar": "Similar Option"}.get(alt.get("type", "similar"), "Alternative")
+        alt_cards += f'''
+        <div class="nd3-alt-card">
+            <div class="nd3-alt-type">{alt_type}</div>
+            <div class="nd3-alt-name">{_safe_text(alt.get("name",""))}</div>
+            <div class="nd3-alt-price">{alt.get("price","—")}</div>
+            <div class="nd3-alt-rating"><span class="nd3-stars">{"★" * int(float(alt.get("rating",0) or 0))}</span> {alt.get("rating","")}/5</div>
+            <a href="{_safe_text(alt.get("url","#"))}" class="nd3-cta nd3-cta-sm" target="_blank" rel="nofollow sponsored noopener">View on Amazon</a>
+        </div>'''
+
+    compare_data = [(title[:30], price, f"{rating_str}", "Reviewed")]
+    for alt in alternatives[:2]:
+        compare_data.append((alt.get("name", "")[:30], alt.get("price", "—"), f"{alt.get('rating', '—')}/5", ""))
+    for i, (cn, cp, cr, cnote) in enumerate(compare_data):
+        td_cls = ' class="nd3-current"' if i == 0 else ""
+        compare_rows += f'<tr><td{td_cls}>{cn}</td><td{td_cls}>{cp}</td><td{td_cls}>{cr}</td><td{td_cls}>{cnote}</td></tr>'
+
+    # ── FAQ ────────────────────────────────────────────────────────────────────
+    faq_html = ""
+    for faq in faqs[:5]:
+        q = _safe_text(faq.get("question", faq.get("q", "")))
+        a = _safe_text(faq.get("answer", faq.get("a", "")))
+        if q and a:
+            faq_html += f'''
+            <div class="nd3-faq-item">
+                <div class="nd3-faq-q">{q}</div>
+                <div class="nd3-faq-a">{a}</div>
+            </div>'''
+
+    # ── JSON-LD schema ─────────────────────────────────────────────────────────
+    schema = build_complete_schema(product, faqs, "")
+
+    # ── Clean description string for first meta paragraph (Fix 1) ──────────────
+    meta_paragraph = _safe_text(verdict_summary[:160] if verdict_summary else meta_desc)
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    #  ASSEMBLE HTML
+    #  Fix 2: hero img is first <img> in the page (after CSS) — Blogger uses
+    #         first <img> for og:image automatically.
+    # ═══════════════════════════════════════════════════════════════════════════
+    html = f"""
+<!-- NestDeal V3 Article -->
+{ARTICLE_CSS_V3}
+
+<!-- IMPORTANT: hero img FIRST for og:image — Blogger picks this automatically -->
+<img src="{_safe_text(img_url)}" alt="{_safe_text(title)}" style="display:none" width="1" height="1" />
+
+<div class="nd3-wrap">
+
+<!-- META SUMMARY — first 160 chars of text for Blogger SEO excerpt (Fix 1) -->
+<div class="nd3-meta-summary">{meta_paragraph}</div>
+
+<!-- BREADCRUMB -->
+<div class="nd3-breadcrumb">
+    <a href="https://nestdeal.blogspot.com/">Home</a>
+    <span>&rsaquo;</span>
+    <a href="https://nestdeal.blogspot.com/search/label/{_safe_text(category or 'Reviews')}">Reviews</a>
+    <span>&rsaquo;</span>
+    <span>{_safe_text(title[:50])}</span>
+</div>
+
+<!-- STICKY TOC — CSS only, no JS -->
+<div class="nd3-toc">
+    <div class="nd3-toc-inner">
+        <a href="#s-verdict">Verdict</a>
+        <a href="#s-price">Prices</a>
+        <a href="#s-photos">Photos</a>
+        <a href="#s-experience">Long-term</a>
+        <a href="#s-pros">Pros &amp; Cons</a>
+        <a href="#s-specs">Specs</a>
+        <a href="#s-alts">Alternatives</a>
+        <a href="#s-faq">FAQ</a>
+        <a href="#s-final">Final Verdict</a>
+    </div>
+</div>
+
+<!-- HERO — H1 uses FULL title, no truncation (Fix 4) -->
+<div class="nd3-card">
+    <div class="nd3-hero">
+        <div>
+            {hero_img_tag}
+        </div>
+        <div class="nd3-hero-info">
+            <span class="nd3-badge {badge_cls}">{badge_label}</span>
+            <h1>{_safe_text(title)}</h1>
+            <div class="nd3-spec-strip">
+                <span class="nd3-spec-chip">{_safe_text(product.get("brand",""))}</span>
+                <span class="nd3-spec-chip"><span class="nd3-stars">{full_stars}</span> {rating_str} ({review_count:,} ratings)</span>
+                <span class="nd3-spec-chip">Editor Score: {verdict_score}/10</span>
+            </div>
+            <div class="nd3-price-row">
+                <span class="nd3-price">{price}</span>
+                {f'<span class="nd3-list-price">{list_price_str}</span>' if list_price_str else ''}
+                {discount_html}
+            </div>
+            <a href="{_safe_text(aff_link)}" class="nd3-cta" target="_blank" rel="nofollow sponsored noopener">
+                🛒 Check Price on Amazon
+            </a>
+            <div class="nd3-update-date">Price updated {now} · Affiliate link</div>
+        </div>
+    </div>
+</div>
+
+<!-- QUICK VERDICT -->
+<div id="s-verdict" class="nd3-card">
+    <div class="nd3-section-title">Quick Verdict</div>
+    <div class="nd3-verdict-box {verdict_cls}">
+        <div class="nd3-verdict-title">Our Verdict</div>
+        <div class="nd3-verdict-text">{_safe_text(verdict_summary or ai.get("why_like", "Solid product with good overall value."))}</div>
+        {f'<div class="nd3-verdict-alt">Better alternative: <a href="{_safe_text(alternatives[0].get("url","#"))}" rel="nofollow noopener">{_safe_text(alternatives[0].get("name",""))}</a> at {alternatives[0].get("price","—")}</div>' if alternatives else ''}
+    </div>
+
+    <div class="nd3-score-wrap">
+        <div class="nd3-score-circle" style="background:{score_color}">
+            <div class="nd3-score-big">{verdict_score}</div>
+            <div class="nd3-score-sub">/ 10</div>
+        </div>
+    </div>
+    <div class="nd3-scores-grid">{score_bars_html}</div>
+</div>
+
+<!-- MULTI PRICE COMPARISON -->
+<div id="s-price" class="nd3-card">
+    <div class="nd3-section-title">Price Comparison</div>
+    <table class="nd3-price-table">
+        <thead>
+            <tr><th>Platform</th><th>Price</th><th>Trust</th><th>Action</th></tr>
+        </thead>
+        <tbody>{price_rows_html}</tbody>
+    </table>
+    <p style="font-size:12px;color:var(--nd3-muted);margin-top:8px">Prices are approximate and may vary. Always verify on the platform before purchasing.</p>
+</div>
+
+<!-- PHOTOS -->
+<div id="s-photos" class="nd3-card">
+    <div class="nd3-section-title">Product Photos</div>
+    <div class="nd3-gallery">
+        <div><img src="{_safe_text(img_url)}" alt="{_safe_text(title)}" loading="lazy" /><div class="nd3-img-label">Front view</div></div>
+        {f'<div><img src="{_safe_text(secondary_img_url)}" alt="{_safe_text(title)}" loading="lazy" /><div class="nd3-img-label">Alternate angle</div></div>' if secondary_img_url and secondary_img_url != img_url else ''}
+    </div>
+    <p style="font-size:12px;color:var(--nd3-muted);margin-top:6px">Images sourced from Amazon product listing.</p>
+</div>
+
+<!-- LONG TERM EXPERIENCE -->
+<div id="s-experience" class="nd3-card">
+    <div class="nd3-section-title">Long-Term Experience</div>
+    {lt_html}
+</div>
+
+<!-- PROS CONS -->
+<div id="s-pros" class="nd3-card">
+    <div class="nd3-section-title">Pros &amp; Cons</div>
+    <p style="font-size:12px;color:var(--nd3-muted);margin-bottom:12px">{source_note}</p>
+    <div class="nd3-pros-cons">
+        <div class="nd3-pros"><h4>✅ What We Like</h4><ul class="nd3-list">{pros_items}</ul></div>
+        <div class="nd3-cons"><h4>❌ What Could Be Better</h4><ul class="nd3-list">{cons_items}</ul></div>
+    </div>
+
+    <div class="nd3-who" style="margin-top:16px">
+        <div class="nd3-who-good"><h4>✅ Perfect For</h4><ul class="nd3-list">{who_for_items}</ul></div>
+        <div class="nd3-who-bad"><h4>❌ Not Ideal For</h4><ul class="nd3-list">{who_not_items}</ul></div>
+    </div>
+</div>
+
+<!-- IN-DEPTH ANALYSIS -->
+<div class="nd3-card">
+    <div class="nd3-section-title">In-Depth Analysis</div>
+    <p style="line-height:1.8;font-size:.95rem">{_safe_text(ai.get("why_like", "") or description[:800])}</p>
+</div>
+
+<!-- SPECS -->
+<div id="s-specs" class="nd3-card">
+    <div class="nd3-section-title">Full Specifications</div>
+    {specs_html or '<p style="color:var(--nd3-muted)">Specifications not available.</p>'}
+</div>
+
+<!-- ALTERNATIVES -->
+<div id="s-alts" class="nd3-card">
+    <div class="nd3-section-title">Top Alternatives</div>
+    <div class="nd3-alts">{alt_cards}</div>
+
+    <div class="nd3-section-title" style="margin-top:24px">Head-to-Head Comparison</div>
+    <div style="overflow-x:auto">
+        <table class="nd3-compare">
+            <thead><tr><th>Feature</th><th>{_safe_text(title[:25])}...</th>{"".join(f'<th>{_safe_text(a.get("name","")[:20])}...</th>' for a in alternatives[:2])}</tr></thead>
+            <tbody>{compare_rows}</tbody>
+        </table>
+    </div>
+</div>
+
+<!-- FAQ -->
+<div id="s-faq" class="nd3-card">
+    <div class="nd3-section-title">Frequently Asked Questions</div>
+    <div class="nd3-faq">{faq_html if faq_html else '<p style="color:var(--nd3-muted)">No FAQ data available.</p>'}</div>
+</div>
+
+<!-- FINAL VERDICT -->
+<div id="s-final" class="nd3-card">
+    <div class="nd3-section-title">Final Verdict</div>
+    <div class="nd3-final-verdict">
+        <div class="nd3-final-score" style="color:{score_color}">{verdict_score}<span style="font-size:1.5rem">/10</span></div>
+        <div class="nd3-final-reco">{final_reco}</div>
+        <div class="nd3-final-text">{_safe_text(verdict_summary[:300] if verdict_summary else ai.get("final", ""))}</div>
+        <a href="{_safe_text(aff_link)}" class="nd3-cta" target="_blank" rel="nofollow sponsored noopener">
+            🛒 Check Current Price on Amazon
+        </a>
+    </div>
+</div>
+
+<!-- DISCLAIMER -->
+<div class="nd3-disclaimer">
+    As an Amazon Associate, NestDeal earns from qualifying purchases. Prices and availability accurate as of {now}.
+    Affiliate links are marked with rel="nofollow sponsored". Product images © Amazon.
+</div>
+
+</div><!-- /nd3-wrap -->
+
+<!-- STICKY MOBILE BAR -->
+<div class="nd3-mobile-bar">
+    <div class="nd3-mobile-price">{price} <span style="font-size:.8rem;color:var(--nd3-muted)">on Amazon</span></div>
+    <a href="{_safe_text(aff_link)}" class="nd3-mobile-cta" target="_blank" rel="nofollow sponsored noopener">Buy Now</a>
+</div>
+
+{schema}
+"""
+    return seo_title, html
+
+
 # ── PRE-PUBLISH VALIDATION ─────────────────────────────────────────────────────
 
 def _validate_article(html: str, title: str = "") -> list[str]:
@@ -1122,7 +1810,7 @@ def publish_post(
 
     try:
         if not html_content:
-            title, html_content = _build_article(product, description)
+            title, html_content = _build_article_v3(product, description)
         if not title:
             prod_title = product.get("title", "Product")[:70]
             price      = product.get("price", "")
