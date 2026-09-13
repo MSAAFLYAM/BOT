@@ -42,3 +42,6 @@ setuptools>=80.9.0
 wheel>=0.45.1
 gunicorn
 httpx
+
+# Trend Discovery (Google Trends, no API key)
+pytrends==4.9.2

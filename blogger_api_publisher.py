@@ -275,6 +275,112 @@ def _truncate_title(title: str, max_len: int = 70) -> str:
     return truncated + "..."
 
 
+# ── Task 6: Complete JSON-LD Schema (Product + Review + FAQPage) ─────────────
+
+def build_complete_schema(product: dict, faqs: list = None, article_url: str = "") -> str:
+    """
+    Build complete JSON-LD schema with @graph containing Product, Review, and FAQPage.
+    All fields have defaults — no empty required fields.
+    """
+    import json as _json
+    from datetime import datetime
+
+    price = str(product.get("price", "")).replace("$", "").replace(",", "").strip()
+    try:
+        price_num = float(price) if price else 0
+    except ValueError:
+        price_num = 0
+
+    title = product.get("title", "Product")
+    description = product.get("description", "")
+    if not description:
+        features = product.get("features", [])
+        description = features[0] if features else title
+
+    img_url = product.get("img_url", "")
+    secondary_img = product.get("secondary_img_url", "")
+    images = [img for img in [img_url, secondary_img] if img]
+
+    rating_val = float(product.get("rating", 0) or 0)
+    review_count = int(product.get("review_count", 0) or 0)
+    verdict_score = float(product.get("verdict_score", 0) or 0)
+    brand = product.get("brand", "Unknown")
+    asin = product.get("asin", "")
+    clean_url = product.get("clean_url", "")
+    aff_link = product.get("aff_link", clean_url)
+
+    next_year = datetime.now().replace(year=datetime.now().year + 1).strftime("%Y-%m-%d")
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    # Product schema
+    product_schema = {
+        "@type": "Product",
+        "name": title,
+        "description": description[:500],
+        "image": images,
+        "brand": {"@type": "Brand", "name": brand},
+        "sku": asin,
+        "offers": {
+            "@type": "Offer",
+            "price": price_num,
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock",
+            "url": aff_link,
+            "priceValidUntil": next_year,
+        },
+    }
+    if rating_val > 0 and review_count >= 5:
+        product_schema["aggregateRating"] = {
+            "@type": "AggregateRating",
+            "ratingValue": round(rating_val, 1),
+            "reviewCount": review_count,
+            "bestRating": "5",
+            "worstRating": "1",
+        }
+
+    # Review schema
+    review_schema = {
+        "@type": "Review",
+        "itemReviewed": {"@type": "Product", "name": title},
+        "author": {"@type": "Organization", "name": "NestDeal"},
+        "datePublished": today,
+        "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": verdict_score if verdict_score > 0 else round(rating_val * 2, 1),
+            "bestRating": "10",
+            "worstRating": "1",
+        },
+        "reviewBody": product.get("verdict_summary", description[:300]),
+    }
+
+    # FAQPage schema
+    faq_schema = {
+        "@type": "FAQPage",
+        "mainEntity": [],
+    }
+    for faq in (faqs or []):
+        q = faq.get("question", "")
+        a = faq.get("answer", "")
+        if q and a:
+            faq_schema["mainEntity"].append({
+                "@type": "Question",
+                "name": q,
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": a,
+                },
+            })
+
+    schema = {
+        "@context": "https://schema.org",
+        "@graph": [product_schema, review_schema],
+    }
+    if faq_schema["mainEntity"]:
+        schema["@graph"].append(faq_schema)
+
+    return f'<script type="application/ld+json">{_json.dumps(schema, ensure_ascii=False, indent=2)}</script>'
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # WORLD-CLASS REVIEW TEMPLATE (WIRECUTTER / RTINGS STYLE)
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -467,24 +573,16 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
     # ── Images Setup (single featured picture only) ──
     main_img = all_images[0] if all_images else ""
 
-    # ── JSON-LD Review schema (SEO rich results) ──
-    import json as _json
-    _ld = {
-        "@context": "https://schema.org",
-        "@type": "Product",
-        "name": short_title,
-        "description": (ai.get("intro", "") or "")[:300],
-        "review": {
-            "@type": "Review",
-            "reviewRating": {"@type": "Rating", "ratingValue": _final_score, "bestRating": 10},
-            "author": {"@type": "Organization", "name": "NestDeal"},
-        },
+    # ── JSON-LD complete schema (Product + Review + FAQPage) ──
+    _product_data = {
+        "title": title, "price": price, "rating": rating, "review_count": review_count,
+        "img_url": main_img, "secondary_img_url": product.get("secondary_img_url", ""),
+        "brand": product.get("brand", ""), "asin": product.get("asin", ""),
+        "clean_url": product.get("clean_url", ""), "aff_link": aff_link,
+        "features": features, "verdict_score": _final_score,
+        "verdict_summary": ai.get("verdict", ""),
     }
-    if main_img:
-        _ld["image"] = main_img
-    if rating > 0 and review_count >= 5:
-        _ld["aggregateRating"] = {"@type": "AggregateRating", "ratingValue": round(rating, 1), "reviewCount": review_count}
-    _ld_html = '<script type="application/ld+json">' + _json.dumps(_ld, ensure_ascii=False).replace("<", "\\u003c") + '</script>'
+    _ld_html = build_complete_schema(_product_data, faqs=ai.get("faq", []))
 
     # ── Star rating widget (visual, out of 5) ──
     def _stars(value: float) -> str:

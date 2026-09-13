@@ -680,6 +680,53 @@ def _extract_image(soup: BeautifulSoup) -> str:
     return _upgrade_image(best)
 
 
+def select_product_images(raw_images: list[str], max_images: int = 2) -> dict:
+    """
+    From a list of Amazon image URLs, pick diverse hero + secondary images.
+    Avoids thumbnails, tiny images, and similar white-background shots.
+    Returns: {'hero': str, 'secondary': str|None, 'all_selected': list[str]}
+    """
+    if not raw_images:
+        return {'hero': '', 'secondary': None, 'all_selected': []}
+
+    MAIN_INDICATORS = ['_MAIN_', 'main', 'primary', 'cover', 'landingImage']
+    SECONDARY_INDICATORS = ['PT01', 'PT02', 'PT03', 'lifestyle', 'in_use',
+                            'angle', 'side', 'back', 'detail', 'feature',
+                            'context', 'ifestyle', 'ifestyleShot']
+    AVOID_INDICATORS = ['THUMB', 'thumb', '_SS40_', '_SS30_', '_SS20_']
+
+    def _score(url: str, prefer_main: bool) -> int:
+        score = 0
+        indicators = MAIN_INDICATORS if prefer_main else SECONDARY_INDICATORS
+        for ind in indicators:
+            if ind.lower() in url.lower():
+                score += 10
+        for avoid in AVOID_INDICATORS:
+            if avoid.lower() in url.lower():
+                score -= 20
+        for size in ['2000', '1500', '1200', '1000']:
+            if size in url:
+                score += 5
+        if '_AC_' in url:
+            score += 3
+        if 'images/I/' in url:
+            score += 2
+        return score
+
+    hero = max(raw_images, key=lambda u: _score(u, prefer_main=True))
+    remaining = [img for img in raw_images if img != hero]
+    secondary = None
+    if remaining:
+        secondary = max(remaining, key=lambda u: _score(u, prefer_main=False))
+
+    selected = [img for img in [hero, secondary] if img]
+    return {
+        'hero': hero,
+        'secondary': secondary,
+        'all_selected': selected[:max_images],
+    }
+
+
 def _extract_all_images(soup: BeautifulSoup) -> list[str]:
     """Extract 2-3 high-quality product images from Amazon page."""
     seen = set()
@@ -1031,6 +1078,11 @@ def scrape_product(url: str) -> dict | None:
     orig  = _extract_original_price(soup)
     customer_reviews = _extract_customer_reviews(soup)
 
+    # Select diverse hero + secondary images
+    selected = select_product_images(all_imgs if all_imgs else ([img] if img else []))
+    hero_img = selected['hero'] or img
+    secondary_img = selected['secondary']
+
     product = {
         "asin":           asin,
         "title":          title,
@@ -1040,8 +1092,9 @@ def scrape_product(url: str) -> dict | None:
         "original_price": orig,
         "rating":         _extract_rating(soup),
         "review_count":   _extract_reviews(soup),
-        "img_url":        img,
-        "all_images":     all_imgs if all_imgs else ([img] if img else []),
+        "img_url":        hero_img,
+        "secondary_img_url": secondary_img or "",
+        "all_images":     selected['all_selected'] or all_imgs or ([img] if img else []),
         "customer_reviews": customer_reviews,
         "clean_url":      base,
         "aff_link":       build_affiliate_url(base),
@@ -1104,6 +1157,100 @@ def search_amazon(
 
     results.sort(key=lambda x: x.get("value_score", 0), reverse=True)
     return results
+
+
+# ─────────────────────────────────────────────
+#  ALTERNATIVES — Extract "Customers also viewed"
+# ─────────────────────────────────────────────
+def scrape_alternatives(asin: str, product_title: str, current_price: float) -> list[dict]:
+    """
+    Extract alternative products from Amazon (free, no paid APIs).
+    Layer 1: Jina AI Reader for "Customers also viewed" section.
+    Layer 2: Groq AI fallback — suggest real competing product names.
+    Returns list of dicts: [{name, price, rating, url, type}]
+    """
+    alternatives = []
+    AFF_TAG = getattr(config, "AFFILIATE_TAG", "dazzledeals00-20")
+
+    # Layer 1: Jina AI Reader
+    try:
+        jina_url = f"https://r.jina.ai/https://www.amazon.com/dp/{asin}"
+        headers = {"Accept": "text/plain", "X-Return-Format": "text"}
+        r = curl_requests.get(jina_url, headers=headers, timeout=25)
+        if r.status_code == 200:
+            text = r.text
+            asins_found = re.findall(r'/dp/([A-Z0-9]{10})', text)
+            seen_alt = set()
+            for alt_asin in asins_found[:10]:
+                if alt_asin == asin or alt_asin in seen_alt:
+                    continue
+                seen_alt.add(alt_asin)
+                url = f"https://www.amazon.com/dp/{alt_asin}"
+                alt_price = 0
+                price_match = re.search(rf'{alt_asin}.*?\$([\d,.]+)', text[:3000])
+                if price_match:
+                    try:
+                        alt_price = float(price_match.group(1).replace(',', ''))
+                    except Exception:
+                        pass
+                alt_type = "similar"
+                if current_price > 0 and alt_price > 0:
+                    if alt_price < current_price * 0.85:
+                        alt_type = "cheaper"
+                    elif alt_price > current_price * 1.15:
+                        alt_type = "better"
+                alternatives.append({
+                    "name": f"Alternative (ASIN: {alt_asin})",
+                    "price": f"${alt_price:.2f}" if alt_price > 0 else "Check price",
+                    "rating": 0,
+                    "review_count": 0,
+                    "asin": alt_asin,
+                    "url": f"{url}?tag={AFF_TAG}",
+                    "type": alt_type,
+                })
+                if len(alternatives) >= 3:
+                    break
+    except Exception as e:
+        logger.info(f"[alternatives] Jina failed: {e}")
+
+    # Layer 2: Groq AI fallback
+    if len(alternatives) < 2:
+        groq_key = os.environ.get("GROQ_API_KEY", "")
+        if groq_key:
+            try:
+                import httpx, json as _json
+                prompt = (
+                    f"Suggest 2 real Amazon alternatives to '{product_title}' priced around ${current_price:.0f}. "
+                    f"One cheaper option and one premium option. "
+                    f"Return JSON only: [{{'name': '...', 'search_query': '...', 'estimated_price': '...', 'type': 'cheaper|better'}}]"
+                )
+                r = httpx.post(
+                    "https://api.groq.com/openai/v1/chat/completions",
+                    headers={"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"},
+                    json={"model": "qwen/qwen3.6-27b", "messages": [{"role": "user", "content": prompt}], "max_tokens": 400, "temperature": 0.3},
+                    timeout=20,
+                )
+                if r.status_code == 200:
+                    raw = r.json()["choices"][0]["message"]["content"].strip()
+                    raw = re.sub(r"<think>[\s\S]*?</think>", "", raw).strip()
+                    raw = re.sub(r"^```json\n?|\n?```$", "", raw).strip()
+                    items = _json.loads(raw)
+                    for item in items:
+                        sq = item.get("search_query", item.get("name", ""))
+                        search_url = f"https://www.amazon.com/s?k={quote(sq)}&tag={AFF_TAG}"
+                        alternatives.append({
+                            "name": item.get("name", sq),
+                            "price": item.get("estimated_price", "Check price"),
+                            "rating": 0,
+                            "review_count": 0,
+                            "asin": "",
+                            "url": search_url,
+                            "type": item.get("type", "similar"),
+                        })
+            except Exception as e:
+                logger.info(f"[alternatives] Groq fallback failed: {e}")
+
+    return alternatives[:3]
 
 
 # ─────────────────────────────────────────────

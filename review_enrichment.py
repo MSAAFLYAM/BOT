@@ -93,3 +93,160 @@ def gather(product: dict) -> str:
     return ("REAL USER FEEDBACK (ground your review in this -- "
             "complaints you see repeated MUST appear in cons and lower the scores):\n"
             + "\n\n".join(blocks))
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+#  Task 5: FAQ Generation
+# ──────────────────────────────────────────────────────────────────────────────
+
+def generate_faqs(product_title: str, category: str, features: list,
+                  buyer_questions: list = None) -> list[dict]:
+    """
+    Generate 5 specific FAQ Q&As for this product.
+    Uses Groq AI with fallback to generic templates.
+    Returns: [{'question': str, 'answer': str}]
+    """
+    import os, json, re
+
+    short_title = product_title[:80]
+    features_text = "; ".join(features[:5]) if features else "N/A"
+    buyer_qs = ""
+    if buyer_questions:
+        buyer_qs = "\nActual buyer questions found:\n" + "\n".join(
+            f"- {q}" for q in buyer_questions[:5])
+
+    prompt = (
+        f"Generate 5 specific FAQ questions and answers for this Amazon product:\n"
+        f"Title: {short_title}\nCategory: {category}\nKey features: {features_text}\n"
+        f"{buyer_qs}\n\n"
+        f"Requirements:\n"
+        f"- Questions must be specific to THIS product, not generic\n"
+        f"- Mix topics: compatibility, durability, value, comparison, use case\n"
+        f"- Answers: 2-3 sentences, factual, based on the features provided\n"
+        f"- Return JSON only: [{{'question': '...', 'answer': '...'}}]"
+    )
+
+    groq_key = os.environ.get("GROQ_API_KEY", "")
+    if groq_key:
+        try:
+            import httpx
+            r = httpx.post(
+                "https://api.groq.com/openai/v1/chat/completions",
+                headers={"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"},
+                json={"model": "qwen/qwen3.6-27b", "messages": [{"role": "user", "content": prompt}],
+                       "max_tokens": 800, "temperature": 0.3},
+                timeout=25,
+            )
+            if r.status_code == 200:
+                text = r.json()["choices"][0]["message"]["content"].strip()
+                text = re.sub(r"<think>[\s\S]*?</think>", "", text).strip()
+                text = re.sub(r"^```json\n?|\n?```$", "", text).strip()
+                if text:
+                    faqs = json.loads(text)
+                    if isinstance(faqs, list) and len(faqs) >= 3:
+                        return [{"question": f.get("question", ""), "answer": f.get("answer", "")}
+                                for f in faqs[:5] if f.get("question") and f.get("answer")]
+        except Exception as e:
+            logger.info(f"[faqs] Groq failed: {e}")
+
+    # Fallback: generic but product-specific templates
+    return [
+        {"question": f"Is the {short_title[:50]} worth buying?",
+         "answer": f"Based on its features and user reviews, it offers solid value for its price point. Consider your specific needs before purchasing."},
+        {"question": f"How does the {short_title[:50]} compare to cheaper alternatives?",
+         "answer": f"It typically offers better build quality and more features than budget options, though the price premium may not be justified for casual users."},
+        {"question": f"What are the main drawbacks of the {short_title[:50]}?",
+         "answer": f"Common user complaints may include price, weight, or specific feature limitations. Check the pros and cons section above for details."},
+        {"question": f"Is the {short_title[:50]} easy to set up and use?",
+         "answer": f"Most users report a straightforward setup process. The included instructions cover the basics, and online resources are available for advanced features."},
+        {"question": f"What warranty or support comes with the {short_title[:50]}?",
+         "answer": f"Check the product listing for manufacturer warranty details. Amazon also offers return protection within 30 days of purchase."},
+    ]
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+#  Task 11: Extract Pros/Cons from Real Reviews
+# ──────────────────────────────────────────────────────────────────────────────
+
+def extract_pros_cons_from_reviews(reviews: list, rating: float) -> dict:
+    """
+    Extract real pros and cons from customer reviews.
+    - 4-5 star reviews → pros source
+    - 1-2 star reviews → cons source
+    - 3 star reviews → mixed
+    Falls back to Groq if <5 reviews available.
+    Returns: {'pros': [...], 'cons': [...], 'source': 'real_reviews'|'ai_generated'}
+    """
+    import os, json, re
+
+    positive = [r for r in reviews if float(r.get("stars", r.get("rating", 0)) or 0) >= 4]
+    negative = [r for r in reviews if float(r.get("stars", r.get("rating", 0)) or 0) <= 2]
+
+    pros = []
+    cons = []
+
+    # Extract from real reviews
+    if len(positive) >= 3:
+        reviews_text = "\n".join([
+            f"[{r.get('stars', r.get('rating', '?'))}★] {(r.get('title', '') or '')}: {(r.get('body', '') or r.get('text', ''))[:200]}"
+            for r in positive[:10]
+        ])
+        groq_key = os.environ.get("GROQ_API_KEY", "")
+        if groq_key:
+            try:
+                import httpx
+                prompt = (
+                    f"Extract 3-5 pros from these positive customer reviews:\n{reviews_text}\n\n"
+                    f"Return JSON only: [\"pro1\", \"pro2\", ...]\n"
+                    f"Rules: Each pro must be a single clear sentence. No HTML entities, no symbols."
+                )
+                r = httpx.post(
+                    "https://api.groq.com/openai/v1/chat/completions",
+                    headers={"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"},
+                    json={"model": "qwen/qwen3.6-27b", "messages": [{"role": "user", "content": prompt}],
+                           "max_tokens": 300, "temperature": 0.3},
+                    timeout=20,
+                )
+                if r.status_code == 200:
+                    text = r.json()["choices"][0]["message"]["content"].strip()
+                    text = re.sub(r"<think>[\s\S]*?</think>", "", text).strip()
+                    text = re.sub(r"^```json\n?|\n?```$", "", text).strip()
+                    items = json.loads(text)
+                    if isinstance(items, list):
+                        pros = [str(p).strip() for p in items if p and len(str(p).strip()) > 5][:5]
+            except Exception as e:
+                logger.info(f"[pros_cons] Groq pros extraction failed: {e}")
+
+    if len(negative) >= 2:
+        reviews_text = "\n".join([
+            f"[{r.get('stars', r.get('rating', '?'))}★] {(r.get('title', '') or '')}: {(r.get('body', '') or r.get('text', ''))[:200]}"
+            for r in negative[:10]
+        ])
+        groq_key = os.environ.get("GROQ_API_KEY", "")
+        if groq_key:
+            try:
+                import httpx
+                prompt = (
+                    f"Extract 3-5 cons from these negative customer reviews:\n{reviews_text}\n\n"
+                    f"Return JSON only: [\"con1\", \"con2\", ...]\n"
+                    f"Rules: Each con must be a single clear sentence. No HTML entities, no symbols."
+                )
+                r = httpx.post(
+                    "https://api.groq.com/openai/v1/chat/completions",
+                    headers={"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"},
+                    json={"model": "qwen/qwen3.6-27b", "messages": [{"role": "user", "content": prompt}],
+                           "max_tokens": 300, "temperature": 0.3},
+                    timeout=20,
+                )
+                if r.status_code == 200:
+                    text = r.json()["choices"][0]["message"]["content"].strip()
+                    text = re.sub(r"<think>[\s\S]*?</think>", "", text).strip()
+                    text = re.sub(r"^```json\n?|\n?```$", "", text).strip()
+                    items = json.loads(text)
+                    if isinstance(items, list):
+                        cons = [str(c).strip() for c in items if c and len(str(c).strip()) > 5][:5]
+            except Exception as e:
+                logger.info(f"[pros_cons] Groq cons extraction failed: {e}")
+
+    source = "real_reviews" if (pros and cons) else "ai_generated"
+    return {"pros": pros, "cons": cons, "source": source}

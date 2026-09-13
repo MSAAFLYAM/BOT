@@ -1299,6 +1299,7 @@ def _run_batch_publish(bot_instance, chat_id: int, keywords: list[str]):
                             new_url = upload_image(transformed, safe_name)
                             if new_url:
                                 product["img_url"] = new_url
+                                product["all_images"] = [new_url] + [u for u in product.get("all_images", []) if u != img_url][:4]
                 except Exception as e:
                     logger.warning(f"[batch] Image transform failed: {e}")
             
@@ -1394,6 +1395,8 @@ def cmd_autopilot(message):
                 if not _autopilot_running:
                     break
                 if sheets_handler.is_duplicate(p["asin"]):
+                    continue
+                if p.get("asin") and p["asin"] in queue_manager._load().get("posted_asins", []):
                     continue
                 pipeline(p["clean_url"], message.chat.id,
                          schedule_offset=sched_offset)
@@ -1917,6 +1920,39 @@ def health():
         "webhook": bool(WEBHOOK_SECRET),
         "channel": bool(config.CHANNEL_ID),
     }, 200
+
+
+@flask_app.post("/trigger-daily")
+def trigger_daily():
+    """
+    Endpoint for GitHub Actions to trigger a daily publishing session.
+    Requires Bearer token matching TRIGGER_SECRET env var.
+    """
+    auth = request.headers.get("Authorization", "")
+    secret = os.environ.get("TRIGGER_SECRET", "")
+
+    if not secret or auth != f"Bearer {secret}":
+        return jsonify({"error": "Unauthorized"}), 401
+
+    try:
+        admin_id = os.environ.get("ADMIN_CHAT_ID", "")
+        if not admin_id:
+            return jsonify({"error": "ADMIN_CHAT_ID not set"}), 500
+
+        from daily_scheduler import _run_session
+        thread = threading.Thread(
+            target=_run_session,
+            args=(bot, int(admin_id)),
+            daemon=True,
+        )
+        thread.start()
+
+        source = request.json.get("source", "unknown") if request.is_json else "unknown"
+        logger.info(f"[trigger-daily] Session triggered by {source}")
+        return jsonify({"status": "triggered", "source": source}), 200
+    except Exception as e:
+        logger.error(f"[trigger-daily] Error: {e}")
+        return jsonify({"error": str(e)}), 500
 
 
 import queue as _queue

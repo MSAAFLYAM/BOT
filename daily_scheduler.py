@@ -87,27 +87,21 @@ def _is_asin_used(asin: str) -> bool:
         return asin in data.get("asins", [])
 
 
-# -- Default keywords by category --
+# -- Default keywords by niche (§3) — Smart Home / Home Security only --
 DEFAULT_KEYWORDS = {
-    "Home & Kitchen": [
-        "air fryer", "robot vacuum", "instant pot", "coffee maker",
-        "knife set", "stand mixer", "food storage containers",
-        "electric kettle", "cast iron skillet", "blender",
+    "Smart Home": [
+        "smart plug", "smart light strip", "home assistant green",
+        "matter smart switch", "zigbee sensor", "smart thermostat",
+        "curtain opener", "smart garage opener",
     ],
-    "Beauty & Health": [
-        "facial cleansing brush", "hair dryer", "electric toothbrush",
-        "massage gun", "skincare fridge", "jade roller",
-        "teeth whitening kit", "humidifier", "posture corrector", "foot spa",
+    "Home Security": [
+        "video doorbell", "security camera", "smart lock",
+        "doorbell camera wireless", "outdoor security camera",
+        "fingerprint deadbolt", "wifi door lock",
     ],
-    "Sports & Outdoors": [
-        "yoga mat", "resistance bands", "camping tent",
-        "hydration backpack", "fitness tracker", "foldable bike",
-        "insulated water bottle", "hiking boots", "portable grill", "sleeping bag",
-    ],
-    "Tech & Gadgets": [
-        "led strip lights", "portable charger", "bluetooth speaker",
-        "wireless earbuds", "phone case", "laptop stand",
-        "smart plug", "webcam", "mechanical keyboard", "tablet stand",
+    "Smart Devices": [
+        "water leak detector", "smart smoke detector",
+        "led strip lights smart", "smart sensor",
     ],
 }
 
@@ -213,7 +207,7 @@ def _run_session(bot, admin_chat_id: int):
     import blogger_api_publisher as blogger
     import content_generator
 
-    # Load keywords
+    # Load keywords (from .env or trend_discovery fallback)
     keywords_env = os.environ.get("AUTO_KEYWORDS", "")
     if keywords_env:
         try:
@@ -221,7 +215,17 @@ def _run_session(bot, admin_chat_id: int):
         except Exception:
             categories = DEFAULT_KEYWORDS
     else:
-        categories = DEFAULT_KEYWORDS
+        # Try trend_discovery first, fallback to defaults
+        try:
+            from trend_discovery import get_trending_amazon_keywords
+            trending = get_trending_amazon_keywords(top_n=5)
+            if trending:
+                categories = {"Trending Now": trending}
+                logger.info("[auto] Using trending keywords from Google Trends")
+            else:
+                categories = DEFAULT_KEYWORDS
+        except Exception:
+            categories = DEFAULT_KEYWORDS
 
     articles_per_run = int(os.environ.get("AUTO_ARTICLES_PER_RUN", "3"))
     daily_remaining = DAILY_MAX - _get_daily_count()
@@ -308,6 +312,18 @@ def _run_session(bot, admin_chat_id: int):
                 post_url = result.get("post_url", "")
                 _increment_daily()
                 _record_asin(asin)
+
+                # Post to Telegram channel
+                try:
+                    from main import post_to_channel
+                    post_to_channel(
+                        product=product,
+                        description=description,
+                        img_url=product.get("img_url", ""),
+                        post_url=post_url,
+                    )
+                except Exception as e:
+                    logger.warning(f"[auto] Telegram channel post failed: {e}")
 
                 # Success notification
                 try:
