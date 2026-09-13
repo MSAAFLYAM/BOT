@@ -1,0 +1,2148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<html b:defaultwidgetversion='2' b:layoutsVersion='3' b:responsive='true' b:templateUrl='nestdeal-theme.xml' b:templateVersion='3.0.0' lang='en' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<head>
+<!-- Google tag (gtag.js) -->
+<script async='async' src='https://www.googletagmanager.com/gtag/js?id=G-VKXSW648BH'/>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag(&#39;js&#39;, new Date());
+gtag(&#39;config&#39;, &#39;G-VKXSW648BH&#39;);
+</script>
+<!-- balise Google -->
+<meta content='DBLnnSf2ds_fwpbXswU05LEuGalHlH62G10s-OqkJcQ' name='google-site-verification'/>
+<meta charset='UTF-8'/>
+<meta content='width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover' name='viewport'/>
+<meta content='#1E293B' name='theme-color'/>
+<meta content='#1E293B' name='msapplication-navbutton-color'/>
+<meta content='yes' name='apple-mobile-web-app-capable'/>
+<meta content='black-translucent' name='apple-mobile-web-app-status-bar-style'/>
+<b:if cond='data:view.isSingleItem'>
+<meta expr:content='data:post.snippet ?: data:blog.metaDescription' id='nd-meta-desc' name='description'/>
+<b:elseif cond='data:view.isLabelSearch'/>
+<meta expr:content='&quot;Explore the best &quot; + data:view.search.label + &quot; deals and reviews on NestDeal. Save time and money with our handpicked recommendations.&quot;' name='description'/>
+<b:else/>
+<meta expr:content='data:blog.metaDescription ?: &quot;NestDeal — Smart Home &amp; Home Security reviews, comparisons and buying guides. Compare hubs, video doorbells, cameras and smart locks before you buy.&quot;' name='description'/>
+</b:if>
+<b:if cond='data:view.isLabelSearch'>
+<meta content='index, follow' name='robots'/>
+<b:elseif cond='data:view.isSearch'/>
+<meta content='noindex, nofollow' name='robots'/>
+<b:else/>
+<meta content='index, follow' name='robots'/>
+</b:if>
+<title><data:blog.pageTitle/></title>
+<link expr:href='data:blog.url' hreflang='en' rel='alternate'/>
+<link expr:href='data:blog.blogspotFaviconUrl' rel='icon' type='image/x-icon'/>
+<link expr:href='data:blog.blogspotFaviconUrl' rel='apple-touch-icon'/>
+<link href='https://fonts.googleapis.com' rel='preconnect'/>
+<link crossorigin='anonymous' href='https://fonts.gstatic.com' rel='preconnect'/>
+<link href='https://cdnjs.cloudflare.com' rel='preconnect'/>
+<link href='https://cdnjs.cloudflare.com' rel='dns-prefetch'/>
+<link href='https://fonts.googleapis.com' rel='dns-prefetch'/>
+<link href='https://www.amazon.com' rel='dns-prefetch'/>
+<link href='https://images-na.ssl-images-amazon.com' rel='dns-prefetch'/>
+<!-- Fonts include Poppins for Review Template -->
+<link as='style' href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=Poppins:wght@600;700;800&amp;display=swap' onload='this.onload=null;this.rel=&apos;stylesheet&apos;' rel='preload'/>
+<noscript><link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=Poppins:wght@600;700;800&amp;display=swap' rel='stylesheet'/></noscript>
+<link as='style' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css' onload='this.onload=null;this.rel=&apos;stylesheet&apos;' rel='preload'/>
+<noscript><link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css' rel='stylesheet'/></noscript>
+<b:include data='blog' name='all-head-content'/>
+
+  <b:if cond='data:view.isSingleItem'>
+    <meta content='article' property='og:type'/>
+    <meta expr:content='data:blog.pageTitle' property='og:title'/>
+    <meta expr:content='data:post.snippet ?: data:blog.metaDescription' id='nd-og-desc' property='og:description'/>
+    <b:if cond='data:post.firstImageUrl'>
+      <meta expr:content='data:post.firstImageUrl' property='og:image'/>
+    <b:else/>
+      <meta content='https://placehold.co/1200x630/061329/FF9900?text=NestDeal' property='og:image'/>
+    </b:if>
+  <b:else/>
+    <meta content='website' property='og:type'/>
+    <meta expr:content='data:blog.pageTitle' property='og:title'/>
+    <meta expr:content='data:blog.metaDescription' property='og:description'/>
+    <meta content='https://placehold.co/1200x630/061329/FF9900?text=NestDeal' property='og:image'/>
+  </b:if>
+  <meta expr:content='data:blog.title' property='og:site_name'/>
+  <meta expr:content='data:blog.url' property='og:url'/>
+  <meta content='1200' property='og:image:width'/>
+  <meta content='630' property='og:image:height'/>
+
+  <meta content='summary_large_image' name='twitter:card'/>
+  <meta content='@NestDeal' name='twitter:site'/>
+  <b:if cond='data:view.isSingleItem'>
+    <meta expr:content='data:blog.pageTitle' name='twitter:title'/>
+    <meta expr:content='data:post.snippet ?: data:blog.metaDescription' id='nd-tw-desc' name='twitter:description'/>
+    <b:if cond='data:post.firstImageUrl'>
+      <meta expr:content='data:post.firstImageUrl' name='twitter:image'/>
+    </b:if>
+  <b:else/>
+    <meta expr:content='data:blog.pageTitle' name='twitter:title'/>
+    <meta expr:content='data:blog.metaDescription' name='twitter:description'/>
+    <meta content='https://placehold.co/1200x630/061329/FF9900?text=NestDeal' name='twitter:image'/>
+  </b:if>
+
+  <script type='application/ld+json'>
+  {
+    &quot;@context&quot;: &quot;https://schema.org&quot;,
+    &quot;@type&quot;: &quot;WebSite&quot;,
+    &quot;name&quot;: &quot;<data:blog.title/>&quot;,
+    &quot;url&quot;: &quot;<data:blog.url/>&quot;,
+    &quot;potentialAction&quot;: {
+      &quot;@type&quot;: &quot;SearchAction&quot;,
+      &quot;target&quot;: {
+        &quot;@type&quot;: &quot;EntryPoint&quot;,
+        &quot;urlTemplate&quot;: &quot;<data:blog.homepageUrl/>search?q={search_term_string}&quot;
+      },
+      &quot;query-input&quot;: &quot;required name=search_term_string&quot;
+    }
+  }
+  </script>
+  <script type='application/ld+json'>
+  {
+    &quot;@context&quot;: &quot;https://schema.org&quot;,
+    &quot;@type&quot;: &quot;Organization&quot;,
+    &quot;name&quot;: &quot;NestDeal&quot;,
+    &quot;url&quot;: &quot;<data:blog.url/>&quot;,
+    &quot;logo&quot;: &quot;<data:blog.blogspotFaviconUrl/>&quot;,
+    &quot;sameAs&quot;: []
+  }
+  </script>
+
+  <b:if cond='data:view.isSingleItem'>
+  <script type='application/ld+json'>
+  {
+    &quot;@context&quot;: &quot;https://schema.org&quot;,
+    &quot;@type&quot;: &quot;Article&quot;,
+    &quot;headline&quot;: &quot;<data:post.title/>&quot;,
+    &quot;description&quot;: &quot;<data:post.snippet/>&quot;,
+    &quot;image&quot;: &quot;<data:post.firstImageUrl/>&quot;,
+    &quot;url&quot;: &quot;<data:post.url/>&quot;,
+    &quot;datePublished&quot;: &quot;<data:post.date/>&quot;,
+    &quot;author&quot;: {
+      &quot;@type&quot;: &quot;Organization&quot;,
+      &quot;name&quot;: &quot;NestDeal&quot;
+    },
+    &quot;publisher&quot;: {
+      &quot;@type&quot;: &quot;Organization&quot;,
+      &quot;name&quot;: &quot;NestDeal&quot;,
+      &quot;url&quot;: &quot;<data:blog.url/>&quot;
+    }
+  }
+  </script>
+  </b:if>
+
+<b:skin><![CDATA[
+/* ============================================================
+   NESTDEAL v4.1 — COMPLETE VISUAL REDESIGN + REVIEW ENGINE
+   Design: Sharp editorial + warm utility. Navy authority, 
+   orange action, clean white reading surface.
+   ============================================================ */
+
+:root {
+  --navy:       #1E293B;
+  --navy-mid:   #263348;
+  --navy-light: #334155;
+  --orange:     #F59E0B;
+  --orange-dk:  #B45309;
+  --orange-lt:  #FFF8E7;
+  --white:      #FFFFFF;
+  --bg:         #FFFFFF;
+  --surface:    #FFFFFF;
+  --surface-2:  #F8FAFC;
+  --ink:        #0F172A;
+  --ink-mid:    #334155;
+  --ink-soft:   #64748B;
+  --ink-muted:  #94A3B8;
+  --border:     #E2E8F0;
+  --border-mid: #CBD5E1;
+  --green:      #059669;
+  --green-lt:   #ECFDF5;
+  --teal:       #0D9488;
+  --teal-lt:    #F0FDFA;
+  --radius:     10px;
+  --radius-sm:  6px;
+  --radius-xs:  4px;
+  --shadow-sm:  0 1px 2px rgba(0,0,0,.05);
+  --shadow:     0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:  0 4px 6px rgba(0,0,0,.06), 0 2px 4px rgba(0,0,0,.04);
+  --shadow-lg:  0 10px 15px rgba(0,0,0,.08), 0 4px 6px rgba(0,0,0,.04);
+  --font:       'Inter', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Georgia', serif;
+  --max-w:      1160px;
+  --tap:        44px;
+  --transition: .15s ease;
+}
+
+*, *:before, *:after { box-sizing: border-box; }
+html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; overflow-x:hidden; }
+body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--font);
+       font-size:15px; line-height:1.65; -webkit-font-smoothing:antialiased;
+       overflow-x:hidden; text-rendering:optimizeLegibility; }
+@media (prefers-reduced-motion:reduce) { *,*::before,*::after {
+  animation-duration:.01ms !important; transition-duration:.01ms !important; } }
+
+/* ── RESET ── */
+a { color:inherit; text-decoration:none; }
+img { display:block; max-width:100%; height:auto; }
+ul { list-style:none; margin:0; padding:0; }
+h1,h2,h3,h4,h5 { margin:0; font-weight:700; line-height:1.25; color:var(--ink); }
+p { margin:0 0 1em; }
+button { font-family:var(--font); cursor:pointer; }
+
+/* ── LAYOUT ── */
+.container { max-width:var(--max-w); margin:0 auto; padding:0 20px; }
+@media (min-width:768px) { .container { padding:0 32px; } }
+
+/* ── BUTTONS ── */
+.btn { display:inline-flex; align-items:center; gap:7px; padding:11px 22px;
+       border-radius:var(--radius-sm); font-size:14px; font-weight:600;
+       border:none; transition:all var(--transition); white-space:nowrap; }
+.btn-primary { background:var(--orange); color:var(--navy); }
+.btn-primary:hover { background:var(--orange-dk); transform:translateY(-1px); box-shadow:var(--shadow-md); }
+.btn-ghost { background:transparent; color:rgba(255,255,255,.85); border:1.5px solid rgba(255,255,255,.25); }
+.btn-ghost:hover { background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.5); }
+
+/* ══════════════════════════════════════════
+   HEADER
+══════════════════════════════════════════ */
+.site-header { background:var(--navy); position:sticky; top:0; z-index:200;
+               border-bottom:1px solid rgba(255,255,255,.07); }
+.header-inner { display:flex; align-items:center; gap:14px; height:60px; }
+
+/* Logo */
+.brand { display:flex; align-items:center; gap:9px; flex-shrink:0; }
+.brand-mark { width:34px; height:34px; background:var(--orange); border-radius:var(--radius-xs);
+              display:flex; align-items:center; justify-content:center; font-size:16px; color:var(--navy); }
+.brand-name { font-size:19px; font-weight:800; color:#fff; letter-spacing:-.03em; line-height:1; }
+.brand-name span { color:var(--orange); }
+
+/* Search */
+.site-search { flex:1; max-width:460px; display:flex;
+               background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12);
+               border-radius:var(--radius-sm); overflow:hidden; }
+.site-search input { flex:1; background:none; border:none; padding:9px 14px; font-size:14px;
+                     color:#fff; outline:none; }
+.site-search input::placeholder { color:rgba(255,255,255,.45); }
+.site-search button { background:none; border:none; padding:0 14px; color:rgba(255,255,255,.6);
+                      font-size:15px; }
+.site-search button:hover { color:var(--orange); }
+
+/* Nav strip */
+.nav-strip { background:var(--navy-mid); border-bottom:1px solid rgba(255,255,255,.05); }
+.nav-strip ul { display:flex; gap:2px; height:42px; align-items:center; }
+.nav-strip a { display:flex; align-items:center; gap:6px; padding:7px 13px;
+               color:rgba(255,255,255,.65); font-size:13px; font-weight:500;
+               border-radius:var(--radius-xs); transition:all var(--transition); }
+.nav-strip a:hover { color:#fff; background:rgba(255,255,255,.08); }
+.nav-strip a.active { color:var(--orange); }
+.nav-strip a i { font-size:12px; }
+
+/* Header right */
+.header-right { display:flex; align-items:center; gap:10px; margin-left:auto; }
+.header-tagline { font-size:11.5px; color:rgba(255,255,255,.45); line-height:1.3;
+                  text-align:right; display:none; }
+@media (min-width:900px) { .header-tagline { display:block; } }
+.menu-toggle { display:flex; align-items:center; justify-content:center;
+               width:38px; height:38px; background:rgba(255,255,255,.08);
+               border:1px solid rgba(255,255,255,.15); border-radius:var(--radius-xs);
+               color:#fff; font-size:16px; }
+@media (min-width:800px) { .menu-toggle { display:none; } }
+@media (min-width:800px) { .nav-strip { display:block; } }
+@media (max-width:799px) { .nav-strip { display:none; } }
+
+/* Mobile drawer */
+.mob-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:300; }
+.mob-overlay.open { display:block; }
+.mob-drawer { position:fixed; top:0; left:-280px; width:280px; height:100vh;
+              background:var(--navy); z-index:400; transition:left .25s ease;
+              overflow-y:auto; }
+.mob-drawer.open { left:0; }
+.mob-drawer-header { display:flex; align-items:center; justify-content:space-between;
+                     padding:18px 20px; border-bottom:1px solid rgba(255,255,255,.08); }
+.mob-drawer-close { background:none; border:none; color:rgba(255,255,255,.7); font-size:20px; }
+.mob-drawer-nav a { display:flex; align-items:center; gap:10px; padding:13px 20px;
+                    color:rgba(255,255,255,.75); font-size:14.5px; font-weight:500;
+                    border-bottom:1px solid rgba(255,255,255,.05); }
+.mob-drawer-nav a:hover { color:#fff; background:rgba(255,255,255,.05); }
+.mob-drawer-nav a i { width:18px; color:var(--orange); font-size:14px; }
+
+/* ══════════════════════════════════════════
+   HERO
+══════════════════════════════════════════ */
+.hero { background:linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+        padding:56px 0 52px; overflow:hidden; position:relative; }
+.hero::after { content:''; position:absolute; inset:0;
+               background:radial-gradient(ellipse at 70% 50%, rgba(245,158,11,.07) 0%, transparent 60%);
+               pointer-events:none; }
+.hero-inner { position:relative; z-index:1; max-width:680px; }
+.hero-eyebrow { display:inline-flex; align-items:center; gap:7px; background:rgba(245,158,11,.12);
+                border:1px solid rgba(245,158,11,.2); border-radius:20px;
+                padding:5px 13px; font-size:12px; font-weight:600; color:var(--orange);
+                margin-bottom:20px; }
+.hero h1 { font-size:clamp(26px,5vw,42px); font-weight:800; color:#fff;
+           letter-spacing:-.03em; line-height:1.15; margin-bottom:16px; }
+.hero h1 .hl { color:var(--orange); }
+.hero-sub { font-size:16px; color:rgba(255,255,255,.65); max-width:520px;
+            line-height:1.6; margin-bottom:28px; }
+.hero-cta { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:36px; }
+.hero-trust { display:flex; flex-wrap:wrap; gap:16px 28px;
+              border-top:1px solid rgba(255,255,255,.08); padding-top:24px; }
+.hero-trust-item { display:flex; align-items:center; gap:9px; }
+.hero-trust-icon { width:30px; height:30px; border-radius:50%; background:rgba(245,158,11,.12);
+                   display:flex; align-items:center; justify-content:center;
+                   font-size:12px; color:var(--orange); flex-shrink:0; }
+.hero-trust-text strong { display:block; font-size:13px; font-weight:600; color:#fff; }
+.hero-trust-text span { display:block; font-size:11.5px; color:rgba(255,255,255,.5); margin-top:1px; }
+
+/* Hero retired on all views per owner request */
+.hero { display:none !important; }
+@media (min-width:768px) and (max-width:999px) {
+  .hero { padding:36px 0 32px; }
+  .hero-trust { gap:12px 20px; }
+}
+
+/* ══════════════════════════════════════════
+   CATEGORY STRIP
+══════════════════════════════════════════ */
+.cat-strip { background:#FFFFFF; border-bottom:2px solid var(--border);
+             box-shadow:0 2px 8px rgba(15,23,42,.05); }
+.cat-strip-inner { display:flex; gap:0; overflow-x:auto; -webkit-overflow-scrolling:touch;
+                   scrollbar-width:none; }
+.cat-strip-inner::-webkit-scrollbar { display:none; }
+.cat-item { display:flex; flex-direction:column; align-items:center; gap:0;
+            padding:10px 14px; min-width:52px; min-height:var(--tap);
+            font-size:0; font-weight:600; color:var(--ink-soft);
+            border-bottom:2px solid transparent;
+            transition:all var(--transition); flex-shrink:0; text-align:center;
+            justify-content:center; }
+.cat-item:hover,
+.cat-item:focus { color:var(--teal); border-color:var(--teal);
+                  background:var(--teal-lt); outline:none; }
+.cat-icon { font-size:20px; color:var(--ink-soft); display:block;
+            transition:color var(--transition); }
+.cat-item:hover .cat-icon,
+.cat-item:focus .cat-icon { color:var(--teal); }
+.cat-item .cat-name { font-size:0; line-height:0; overflow:hidden;
+                      display:block; margin-top:0; }
+@media (min-width:768px) {
+  .cat-item { min-width:80px; padding:10px 16px; gap:5px; font-size:11.5px; }
+  .cat-item .cat-name { font-size:11.5px; line-height:1.2; margin-top:4px; }
+  .cat-icon { font-size:17px; }
+}
+
+/* ══════════════════════════════════════════
+   DEALS GRID / PRODUCT CARDS
+══════════════════════════════════════════ */
+.section-head { display:flex; align-items:baseline; justify-content:space-between;
+                padding:28px 0 16px; }
+.section-head h2 { font-size:20px; font-weight:700; color:var(--ink); }
+.section-head a { font-size:13px; color:var(--orange-dk); font-weight:600; }
+.section-head a:hover { text-decoration:underline; }
+
+.deals-grid { display:grid; gap:14px; padding:0 0 32px;
+              grid-template-columns:1fr; }
+@media (min-width:480px) {
+  .deals-grid { grid-template-columns:repeat(2,1fr); }
+}
+@media (min-width:900px) {
+  .deals-grid { grid-template-columns:repeat(3,1fr); gap:18px; }
+}
+@media (min-width:1100px) {
+  .deals-grid { grid-template-columns:repeat(4,1fr); }
+}
+
+.product-card { background:var(--surface-2); border:1px solid var(--border);
+                border-radius:var(--radius); overflow:hidden;
+                box-shadow:0 1px 4px rgba(15,23,42,.06);
+                transition:all var(--transition); }
+.product-card:hover { border-color:var(--border-mid); box-shadow:var(--shadow-md);
+                      transform:translateY(-2px); }
+.product-card > a { display:flex; flex-direction:column; height:100%; }
+@media (max-width:479px) {
+  .product-card { background:rgba(255,255,255,.72);
+                -webkit-backdrop-filter:blur(20px) saturate(1.4);
+                backdrop-filter:blur(20px) saturate(1.4);
+                border-radius:24px; border:1px solid rgba(255,255,255,.65);
+                box-shadow:0 8px 32px rgba(15,23,42,.12), 0 0 0 1px var(--border);
+                overflow:hidden; max-width:100%; }
+  .product-card > a { flex-direction:column; height:100%; min-width:0; }
+  .card-media { aspect-ratio:1/1; width:100%; min-width:0; max-width:100%;
+                border-bottom:1px solid var(--border); border-right:none;
+                background:#fff; overflow:hidden; }
+  .card-media img { object-fit:contain; width:100%; height:100%; }
+  .card-body { padding:14px 14px 16px; min-width:0; }
+  .card-title { -webkit-line-clamp:3; font-size:15px; }
+  .card-btn { min-height:44px; padding:12px;
+              background:rgba(255,255,255,.6);
+              -webkit-backdrop-filter:blur(12px) saturate(1.3);
+              backdrop-filter:blur(12px) saturate(1.3);
+              border:1px solid rgba(255,255,255,.7);
+              box-shadow:inset 0 0 0 1px var(--border);
+              border-radius:14px; }
+}
+
+.card-media { aspect-ratio:4/3; overflow:hidden; background:var(--bg);
+              border-bottom:1px solid var(--border); }
+.card-media img { width:100%; height:100%; object-fit:contain; padding:12px;
+                  transition:transform .25s ease; }
+.product-card:hover .card-media img { transform:scale(1.04); }
+
+.card-body { padding:14px 16px 16px; display:flex; flex-direction:column; flex:1; gap:8px; }
+.card-cat { display:flex; align-items:center; gap:5px; font-size:11px; font-weight:600;
+            color:var(--orange-dk); text-transform:uppercase; letter-spacing:.04em; }
+.amz-icon { color:var(--orange); }
+.card-title { font-size:14px; font-weight:600; color:var(--ink); line-height:1.35;
+              flex:1; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical;
+              overflow:hidden; }
+.card-footer { margin-top:auto; padding-top:10px; border-top:1px solid var(--border); }
+.card-btn { display:inline-flex; align-items:center; gap:6px; font-size:12.5px;
+            font-weight:600; color:var(--orange-dk);
+            background:var(--orange-lt); border-radius:var(--radius-xs);
+            padding:6px 12px; width:100%; justify-content:center; }
+.product-card:hover .card-btn { background:var(--orange); color:var(--navy); }
+
+/* ═══ COMPARISON & REVIEW COMPONENTS ═══
+   Automation bot target classes:
+   .compare-hook, .compare-table-wrap, .compare-table, .compare-card,
+   .compare-pros, .compare-con, .compare-best-for, .compare-cta,
+   .affiliate-callout, .post-tag-chip
+══════════════════════════════════════════ */
+
+/* Comparison hook intro */
+.compare-hook { margin:0 0 24px; padding:16px 18px; background:var(--orange-lt);
+                border-left:4px solid var(--orange); border-radius:var(--radius);
+                color:var(--ink); font-size:clamp(16px,2vw,18px); line-height:1.65;
+                box-shadow:var(--shadow-sm); }
+.compare-hook p:last-child { margin-bottom:0; }
+
+/* Quick comparison table */
+.compare-table-wrap { width:100%; overflow-x:auto; margin:24px 0;
+                      border:1px solid var(--border); border-radius:var(--radius);
+                      -webkit-overflow-scrolling:touch; }
+.compare-table { width:100%; min-width:620px; border-collapse:collapse;
+                background:var(--surface); color:var(--ink); font-size:13px; }
+.compare-table th { padding:12px 14px; background:var(--navy); color:#fff;
+                    text-align:left; font-size:12px; font-weight:700;
+                    letter-spacing:.02em; white-space:nowrap; }
+.compare-table td { padding:11px 14px; border-top:1px solid var(--border);
+                    vertical-align:top; line-height:1.5; }
+.compare-table tbody tr:nth-child(odd) td { background:var(--surface); }
+.compare-table tbody tr:nth-child(even) td { background:var(--surface-2); }
+.compare-table tbody tr:hover td { background:var(--orange-lt); }
+@media (max-width:600px) {
+  .compare-table-wrap { margin-right:-2px; border-radius:var(--radius-sm); }
+  .compare-table { min-width:620px; }
+}
+
+/* Product comparison cards */
+.compare-card { display:flex; flex-direction:column; gap:12px; margin:20px 0;
+                padding:18px; background:var(--surface-2); border:1px solid var(--border);
+                border-radius:var(--radius); box-shadow:var(--shadow);
+                transition:box-shadow var(--transition),border-color var(--transition); }
+.compare-card:hover { border-color:var(--border-mid); box-shadow:var(--shadow-md); }
+.compare-card h3, .compare-card h4 { margin:0; color:var(--ink); }
+.compare-best-for { display:inline-flex; align-items:center; align-self:flex-start;
+                    color:var(--orange-dk); font-size:11px; font-weight:700;
+                    text-transform:uppercase; letter-spacing:.04em; }
+.compare-pros, .compare-con { margin:0; padding:0; list-style:none; }
+.compare-pros li, .compare-con li { position:relative; padding-left:21px; margin:0 0 7px;
+                                     color:var(--ink-mid); font-size:13px; line-height:1.5; }
+.compare-pros li::before { content:'✓'; position:absolute; left:0; color:var(--teal);
+                           font-weight:800; }
+.compare-con li { color:var(--ink-soft); }
+.compare-con li::before { content:'!'; position:absolute; left:2px; color:var(--orange-dk);
+                          font-weight:800; }
+.compare-con li:last-child { margin-bottom:0; }
+.compare-cta { display:inline-flex; align-items:center; justify-content:center; gap:7px;
+               align-self:stretch; margin-top:auto; padding:11px 16px;
+               background:var(--orange); color:var(--navy); border-radius:var(--radius-xs);
+               font-size:13px; font-weight:700; text-align:center;
+               transition:all var(--transition); }
+.compare-cta:hover { background:var(--orange-dk); color:#fff; transform:translateY(-1px);
+                     box-shadow:var(--shadow-md); }
+
+/* Reusable in-content affiliate recommendation */
+.affiliate-callout { display:flex; align-items:center; gap:14px; margin:28px 0;
+                     padding:16px 18px; background:var(--orange-lt);
+                     border:1px solid #FDE68A; border-left:4px solid var(--orange);
+                     border-radius:var(--radius); box-shadow:var(--shadow-sm); }
+.affiliate-callout > i { flex:0 0 auto; color:var(--orange-dk); font-size:20px; }
+.affiliate-callout p { flex:1; margin:0; color:var(--ink); font-size:14px; line-height:1.55; }
+.affiliate-callout .compare-cta { flex:0 0 auto; align-self:center; white-space:nowrap; }
+@media (max-width:600px) {
+  .affiliate-callout { align-items:flex-start; flex-wrap:wrap; }
+  .affiliate-callout p { flex-basis:calc(100% - 38px); }
+  .affiliate-callout .compare-cta { flex-basis:100%; }
+}
+
+/* Editorial label chips on single-post pages */
+.post-tag-chip { display:inline-flex; align-items:center; gap:5px; margin:0 5px 6px 0;
+                 padding:4px 9px; background:var(--surface-2); border:1px solid var(--border);
+                 border-radius:20px; color:var(--ink-soft); font-size:11px; font-weight:600;
+                 line-height:1.25; transition:all var(--transition); }
+.post-tag-chip:hover, .post-tag-chip:focus { background:var(--teal-lt); border-color:var(--teal);
+                                             color:var(--teal); }
+.post-tag-chip-row { display:flex; flex-wrap:wrap; margin:0 0 18px; }
+
+/* ══════════════════════════════════════════
+   BREADCRUMB
+══════════════════════════════════════════ */
+.breadcrumb { padding:14px 0; }
+.breadcrumb ol { display:flex; align-items:center; flex-wrap:wrap; gap:4px;
+                 font-size:13px; color:var(--ink-soft); }
+.breadcrumb li { display:flex; align-items:center; gap:4px; }
+.breadcrumb li a { color:var(--orange-dk); }
+.breadcrumb li a:hover { text-decoration:underline; }
+.breadcrumb li:not(:last-child)::after { content:'/'; color:var(--border-mid); font-weight:400; margin-left:2px; }
+
+/* ══════════════════════════════════════════
+   POST SINGLE (Review page)
+══════════════════════════════════════════ */
+.single-item-page { padding-bottom:60px; }
+
+.post-single { max-width:100%; width:100%; }
+
+.post-title { font-size:clamp(20px,4vw,30px); font-weight:800; color:var(--ink);
+              letter-spacing:-.02em; line-height:1.2; margin-bottom:20px;
+              border-left:4px solid var(--orange); padding-left:16px; }
+
+.post-meta { display:flex; flex-wrap:wrap; gap:10px 18px; font-size:13px;
+             color:var(--ink-soft); margin-bottom:24px; }
+.post-meta span { display:flex; align-items:center; gap:5px; }
+.post-meta a { color:var(--orange-dk); font-weight:600; }
+
+.post-hero-image img { width:100%; border-radius:var(--radius);
+                       border:1px solid var(--border); background:#fff;
+                       padding:16px; margin-bottom:24px; }
+
+/* (Base post-body typography lives in the newer block below; kept here only the disclosure class) */
+.inline-affiliate-disclosure { margin:20px 0 0; padding:12px 14px; border-left:3px solid var(--orange);
+                                background:var(--orange-lt); color:var(--ink-soft); font-size:12px; line-height:1.55; }
+
+/* Review wrapper */
+.rvw-wrapper { background:var(--surface); border:1px solid var(--border);
+               border-radius:var(--radius); padding:20px; margin-bottom:24px; }
+.rvw-main-img { display:block !important; width:100% !important; max-width:100% !important;
+                height:auto !important; aspect-ratio:1/1 !important; object-fit:contain !important;
+                background:#fff !important; border:1px solid var(--border) !important;
+                padding:16px !important; margin:0 auto !important;
+                border-radius:var(--radius) !important; }
+
+/* (Sticky CTA: single definition kept in the newer block below) */
+
+/* Related posts */
+.related-posts { margin-top:40px; border-top:1px solid var(--border); padding-top:28px; }
+.related-posts h3 { font-size:17px; font-weight:700; margin-bottom:18px; }
+.related-grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); }
+.related-card { background:var(--surface); border:1px solid var(--border);
+                border-radius:var(--radius-sm); overflow:hidden; transition:all var(--transition); }
+.related-card:hover { box-shadow:var(--shadow-md); transform:translateY(-2px); }
+.related-card img { width:100%; aspect-ratio:4/3; object-fit:contain; background:var(--bg); padding:8px; }
+.related-card h4 { font-size:13px; font-weight:600; padding:10px 12px;
+                   display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+
+/* ══════════════════════════════════════════
+   PAGINATION / LOAD MORE
+══════════════════════════════════════════ */
+.feed-actions { text-align:center; padding:28px 0; }
+.inf-spinner { display:none; text-align:center; padding:20px; }
+.inf-spinner-inner { display:inline-block; width:28px; height:28px;
+                     border:3px solid var(--border); border-top-color:var(--orange);
+                     border-radius:50%; animation:spin .7s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.feed-status { text-align:center; padding:40px; color:var(--ink-muted); font-size:15px; }
+
+/* ══════════════════════════════════════════
+   COMMENTS
+══════════════════════════════════════════ */
+.comments-section { margin-top:40px; border-top:1px solid var(--border); padding-top:24px; }
+
+/* ══════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════ */
+.site-footer { background:var(--navy); color:rgba(255,255,255,.65); margin-top:64px; }
+.footer-top { display:grid; gap:24px 32px; padding:48px 0 36px;
+              grid-template-columns:1fr 1fr; }
+.footer-brand { grid-column:1/-1; }
+@media (min-width:640px) {
+  .footer-top { grid-template-columns:2fr 1fr 1fr 1fr; }
+  .footer-brand { grid-column:auto; }
+}
+@media (max-width:479px) {
+  .footer-top { grid-template-columns:1fr; }
+  .footer-brand { grid-column:auto; }
+}
+.footer-brand-name { font-size:20px; font-weight:800; color:#fff; letter-spacing:-.03em; }
+.footer-brand-name span { color:var(--orange); }
+.footer-brand p { font-size:12.5px; line-height:1.65; margin-top:10px;
+                  max-width:220px; color:rgba(255,255,255,.45); }
+.footer-col h4 { font-size:11px; font-weight:700; text-transform:uppercase;
+                 letter-spacing:.08em; color:rgba(255,255,255,.4); margin-bottom:14px; }
+.footer-col ul { display:flex; flex-direction:column; gap:8px; }
+.footer-col li a { font-size:13px; color:rgba(255,255,255,.65);
+                   transition:color var(--transition); display:flex; align-items:center; gap:7px; }
+.footer-col li a:hover { color:#fff; }
+.footer-col li a i { width:14px; color:rgba(255,255,255,.3); font-size:12px; }
+.footer-bottom { border-top:1px solid rgba(255,255,255,.06); padding:18px 0; }
+.footer-bottom-inner { display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+                       justify-content:space-between; font-size:12px;
+                       color:rgba(255,255,255,.35); }
+.footer-bottom-inner a { color:rgba(255,255,255,.4); }
+.footer-bottom-inner a:hover { color:rgba(255,255,255,.7); }
+.footer-disclaimer { font-size:12px; color:rgba(255,255,255,.35); line-height:1.6;
+                     padding:14px 0; border-top:1px solid rgba(255,255,255,.06); margin-top:4px; }
+.footer-disclaimer a { color:rgba(255,255,255,.5); text-decoration:underline; }
+
+/* ══════════════════════════════════════════
+   MOBILE BOTTOM NAV
+══════════════════════════════════════════ */
+.mob-bottom-nav { display:none; position:fixed; bottom:0; left:0; right:0; z-index:150;
+                  background:#FFFFFF; border-top:1px solid var(--border);
+                  padding:0; box-shadow:0 -2px 12px rgba(15,23,42,.08); }
+.mob-bottom-inner { display:flex; justify-content:space-around;
+                    padding-bottom:env(safe-area-inset-bottom); }
+.mob-bottom-nav a { display:flex; flex-direction:column; align-items:center; gap:3px;
+                    font-size:9.5px; font-weight:600; color:var(--ink-soft);
+                    min-height:56px; flex:1; justify-content:center; padding:8px 4px;
+                    transition:color var(--transition); text-align:center;
+                    letter-spacing:.01em; }
+.mob-bottom-nav a:hover,
+.mob-bottom-nav a.active { color:var(--teal); }
+.mob-bottom-nav a i { font-size:20px; display:block; margin-bottom:2px;
+                      transition:color var(--transition); }
+.mob-bottom-nav a:hover i,
+.mob-bottom-nav a.active i { color:var(--teal); }
+@media (max-width:767px) {
+  .mob-bottom-nav { display:block; }
+  body { padding-bottom:calc(56px + env(safe-area-inset-bottom)); font-size:16px; }
+  .post-body-content { font-size:16.5px; line-height:1.8; }
+  .card-title { font-size:15px; }
+  .post-title { font-size:clamp(22px, 5vw, 28px); }
+}
+
+/* Home-back floating button (product pages only) */
+.home-back-btn { display:inline-flex; align-items:center; gap:8px; position:fixed;
+  top:14px; left:14px; z-index:300; background:var(--navy); color:#fff;
+  font-size:13px; font-weight:700; padding:10px 16px; border-radius:20px;
+  box-shadow:var(--shadow-md); border:1px solid rgba(255,255,255,.12); }
+.home-back-btn:hover { color:var(--orange); }
+.home-back-btn i { font-size:13px; }
+
+/* Related “view all” link */
+.related-more-wrap { text-align:center; margin-top:14px; }
+.related-more { font-size:13px; font-weight:600; color:var(--orange-dk); }
+.related-more:hover { text-decoration:underline; }
+
+/* ══════════════════════════════════════════
+   PILLAR / GUIDE CSS (kept for compat)
+══════════════════════════════════════════ */
+.pillar-grid { display:grid; grid-template-columns:1fr; gap:14px; padding:0 0 32px; }
+.guide-grid { display:grid; grid-template-columns:1fr; gap:12px; padding:0 0 32px; }
+@media (min-width:700px) {
+  .pillar-grid { grid-template-columns:repeat(3,1fr); }
+  .guide-grid { grid-template-columns:repeat(3,1fr); }
+}
+.sec-heading { display:flex; align-items:baseline; justify-content:space-between; padding:28px 0 14px; }
+.sec-heading h2 { font-size:20px; font-weight:800; color:var(--ink);
+                   position:relative; padding-left:14px; }
+.sec-heading h2::before { content:''; position:absolute; left:0; top:50%;
+                            transform:translateY(-50%);
+                            width:4px; height:20px; background:var(--teal);
+                            border-radius:2px; }
+.sec-heading a { font-size:13px; color:var(--orange-dk); font-weight:600; }
+.guide-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+              padding:18px; display:flex; flex-direction:column; gap:8px; min-height:110px;
+              transition:border-color var(--transition); text-decoration:none; color:inherit; }
+.guide-card:hover { border-color:var(--orange); }
+.guide-card-badge { font-size:11px; font-weight:800; text-transform:uppercase;
+                    letter-spacing:.05em; color:var(--orange-dk); }
+.guide-card h4 { font-size:14.5px; font-weight:800; line-height:1.35; margin:0; color:var(--ink); }
+.guide-card p { font-size:13px; color:var(--ink-soft); margin:0; line-height:1.5; }
+@media (max-width:767px) {
+  #featured-guides-section { display:none; }
+}
+
+
+/* ══ ARTICLE REVIEW TEMPLATE v4.1 ══ */
+/* ══════════════════════════════════════════════════════
+   NESTDEAL v4.1 — ARTICLE REVIEW TEMPLATE CSS
+   القالب الكامل لصفحة المراجعة
+══════════════════════════════════════════════════════ */
+
+/* ── REVIEW PAGE LAYOUT ── */
+.single-item-page { padding-bottom:80px; }
+.review-layout { display:grid; grid-template-columns:minmax(0,1fr); gap:24px; width:100%; }
+.review-main { min-width:0; overflow:hidden; }
+@media (min-width:900px) {
+  .review-layout { grid-template-columns:minmax(0,1fr) 320px; align-items:start; gap:32px; }
+  .review-main { min-width:0; }
+  .review-sidebar { position:sticky; top:76px; }
+}
+/* Full-width single article page on desktop */
+@media (min-width:900px) {
+  .single-item-page { max-width:var(--max-w); margin:0 auto; }
+  .post-single { width:100%; max-width:100%; }
+}
+
+/* ── REVIEW HEADER ── */
+.review-header { margin-bottom:24px; }
+.review-label { display:inline-flex; align-items:center; gap:6px; background:var(--orange-lt);
+                color:var(--orange-dk); font-size:11px; font-weight:700; text-transform:uppercase;
+                letter-spacing:.06em; padding:4px 10px; border-radius:20px; margin-bottom:12px; }
+.post-title { font-size:clamp(20px,4vw,28px); font-weight:800; color:var(--ink);
+              letter-spacing:-.025em; line-height:1.2; margin-bottom:0;
+              border-left:4px solid var(--orange); padding-left:16px; display:block !important; }
+.review-meta-bar { display:flex; flex-wrap:wrap; gap:8px 20px; font-size:13px;
+                   color:var(--ink-soft); margin-top:14px; }
+.review-meta-bar span { display:flex; align-items:center; gap:5px; }
+.review-meta-bar i { color:var(--orange); width:14px; }
+.review-meta-bar a { color:var(--orange-dk); font-weight:600; }
+
+/* ── VERDICT BOX (top of page) ── */
+.verdict-box { border-radius:var(--radius); overflow:hidden; margin-bottom:24px;
+               border:1px solid var(--border); background:var(--surface); }
+.verdict-header { display:flex; align-items:center; justify-content:space-between;
+                  padding:14px 18px; border-bottom:1px solid var(--border);
+                  background:var(--navy); color:#fff; }
+.verdict-header h2 { font-size:14px; font-weight:700; color:#fff; margin:0; }
+.verdict-score-badge { display:flex; align-items:center; gap:8px; }
+.score-circle { width:52px; height:52px; border-radius:50%; border:3px solid var(--orange);
+                display:flex; align-items:center; justify-content:center; flex-direction:column;
+                background:rgba(245,158,11,.1); }
+.score-circle .val { font-size:17px; font-weight:800; color:var(--orange); line-height:1; }
+.score-circle .max { font-size:10px; color:rgba(255,255,255,.5); line-height:1; }
+.verdict-body { padding:16px 18px; }
+.verdict-summary { font-size:15px; line-height:1.65; color:var(--ink-mid);
+                   border-left:3px solid var(--orange); padding-left:14px; margin-bottom:14px; }
+.verdict-recommend { display:inline-flex; align-items:center; gap:8px; padding:8px 16px;
+                     border-radius:var(--radius-sm); font-size:13px; font-weight:700; }
+.verdict-recommend.buy { background:var(--green-lt); color:var(--green); border:1px solid #A7F3D0; }
+.verdict-recommend.skip { background:#FEF2F2; color:#DC2626; border:1px solid #FECACA; }
+.verdict-recommend.consider { background:var(--orange-lt); color:var(--orange-dk); border:1px solid #FDE68A; }
+
+/* ── SCORE BARS ── */
+.score-bars { padding:14px 18px; border-top:1px solid var(--border); }
+.score-bar-row { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+.score-bar-label { font-size:12px; color:var(--ink-soft); width:90px; flex-shrink:0; }
+.score-bar-track { flex:1; height:7px; background:var(--bg); border-radius:4px; overflow:hidden; }
+.score-bar-fill { height:100%; border-radius:4px; background:var(--orange);
+                  transition:width .6s ease; }
+.score-bar-fill.low { background:#EF4444; }
+.score-bar-fill.mid { background:var(--orange); }
+.score-bar-fill.high { background:var(--green); }
+.score-bar-fill.teal { background:var(--teal); }
+.score-bar-val { font-size:12px; font-weight:600; color:var(--ink); width:26px; text-align:right; }
+
+/* ── PROS & CONS ── */
+.pros-cons-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:24px; }
+@media (max-width:500px) { .pros-cons-grid { grid-template-columns:1fr; } }
+.pros-box, .cons-box { border-radius:var(--radius-sm); padding:14px 16px; }
+.pros-box { background:var(--green-lt); border:1px solid #A7F3D0; }
+.cons-box { background:#FEF2F2; border:1px solid #FECACA; }
+.pros-box h4 { color:var(--green); font-size:13px; font-weight:700; margin-bottom:10px;
+               display:flex; align-items:center; gap:6px; }
+.cons-box h4 { color:#DC2626; font-size:13px; font-weight:700; margin-bottom:10px;
+               display:flex; align-items:center; gap:6px; }
+.pros-box li, .cons-box li { font-size:13px; line-height:1.5; margin-bottom:6px;
+                              padding-left:16px; position:relative; color:var(--ink-mid); }
+.pros-box li::before { content:'✓'; position:absolute; left:0; color:var(--green); font-weight:700; }
+.cons-box li::before { content:'✗'; position:absolute; left:0; color:#DC2626; font-weight:700; }
+
+/* ── PRODUCT IMAGE ── */
+.product-image-wrap { border-radius:var(--radius); overflow:hidden; border:1px solid var(--border);
+                      background:#fff; padding:16px; margin-bottom:20px; }
+.product-image-wrap img { width:100%; aspect-ratio:1/1; max-height:70vh; object-fit:contain; display:block; }
+
+/* ── AMAZON BUY BUTTON (in article) ── */
+.amz-buy-btn { display:flex; align-items:center; justify-content:center; gap:10px;
+               background:#FF9900; color:#111; font-size:15px; font-weight:700;
+               padding:14px 24px; border-radius:var(--radius-sm); width:100%;
+               border:none; text-decoration:none; transition:all .15s; margin:16px 0; }
+.amz-buy-btn:hover { background:#e68900; transform:translateY(-1px); box-shadow:var(--shadow-md); }
+.amz-buy-btn .amz-logo { font-size:20px; }
+
+/* ── ALTERNATIVE PRODUCT BOX ── */
+.alt-product-box { border-radius:var(--radius); border:2px solid var(--orange);
+                   padding:16px 18px; margin:24px 0; background:var(--surface); }
+.alt-product-box .alt-label { display:inline-flex; align-items:center; gap:6px;
+                               background:var(--orange); color:var(--navy); font-size:11px;
+                               font-weight:700; text-transform:uppercase; letter-spacing:.06em;
+                               padding:3px 10px; border-radius:20px; margin-bottom:12px; }
+.alt-product-box h4 { font-size:15px; font-weight:700; margin-bottom:6px; }
+.alt-product-box p { font-size:13px; color:var(--ink-soft); margin-bottom:12px; }
+.alt-product-box .alt-why { font-size:12px; background:var(--orange-lt); color:var(--orange-dk);
+                             border-radius:var(--radius-xs); padding:6px 10px; margin-bottom:12px;
+                             border-left:3px solid var(--orange); }
+
+/* ── NOT RECOMMENDED BOX ── */
+.not-recommended-box { border-radius:var(--radius); border:2px solid #EF4444;
+                        padding:16px 18px; margin:24px 0; background:#FEF2F2; }
+.not-recommended-box .nr-label { display:inline-flex; align-items:center; gap:6px;
+                                  background:#EF4444; color:#fff; font-size:11px;
+                                  font-weight:700; text-transform:uppercase; letter-spacing:.06em;
+                                  padding:3px 10px; border-radius:20px; margin-bottom:10px; }
+.not-recommended-box h4 { font-size:15px; font-weight:700; color:#991B1B; margin-bottom:6px; }
+.not-recommended-box p { font-size:13px; color:#7F1D1D; margin-bottom:0; }
+
+/* ── COMPARISON TABLE ── */
+.comparison-table-wrap { overflow-x:auto; margin:24px 0; border-radius:var(--radius);
+                          border:1px solid var(--border); }
+.comparison-table { width:100%; border-collapse:collapse; font-size:13px; min-width:480px; }
+.comparison-table th { background:var(--navy); color:#fff; padding:11px 14px;
+                       text-align:left; font-size:12px; font-weight:600; }
+.comparison-table th:first-child { width:120px; }
+.comparison-table td { padding:10px 14px; border-bottom:1px solid var(--border);
+                        vertical-align:top; }
+.comparison-table tr:last-child td { border-bottom:none; }
+.comparison-table tr:nth-child(even) td { background:var(--bg); }
+.comparison-table .winner { color:var(--green); font-weight:700; }
+.comparison-table .loser { color:#DC2626; }
+.comparison-table .badge-winner { background:var(--green); color:#fff; border-radius:20px;
+                                   padding:2px 8px; font-size:11px; font-weight:700; }
+
+/* ── SPEC TABLE ── */
+.spec-table { width:100%; border-collapse:collapse; font-size:13.5px; margin:20px 0; }
+.spec-table tr:nth-child(even) td { background:var(--bg); }
+.spec-table td { padding:9px 14px; border-bottom:1px solid var(--border); }
+.spec-table td:first-child { font-weight:600; color:var(--ink); width:40%; }
+.spec-table td:last-child { color:var(--ink-mid); }
+
+/* ── SIDEBAR ── */
+.sidebar-card { background:var(--surface-2); border:1px solid var(--border);
+                border-radius:var(--radius); overflow:hidden; margin-bottom:16px;
+                box-shadow:0 1px 4px rgba(15,23,42,.06); }
+.sidebar-card-header { background:var(--navy); color:#fff; padding:10px 14px;
+                        font-size:12px; font-weight:700; text-transform:uppercase;
+                        letter-spacing:.06em; }
+.sidebar-card-body { padding:14px; }
+.sidebar-score-list { display:flex; flex-direction:column; gap:8px; }
+
+/* ── POST BODY CONTENT (article typography) ── */
+.post-body-content { font-size:15.5px; line-height:1.78; color:var(--ink-mid);
+                     overflow-wrap:anywhere; word-break:break-word; min-width:0; }
+.post-body-content details { background:var(--surface); border:1px solid var(--border);
+                             border-radius:var(--radius-sm); padding:4px 16px; margin-bottom:10px; }
+.post-body-content summary { cursor:pointer; padding:12px 0; font-weight:700;
+                             font-size:14.5px; color:var(--ink); list-style:none; }
+.post-body-content summary::-webkit-details-marker { display:none; }
+.post-body-content summary::after { content:'+'; float:right; color:var(--orange-dk);
+                                    font-size:18px; font-weight:400; }
+.post-body-content details[open] summary::after { content:'\2212'; }
+.post-body-content h2 { font-size:19px; font-weight:800; margin:36px 0 12px; color:var(--ink);
+                         border-bottom:2px solid var(--border); padding-bottom:8px;
+                         letter-spacing:-.02em; }
+.post-body-content h3 { font-size:16px; font-weight:700; margin:26px 0 10px; color:var(--ink); }
+.post-body-content h4 { font-size:14px; font-weight:700; margin:20px 0 8px; color:var(--ink-mid); }
+.post-body-content a { color:var(--orange-dk); text-decoration:underline;
+                        text-underline-offset:2px; transition:color .15s; }
+.post-body-content a:hover { color:var(--orange); }
+.post-body-content ul, .post-body-content ol { padding-left:20px; margin:14px 0; }
+.post-body-content li { margin-bottom:7px; }
+.post-body-content img { border-radius:var(--radius-sm); border:1px solid var(--border);
+                          margin:20px auto; max-width:100%; height:auto; display:block; }
+.post-body-content blockquote { border-left:4px solid var(--orange); padding:14px 20px;
+                                  background:var(--orange-lt); border-radius:0 var(--radius-xs) var(--radius-xs) 0;
+                                  margin:24px 0; font-style:italic; color:var(--ink-mid); font-size:15px; }
+.post-body-content table { width:100%; border-collapse:collapse; font-size:13.5px; margin:20px 0;
+                             border-radius:var(--radius-sm); overflow:hidden; }
+.post-body-content th { background:var(--navy); color:#fff; padding:10px 14px; text-align:left; font-size:13px; }
+.post-body-content td { padding:9px 14px; border-bottom:1px solid var(--border); }
+.post-body-content tr:nth-child(even) td { background:var(--bg); }
+.post-body-content iframe, .post-body-content embed, .post-body-content object { max-width:100%; }
+
+/* ── STICKY BOTTOM CTA ── */
+.sticky-cta { position:fixed; bottom:0; left:0; right:0; z-index:100;
+               background:var(--navy); border-top:1px solid rgba(255,255,255,.1);
+               padding:10px 16px; box-shadow:0 -4px 20px rgba(0,0,0,.2); }
+.sticky-cta-inner { max-width:600px; margin:0 auto; display:flex;
+                     align-items:center; gap:10px; }
+.sticky-cta-label { font-size:12px; color:rgba(255,255,255,.55); flex:1; line-height:1.3; }
+.sticky-cta-label strong { display:block; color:rgba(255,255,255,.9); font-size:13px; }
+.sticky-cta .amz-buy-btn { margin:0; flex-shrink:0; width:auto; padding:10px 20px;
+                             font-size:14px; border-radius:var(--radius-xs); }
+@media (max-width:767px) {
+  .sticky-cta { bottom:calc(56px + env(safe-area-inset-bottom)); }
+}
+
+/* ── RELATED POSTS ── */
+.related-posts { margin-top:40px; padding-top:28px; border-top:2px solid var(--border); }
+.related-posts h3 { font-size:17px; font-weight:700; margin-bottom:18px;
+                     display:flex; align-items:center; gap:8px; }
+.related-grid { display:grid; gap:12px; grid-template-columns:1fr; }
+@media (min-width:500px) { .related-grid { grid-template-columns:repeat(2,1fr); } }
+@media (min-width:900px) { .related-grid { grid-template-columns:repeat(3,1fr); } }
+.related-card { display:block; background:var(--surface); border:1px solid var(--border);
+                border-radius:var(--radius-sm); overflow:hidden; transition:all .15s; }
+.related-card:hover { box-shadow:var(--shadow-md); transform:translateY(-2px); border-color:var(--border-mid); }
+.related-card img { width:100%; aspect-ratio:4/3; object-fit:contain; background:var(--bg); padding:8px; }
+.related-card h4 { font-size:13px; font-weight:600; padding:10px 12px; color:var(--ink);
+                    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
+                    overflow:hidden; line-height:1.4; }
+
+/* ── NOT RECOMMENDED CTA ── */
+.skip-cta { display:flex; align-items:center; gap:10px; padding:12px 16px;
+             background:#FEF2F2; border:1px solid #FECACA; border-radius:var(--radius-sm);
+             margin:16px 0; }
+.skip-cta i { color:#DC2626; font-size:18px; flex-shrink:0; }
+.skip-cta-text { font-size:13px; color:#7F1D1D; flex:1; line-height:1.4; }
+.skip-cta-text strong { display:block; font-size:14px; color:#991B1B; }
+.skip-cta-btn { background:#DC2626; color:#fff; border:none; border-radius:var(--radius-xs);
+                padding:8px 14px; font-size:12px; font-weight:700; white-space:nowrap; }
+
+]]></b:skin>
+
+</head>
+
+<body>
+
+<!-- HEADER (hidden on product pages) -->
+<b:if cond='!data:view.isSingleItem'>
+<header class='site-header' role='banner'>
+  <div class='container header-inner'>
+    <a aria-label='NestDeal Home' class='brand' expr:href='data:blog.homepageUrl'>
+      <span aria-hidden='true' class='brand-mark'><i class='fas fa-home'/></span>
+      <span class='brand-name'>Nest<span>Deal</span></span>
+    </a>
+    <form aria-label='Site search' class='site-search' expr:action='data:blog.homepageUrl + &quot;search&quot;' method='get' role='search'>
+      <input aria-label='Search products' name='q' placeholder='Search smart home products...' type='text'/>
+      <button aria-label='Search' type='submit'><i aria-hidden='true' class='fas fa-search'/></button>
+    </form>
+    <div class='header-right'>
+      <div class='header-tagline'>Smart Home &amp; Security<br/>Research &amp; Reviews</div>
+      <button aria-label='Open menu' class='menu-toggle' id='mobMenuToggle' type='button'><i aria-hidden='true' class='fas fa-bars'/></button>
+    </div>
+  </div>
+</header>
+
+<nav aria-label='Main navigation' class='nav-strip' role='navigation'>
+  <div class='container'>
+    <ul>
+      <li><a expr:href='data:blog.homepageUrl'><i aria-hidden='true' class='fas fa-home'/> Home</a></li>
+      <li><a href='/search/label/Smart%20Home'><i aria-hidden='true' class='fas fa-wifi'/> Smart Home</a></li>
+      <li><a href='/search/label/Home%20Security'><i aria-hidden='true' class='fas fa-shield-alt'/> Home Security</a></li>
+      <li><a href='/search/label/Video%20Doorbells'><i aria-hidden='true' class='fas fa-video'/> Doorbells</a></li>
+      <li><a href='/search/label/Security%20Cameras'><i aria-hidden='true' class='fas fa-camera'/> Cameras</a></li>
+      <li><a href='/search/label/Smart%20Locks'><i aria-hidden='true' class='fas fa-lock'/> Smart Locks</a></li>
+      <li><a href='/search/label/Comparisons'><i aria-hidden='true' class='fas fa-balance-scale'/> Compare</a></li>
+      <li><a href='/search/label/Buying%20Guides'><i aria-hidden='true' class='fas fa-book-open'/> Guides</a></li>
+      <li><a href='/p/about.html'><i aria-hidden='true' class='fas fa-info-circle'/> About</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div aria-hidden='true' class='mob-overlay' id='mobOverlay'/>
+<div aria-hidden='true' aria-label='Mobile menu' class='mob-drawer' id='mobDrawer' role='dialog'>
+  <div class='mob-drawer-header'>
+    <span class='brand-name'>Nest<span style='color:var(--orange);'>Deal</span></span>
+    <button aria-label='Close menu' class='mob-drawer-close' id='mobDrawerClose' type='button'>&#10005;</button>
+  </div>
+  <nav aria-label='Mobile navigation' class='mob-drawer-nav' role='navigation'>
+    <a expr:href='data:blog.homepageUrl'><i aria-hidden='true' class='fas fa-home'/> Home</a>
+    <a href='/search/label/Smart%20Home'><i aria-hidden='true' class='fas fa-wifi'/> Smart Home</a>
+    <a href='/search/label/Home%20Security'><i aria-hidden='true' class='fas fa-shield-alt'/> Home Security</a>
+    <a href='/search/label/Video%20Doorbells'><i aria-hidden='true' class='fas fa-video'/> Video Doorbells</a>
+    <a href='/search/label/Security%20Cameras'><i aria-hidden='true' class='fas fa-camera'/> Security Cameras</a>
+    <a href='/search/label/Smart%20Locks'><i aria-hidden='true' class='fas fa-lock'/> Smart Locks</a>
+    <a href='/search/label/Comparisons'><i aria-hidden='true' class='fas fa-balance-scale'/> Comparisons</a>
+    <a href='/search/label/Buying%20Guides'><i aria-hidden='true' class='fas fa-book-open'/> Buying Guides</a>
+    <a href='/p/about.html'><i aria-hidden='true' class='fas fa-info-circle'/> About</a>
+  </nav>
+</div>
+</b:if>
+
+<!-- HOME BACK (product pages only) -->
+<b:if cond='data:view.isSingleItem'>
+<a aria-label='Back to home' class='home-back-btn' expr:href='data:blog.homepageUrl'><i aria-hidden='true' class='fas fa-arrow-left'/> Home</a>
+</b:if>
+
+
+<!-- HERO &#8212; homepage only -->
+<b:if cond='!data:view.isSingleItem and !data:view.isPage'>
+<section class='hero'>
+  <div class='container'>
+    <div class='hero-inner'>
+      <div class='hero-eyebrow'><i aria-hidden='true' class='fas fa-shield-alt'/> Smart Home &amp; Security Research</div>
+      <h1>Buy smarter.<br/><span class='hl'>Not faster.</span></h1>
+      <p class='hero-sub'>Honest comparisons of smart home hubs, security cameras, video doorbells and connected devices &#8212; privacy-first, no fluff.</p>
+      <div class='hero-cta'>
+        <a class='btn btn-primary' href='/search/label/Buying%20Guides'><i aria-hidden='true' class='fas fa-book-open'/> Buying Guides</a>
+        <a class='btn btn-ghost' href='/search/label/Comparisons'>Compare Products</a>
+      </div>
+      <div class='hero-trust'>
+        <div class='hero-trust-item'>
+          <span aria-hidden='true' class='hero-trust-icon'><i class='fas fa-search'/></span>
+          <div class='hero-trust-text'><strong>Research-led</strong><span>Specs and user feedback</span></div>
+        </div>
+        <div class='hero-trust-item'>
+          <span aria-hidden='true' class='hero-trust-icon'><i class='fas fa-balance-scale'/></span>
+          <div class='hero-trust-text'><strong>Clear trade-offs</strong><span>Pros and limitations</span></div>
+        </div>
+        <div class='hero-trust-item'>
+          <span aria-hidden='true' class='hero-trust-icon'><i class='fas fa-file-alt'/></span>
+          <div class='hero-trust-text'><strong>Transparent sources</strong><span>Research, not hype</span></div>
+        </div>
+        <div class='hero-trust-item'>
+          <span aria-hidden='true' class='hero-trust-icon'><i class='fas fa-external-link-alt'/></span>
+          <div class='hero-trust-text'><strong>Check current prices</strong><span>Availability may vary</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</b:if>
+
+<!-- CATEGORY STRIP -->
+<b:if cond='!data:view.isSingleItem and !data:view.isPage'>
+<section class='cat-strip' id='cat-section'>
+  <div class='container cat-strip-inner'>
+    <a aria-label='Smart Home' class='cat-item' href='/search/label/Smart%20Home' title='Smart Home'><i aria-hidden='true' class='fas fa-wifi cat-icon'/><span class='cat-name'>Smart Home</span></a>
+    <a aria-label='Home Security' class='cat-item' href='/search/label/Home%20Security' title='Home Security'><i aria-hidden='true' class='fas fa-shield-alt cat-icon'/><span class='cat-name'>Security</span></a>
+    <a aria-label='Video Doorbells' class='cat-item' href='/search/label/Video%20Doorbells' title='Video Doorbells'><i aria-hidden='true' class='fas fa-video cat-icon'/><span class='cat-name'>Doorbells</span></a>
+    <a aria-label='Security Cameras' class='cat-item' href='/search/label/Security%20Cameras' title='Security Cameras'><i aria-hidden='true' class='fas fa-camera cat-icon'/><span class='cat-name'>Cameras</span></a>
+    <a aria-label='Smart Locks' class='cat-item' href='/search/label/Smart%20Locks' title='Smart Locks'><i aria-hidden='true' class='fas fa-lock cat-icon'/><span class='cat-name'>Smart Locks</span></a>
+    <a aria-label='Compare Products' class='cat-item' href='/search/label/Comparisons' title='Compare Products'><i aria-hidden='true' class='fas fa-balance-scale cat-icon'/><span class='cat-name'>Compare</span></a>
+    <a aria-label='Reviews' class='cat-item' href='/search/label/Reviews' title='Reviews'><i aria-hidden='true' class='fas fa-star cat-icon'/><span class='cat-name'>Reviews</span></a>
+  </div>
+</section>
+</b:if>
+
+
+<!-- BREADCRUMB -->
+<b:if cond='data:view.isSingleItem or data:view.isPage'>
+<nav aria-label='Breadcrumb' class='breadcrumb container'>
+  <ol itemscope='' itemtype='https://schema.org/BreadcrumbList'>
+    <li itemprop='itemListElement' itemscope='' itemtype='https://schema.org/ListItem'>
+      <a expr:href='data:blog.homepageUrl' itemprop='item'><span itemprop='name'>Home</span></a>
+      <meta content='1' itemprop='position'/>
+    </li>
+    <b:if cond='data:view.isSingleItem and data:post.labels'>
+    <li itemprop='itemListElement' itemscope='' itemtype='https://schema.org/ListItem'>
+      <a expr:href='data:post.labels.first.url' itemprop='item'><span itemprop='name'><data:post.labels.first.name/></span></a>
+      <meta content='2' itemprop='position'/>
+    </li>
+    <li itemprop='itemListElement' itemscope='' itemtype='https://schema.org/ListItem'>
+      <span itemprop='name'><data:post.title/></span>
+      <meta content='3' itemprop='position'/>
+    </li>
+    <b:else/>
+    <li itemprop='itemListElement' itemscope='' itemtype='https://schema.org/ListItem'>
+      <span itemprop='name'><data:blog.pageName/></span>
+      <meta content='2' itemprop='position'/>
+    </li>
+    </b:if>
+  </ol>
+</nav>
+</b:if>
+
+<!-- MAIN CONTENT -->
+<main expr:class='&quot;container&quot; + (data:view.isSingleItem ? &quot; single-item-page&quot; : &quot;&quot;) + (data:view.isPage ? &quot; page-view&quot; : &quot;&quot;)' id='home-deals' role='main'>
+  <b:section class='main' id='main' showaddelement='yes'>
+    <b:widget id='Blog1' locked='false' title='Blog Posts' type='Blog' version='2' visible='true'>
+      <b:widget-settings>
+        <b:widget-setting name='showDateHeader'>false</b:widget-setting>
+        <b:widget-setting name='commentLabel'>Reviews</b:widget-setting>
+        <b:widget-setting name='style.textcolor'>#ffffff</b:widget-setting>
+        <b:widget-setting name='showShareButtons'>false</b:widget-setting>
+        <b:widget-setting name='showCommentLink'>true</b:widget-setting>
+        <b:widget-setting name='style.urlcolor'>#ffffff</b:widget-setting>
+        <b:widget-setting name='showAuthor'>true</b:widget-setting>
+        <b:widget-setting name='style.linkcolor'>#ffffff</b:widget-setting>
+        <b:widget-setting name='style.unittype'>TextAndImage</b:widget-setting>
+        <b:widget-setting name='style.bgcolor'>#ffffff</b:widget-setting>
+        <b:widget-setting name='timestampLabel'>Published:</b:widget-setting>
+        <b:widget-setting name='reactionsLabel'/>
+        <b:widget-setting name='showAuthorProfile'>false</b:widget-setting>
+        <b:widget-setting name='style.layout'>1x1</b:widget-setting>
+        <b:widget-setting name='showLabels'>true</b:widget-setting>
+        <b:widget-setting name='showLocation'>false</b:widget-setting>
+        <b:widget-setting name='postLabelsLabel'>Tags:</b:widget-setting>
+        <b:widget-setting name='showTimestamp'>true</b:widget-setting>
+        <b:widget-setting name='postsPerAd'>1</b:widget-setting>
+        <b:widget-setting name='showBacklinks'>false</b:widget-setting>
+        <b:widget-setting name='style.bordercolor'>#ffffff</b:widget-setting>
+        <b:widget-setting name='showInlineAds'>false</b:widget-setting>
+        <b:widget-setting name='showReactions'>false</b:widget-setting>
+      </b:widget-settings>
+      <b:includable id='main' var='top'>
+        <b:if cond='data:view.isSingleItem'>
+          <b:loop values='data:posts' var='post'>
+            <b:include data='post' name='postCommentsAndAd'/>
+          </b:loop>
+        <b:else/>
+          <section class='container' id='featured-guides-section'>
+            <div class='sec-heading'><h2>Start Here &#8212; Featured Guides</h2><a href='/search/label/Buying%20Guides'>View all guides</a></div>
+            <div class='guide-grid'>
+              <a class='guide-card' href='/search/label/Buying%20Guides'>
+                <span class='guide-card-badge'>Buying Guide</span>
+                <h4>Best Smart Home Hubs for Beginners</h4>
+                <p>Compare Home Assistant Green, Raspberry Pi 5, and alternatives.</p>
+              </a>
+              <a class='guide-card' href='/search/label/Comparisons'>
+                <span class='guide-card-badge'>Comparison</span>
+                <h4>Ring vs Arlo: Which Doorbell?</h4>
+                <p>Privacy, price and subscription requirements compared.</p>
+              </a>
+              <a class='guide-card' href='/search/label/Video%20Doorbells'>
+                <span class='guide-card-badge'>Buying Guide</span>
+                <h4>Best Video Doorbells Without a Monthly Fee</h4>
+                <p>Subscription-free picks with local storage and reliable alerts.</p>
+              </a>
+            </div>
+          </section>
+          <div class='sec-heading'>
+            <h2><span class='hl'>Latest Reviews &amp; Comparisons</span></h2>
+          </div>
+          <div class='deals-grid' id='nestdeal-products'>
+            <b:if cond='data:posts'>
+              <b:loop values='data:posts' var='post'>
+                <article class='product-card' itemscope='' itemtype='https://schema.org/BlogPosting'>
+                  <a expr:href='data:post.url' itemprop='url'>
+                    <div class='card-media'>
+                      <b:if cond='data:post.featuredImage'>
+                        <img decoding='async' expr:alt='data:post.title' expr:src='resizeImage(data:post.featuredImage, 600)' itemprop='image' loading='lazy'/>
+                      <b:else/>
+                        <img alt='Product placeholder' decoding='async' itemprop='image' loading='lazy' src='https://placehold.co/600x450/F7F8FA/999?text=NestDeal+Product'/>
+                      </b:if>
+                    </div>
+                    <div class='card-body'>
+                      <b:loop index='catI' values='data:post.labels' var='catLabel'>
+                        <b:if cond='data:catI == 0'>
+                          <span class='card-cat'><i aria-hidden='true' class='fab fa-amazon amz-icon'/> <span itemprop='category'><data:catLabel.name/></span></span>
+                        </b:if>
+                      </b:loop>
+                      <h3 class='card-title' itemprop='name'><data:post.title/></h3>
+                      <div class='card-footer'>
+                        <span class='card-btn'><i aria-hidden='true' class='fas fa-external-link-alt'/> <b:if cond='data:post.labels.first.name == &quot;Buying Guides&quot;'>Read Guide<b:elseif cond='data:post.labels.first.name == &quot;Comparisons&quot;'/>See Comparison<b:else/>View Deal</b:if></span>
+                      </div>
+                    </div>
+                  </a>
+                </article>
+              </b:loop>
+            <b:else/>
+              <div class='feed-status'>No published posts yet. Start adding deals!</div>
+            </b:if>
+          </div>
+          <b:if cond='data:olderPageUrl'>
+            <div class='feed-actions' id='feedActions'>
+              <a class='btn btn-primary' expr:href='data:olderPageUrl' id='loadMoreBtn'>Load More Deals</a>
+            </div>
+            <div class='inf-spinner' id='infSpinner'><div class='inf-spinner-inner'/></div>
+          </b:if>
+        </b:if>
+      </b:includable>
+      <b:includable id='aboutPostAuthor'>
+        <div class='author-name'>
+          <a class='g-profile' expr:href='data:post.author.profileUrl' rel='author' title='author profile'>
+            <span><data:post.author.name/></span>
+          </a>
+        </div>
+        <div><span class='author-desc'><data:post.author.aboutMe/></span></div>
+      </b:includable>
+      <b:includable id='addComments'>
+        <a expr:href='data:post.commentsUrl' expr:onclick='data:post.commentsUrlOnclick'><b:message name='messages.postAComment'/></a>
+      </b:includable>
+      <b:includable id='blogThisShare'>
+        <b:with value='&quot;window.open(this.href, \&quot;_blank\&quot;, \&quot;height=270,width=475\&quot;); return false;&quot;' var='onclick'>
+          <b:include name='platformShare'/>
+        </b:with>
+      </b:includable>
+      <b:includable id='bylineByName' var='byline'>
+        <b:switch var='data:byline.name'>
+          <b:case value='share'/><b:include cond='data:post.shareUrl' name='postShareButtons'/>
+          <b:case value='comments'/><b:include cond='data:post.allowComments' name='postCommentsLink'/>
+          <b:case value='location'/><b:include cond='data:post.location' name='postLocation'/>
+          <b:case value='timestamp'/><b:include cond='not data:view.isPage' name='postTimestamp'/>
+          <b:case value='author'/><b:include name='postAuthor'/>
+          <b:case value='labels'/><b:include cond='data:post.labels' name='postLabels'/>
+          <b:case value='icons'/><b:include cond='data:post.emailPostUrl' name='emailPostIcon'/>
+        </b:switch>
+      </b:includable>
+      <b:includable id='bylineRegion' var='regionItems'>
+        <b:loop values='data:regionItems' var='byline'><b:include data='byline' name='bylineByName'/></b:loop>
+      </b:includable>
+      <b:includable id='commentAuthorAvatar'>
+        <div class='avatar-image-container'><img class='author-avatar' expr:src='data:comment.authorAvatarSrc' height='35' width='35'/></div>
+      </b:includable>
+      <b:includable id='commentDeleteIcon' var='comment'>
+        <span expr:class='&quot;item-control &quot; + data:comment.adminClass'>
+          <b:if cond='data:showCmtPopup'>
+            <div class='goog-toggle-button'><div class='goog-inline-block comment-action-icon'/></div>
+          <b:else/>
+            <a class='comment-delete' expr:href='data:comment.deleteUrl' expr:title='data:messages.deleteComment'>
+              <img src='https://resources.blogblog.com/img/icon_delete13.gif'/>
+            </a>
+          </b:if>
+        </span>
+      </b:includable>
+      <b:includable id='commentForm' var='post'>
+        <div class='comment-form'>
+          <a name='comment-form'/>
+          <h4 id='comment-post-message'><data:messages.postAComment/></h4>
+          <b:if cond='data:this.messages.blogComment != &quot;&quot;'><p><data:this.messages.blogComment/></p></b:if>
+          <b:include data='post' name='commentFormIframeSrc'/>
+          <iframe allowtransparency='allowtransparency' class='blogger-iframe-colorize blogger-comment-from-post' expr:height='data:cmtIframeInitialHeight ?: &quot;90px&quot;' frameborder='0' id='comment-editor' name='comment-editor' src='' width='100%'/>
+          <data:post.cmtfpIframe/>
+          <script type='text/javascript'>BLOG_CMT_createIframe(&#39;<data:post.appRpcRelayPath/>&#39;);</script>
+        </div>
+      </b:includable>
+      <b:includable id='commentFormIframeSrc' var='post'>
+        <a expr:href='data:post.commentFormIframeSrc' id='comment-editor-src'/>
+      </b:includable>
+      <b:includable id='commentItem' var='comment'>
+        <div class='comment' expr:id='&quot;c&quot; + data:comment.id'>
+          <b:include cond='data:blog.enabledCommentProfileImages' name='commentAuthorAvatar'/>
+          <div class='comment-block'>
+            <div class='comment-author'>
+              <b:if cond='data:comment.authorUrl'>
+                <b:message name='messages.authorSaidWithLink'>
+                  <b:param expr:value='data:comment.author' name='authorName'/>
+                  <b:param expr:value='data:comment.authorUrl' name='authorUrl'/>
+                </b:message>
+              <b:else/>
+                <b:message name='messages.authorSaid'><b:param expr:value='data:comment.author' name='authorName'/></b:message>
+              </b:if>
+            </div>
+            <div expr:class='&quot;comment-body&quot; + (data:comment.isDeleted ? &quot; deleted&quot; : &quot;&quot;)'><data:comment.body/></div>
+            <div class='comment-footer'>
+              <span class='comment-timestamp'>
+                <a expr:href='data:comment.url' title='comment permalink'><data:comment.timestamp/></a>
+                <b:include data='comment' name='commentDeleteIcon'/>
+              </span>
+            </div>
+          </div>
+        </div>
+      </b:includable>
+      <b:includable id='commentList' var='comments'>
+        <div id='comments-block'><b:loop values='data:comments' var='comment'><b:include data='comment' name='commentItem'/></b:loop></div>
+      </b:includable>
+      <b:includable id='commentPicker' var='post'>
+        <b:if cond='data:post.showThreadedComments'><b:include data='post' name='threadedComments'/><b:else/><b:include data='post' name='comments'/></b:if>
+      </b:includable>
+      <b:includable id='comments' var='post'>
+        <section expr:class='&quot;comments&quot; + (data:post.embedCommentForm ? &quot; embed&quot; : &quot;&quot;)' expr:data-num-comments='data:post.numberOfComments' id='comments'>
+          <a name='comments'/>
+          <b:include name='commentsTitle'/>
+          <div expr:id='data:widget.instanceId + &quot;_comments-block-wrapper&quot;'>
+            <b:include cond='data:post.comments' data='data:post.comments' name='commentList'/>
+          </div>
+          <b:if cond='data:post.commentPagingRequired'>
+            <div class='paging-control-container'>
+              <b:if cond='data:post.hasOlderLinks'>
+                <a expr:class='data:post.oldLinkClass' expr:href='data:post.oldestLinkUrl'><data:messages.oldest/></a>
+                <a expr:class='data:post.oldLinkClass' expr:href='data:post.olderLinkUrl'><data:messages.older/></a>
+              </b:if>
+              <span class='comment-range-text'><data:post.commentRangeText/></span>
+              <b:if cond='data:post.hasNewerLinks'>
+                <a expr:class='data:post.newLinkClass' expr:href='data:post.newerLinkUrl'><data:messages.newer/></a>
+                <a expr:class='data:post.newLinkClass' expr:href='data:post.newestLinkUrl'><data:messages.newest/></a>
+              </b:if>
+            </div>
+          </b:if>
+          <div class='footer'>
+            <b:if cond='data:post.embedCommentForm'>
+              <b:if cond='data:post.allowNewComments'><b:include data='post' name='commentForm'/><b:else/><data:post.noNewCommentsText/></b:if>
+            <b:else/>
+              <b:if cond='data:post.allowComments'><b:include data='post' name='addComments'/></b:if>
+            </b:if>
+          </div>
+          <b:if cond='data:showCmtPopup'>
+            <div id='comment-popup'><iframe allowtransparency='allowtransparency' frameborder='0' id='comment-actions' name='comment-actions' scrolling='no'/></div>
+          </b:if>
+        </section>
+      </b:includable>
+      <b:includable id='commentsLink'>
+        <a class='comment-link' expr:href='data:post.commentsUrl' expr:onclick='data:post.commentsUrlOnclick'>
+          <b:if cond='data:post.numberOfComments &gt; 0'>
+            <b:message name='messages.numberOfComments'><b:param expr:value='data:post.numberOfComments' name='numComments'/></b:message>
+          <b:else/><data:messages.postAComment/></b:if>
+        </a>
+      </b:includable>
+      <b:includable id='commentsLinkIframe'/>
+      <b:includable id='commentsTitle'><h3 class='title'><data:messages.comments/></h3></b:includable>
+      <b:includable id='defaultAdUnit'>
+        <ins class='adsbygoogle' data-ad-format='auto' expr:data-ad-client='data:adClientId ?: data:blog.adsenseClientId' expr:data-host='data:blog.adsenseHostId' expr:style='data:style ?: &quot;display: block;&quot;'>
+          <b:attr cond='not data:blog.analytics4' expr:value='data:blog.analyticsAccountNumber' name='data-analytics-uacct'/>
+        </ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </b:includable>
+      <b:includable id='emailPostIcon'>
+        <span class='byline post-icons'>
+          <span class='item-action'>
+            <a expr:href='data:post.emailPostUrl' expr:title='data:messages.emailPost'>
+              <b:include data='{ iconClass: &quot;touch-icon sharing-icon&quot; }' name='emailIcon'/>
+            </a>
+          </span>
+        </span>
+      </b:includable>
+      <b:includable id='facebookShare'>
+        <b:with value='&quot;window.open(this.href, \&quot;_blank\&quot;, \&quot;height=430,width=640\&quot;); return false;&quot;' var='onclick'>
+          <b:include name='platformShare'/>
+        </b:with>
+      </b:includable>
+      <b:includable id='feedLinks'>
+        <b:if cond='!data:view.isPost'>
+          <b:if cond='data:feedLinks'><div class='blog-feeds'><b:include data='feedLinks' name='feedLinksBody'/></div></b:if>
+        <b:else/>
+          <div class='post-feeds'>
+            <b:loop values='data:posts' var='post'>
+              <b:if cond='data:post.allowComments and data:post.feedLinks'><b:include data='post.feedLinks' name='feedLinksBody'/></b:if>
+            </b:loop>
+          </div>
+        </b:if>
+      </b:includable>
+      <b:includable id='feedLinksBody' var='links'>
+        <div class='feed-links'>
+          <data:messages.subscribeTo/>
+          <b:loop values='data:links' var='f'>
+            <a class='feed-link' expr:href='data:f.url' expr:type='data:f.mimeType' target='_blank'><data:f.name/> (<data:f.feedType/>)</a>
+          </b:loop>
+        </div>
+      </b:includable>
+      <b:includable id='footerBylines'>
+        <b:if cond='data:widgets.Blog.first.footerBylines'>
+          <b:loop index='i' values='data:widgets.Blog.first.footerBylines' var='region'>
+            <b:if cond='not data:region.items.empty'>
+              <div expr:class='&quot;post-footer-line post-footer-line-&quot; + (data:i + 1)'>
+                <b:with value='&quot;footer-&quot; + (data:i + 1)' var='regionName'>
+                  <b:include data='region.items' name='bylineRegion'/>
+                </b:with>
+              </div>
+            </b:if>
+          </b:loop>
+        </b:if>
+      </b:includable>
+      <b:includable id='googlePlusShare'/>
+      <b:includable id='headerByline'>
+        <b:if cond='data:widgets.Blog.first.headerByline'>
+          <div class='post-header'>
+            <div class='post-header-line-1'>
+              <b:with value='&quot;header-1&quot;' var='regionName'>
+                <b:include data='data:widgets.Blog.first.headerByline.items' name='bylineRegion'/>
+              </b:with>
+            </div>
+          </div>
+        </b:if>
+      </b:includable>
+      <b:includable id='homePageLink'>
+        <a class='home-link' expr:href='data:blog.homepageUrl'><data:messages.home/></a>
+      </b:includable>
+      <b:includable id='iframeComments' var='post'/>
+      <b:includable id='inlineAd' var='post'>
+        <b:if cond='!data:view.isPreview'>
+          <b:if cond='data:this.adCode or data:this.adClientId or data:blog.adsenseClientId'>
+            <div class='inline-ad'>
+              <b:if cond='data:this.adCode != &quot;&quot;'><data:this.adCode/><b:else/>
+                <b:include cond='data:this.adClientId or data:blog.adsenseClientId' name='defaultAdUnit'/>
+              </b:if>
+            </div>
+          </b:if>
+        <b:else/>
+          <div class='inline-ad'><div class='inline-ad-placeholder'><span><b:message name='messages.adsGoHere'/></span></div></div>
+        </b:if>
+      </b:includable>
+      <b:includable id='linkShare'>
+        <b:with value='&quot;window.prompt(\&quot;Copy to clipboard: Ctrl+C, Enter\&quot;, \&quot;&quot; + data:originalUrl + &quot;\&quot;); return false;&quot;' var='onclick'>
+          <b:include name='platformShare'/>
+        </b:with>
+      </b:includable>
+      <b:includable id='nextPageLink'>
+        <a class='blog-pager-older-link' expr:href='data:olderPageUrl' expr:id='data:widget.instanceId + &quot;_blog-pager-older-link&quot;' expr:title='data:messages.olderPosts'><data:messages.olderPosts/></a>
+      </b:includable>
+      <b:includable id='otherSharingButton'>
+        <span class='sharing-platform-button sharing-element-other' expr:aria-label='data:messages.shareToOtherApps.escaped' expr:data-url='data:originalUrl' expr:title='data:messages.shareToOtherApps.escaped' role='menuitem' tabindex='-1'>
+          <b:with value='{key: &quot;sharingOther&quot;}' var='platform'><b:include name='sharingPlatformIcon'/></b:with>
+          <span class='platform-sharing-text'><data:messages.shareOtherApps.escaped/></span>
+        </span>
+      </b:includable>
+      <b:includable id='platformShare'>
+        <a expr:class='&quot;goog-inline-block sharing-&quot; + data:platform.key' expr:data-url='data:originalUrl' expr:href='data:shareUrl + &quot;&amp;target=&quot; + data:platform.target' expr:onclick='data:onclick ? data:onclick : &quot;&quot;' expr:title='data:platform.shareMessage' target='_blank'>
+          <span class='share-button-link-text'><data:platform.shareMessage/></span>
+        </a>
+      </b:includable>
+      <b:includable id='post' var='post'>
+        <div class='post'>
+          <b:include data='post' name='postMeta'/>
+          <b:include data='post' name='postTitle'/>
+          <b:include name='headerByline'/>
+          <b:if cond='data:view.isSingleItem'><b:include data='post' name='postBody'/>
+          <b:else/><b:include data='post' name='postBodySnippet'/><b:include data='post' name='postJumpLink'/></b:if>
+          <b:include data='post' name='postFooter'/>
+        </div>
+      </b:includable>
+      <b:includable id='postAuthor'>
+        <span class='byline post-author vcard'>
+          <span class='post-author-label'><data:byline.label/></span>
+          <span class='fn'>
+            <b:if cond='data:post.author.profileUrl'>
+              <meta expr:content='data:post.author.profileUrl'/>
+              <a class='g-profile' expr:href='data:post.author.profileUrl' rel='author' title='author profile'><span><data:post.author.name/></span></a>
+            <b:else/><span><data:post.author.name/></span></b:if>
+          </span>
+        </span>
+      </b:includable>
+      <b:includable id='postBody' var='post'>
+        <div class='post-body entry-content float-container' expr:id='&quot;post-body-&quot; + data:post.id'><data:post.body/></div>
+      </b:includable>
+      <b:includable id='postBodySnippet' var='post'><b:include data='post' name='postBody'/></b:includable>
+      <b:includable id='postCommentsAndAd' var='post'>
+        <article class='post-single'>
+
+          <!-- &#9552;&#9552; REVIEW HEADER &#9552;&#9552; -->
+          <div class='review-header'>
+            <span class='review-label'><i aria-hidden='true' class='fas fa-shield-alt'/> <b:if cond='data:post.labels.first.name == &quot;Comparisons&quot;'>Comparison<b:elseif cond='data:post.labels.first.name == &quot;Buying Guides&quot;'/>Buying Guide<b:else/>Product Review</b:if></span>
+            <h1 class='post-title' itemprop='name'><data:post.title/></h1>
+            <div class='review-meta-bar'>
+              <b:if cond='data:post.date'>
+                <span><i aria-hidden='true' class='fas fa-calendar-alt'/> <data:post.date/></span>
+              </b:if>
+              <b:if cond='data:post.labels'>
+                <b:loop index='i' values='data:post.labels' var='label'>
+                  <b:if cond='data:i == 0'>
+                    <span><i aria-hidden='true' class='fas fa-folder'/> <a expr:href='data:label.url' rel='tag'><data:label.name/></a></span>
+                  </b:if>
+                </b:loop>
+              </b:if>
+              <span><i aria-hidden='true' class='fas fa-user'/> NestDeal Editorial</span>
+            </div>
+          </div>
+
+          <!-- &#9552;&#9552; REVIEW LAYOUT &#9552;&#9552; -->
+          <div class='review-layout'>
+
+            <!-- &#9552; MAIN COLUMN &#9552; -->
+            <div class='review-main'>
+
+              <!-- Product Image -->
+              <div class='product-image-wrap' id='reviewImageWrap'>
+                <b:if cond='data:post.firstImageUrl'>
+                  <img decoding='async' expr:alt='data:post.title' expr:src='resizeImage(data:post.firstImageUrl, 800)' fetchpriority='high' itemprop='image' loading='eager'/>
+                <b:else/>
+                  <div id='imgPlaceholder' style='aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;color:var(--ink-muted);font-size:13px;'>
+                    <i aria-hidden='true' class='fas fa-image' style='font-size:32px;margin-bottom:8px;display:block;'/>
+                  </div>
+                </b:if>
+              </div>
+
+              <!-- Article Body (AI generates content here) -->
+              <div class='post-body-content' id='postBodyContent' itemprop='description'>
+                <data:post.body/>
+              </div>
+
+            </div>
+
+            <!-- &#9552; SIDEBAR &#9552; -->
+            <aside class='review-sidebar' id='reviewSidebar'>
+
+              <!-- Verdict Card (populated by JS from article data attributes) -->
+              <div class='sidebar-card' id='verdictCard' style='display:none;'>
+                <div class='sidebar-card-header'><i aria-hidden='true' class='fas fa-gavel'/> Our Verdict</div>
+                <div class='sidebar-card-body'>
+                  <div id='sidebarVerdictContent'/>
+                </div>
+              </div>
+
+              <!-- Amazon Buy Button (sidebar) -->
+              <div id='sidebarAmazonWrap' style='display:none;'>
+                <a class='amz-buy-btn' href='#' id='sidebarAmazonBtn' rel='nofollow sponsored noopener noreferrer' target='_blank'>
+                  <span class='amz-logo'><i aria-hidden='true' class='fab fa-amazon'/></span>
+                  Check Price on Amazon
+                </a>
+                <p style='font-size:11px;color:var(--ink-muted);text-align:center;margin-top:6px;'>Price and availability may change</p>
+              </div>
+
+              <!-- Score bars (sidebar) -->
+              <div class='sidebar-card' id='scoreBarsCard' style='display:none;'>
+                <div class='sidebar-card-header'><i aria-hidden='true' class='fas fa-chart-bar'/> Scores</div>
+                <div class='sidebar-card-body score-bars' id='sidebarScores'/>
+              </div>
+
+            </aside>
+          </div>
+
+          <!-- &#9552;&#9552; STICKY BOTTOM CTA &#9552;&#9552; -->
+          <b:if cond='!data:view.isPage'>
+          <div class='sticky-cta' id='stickyCta' style='display:none;'>
+            <div class='sticky-cta-inner'>
+              <div class='sticky-cta-label'>
+                <strong id='stickyProductName'>Best price on Amazon</strong>
+                <span>Prices &amp; availability may change</span>
+              </div>
+              <a class='amz-buy-btn' href='#' id='stickyCtaLink' rel='nofollow sponsored noopener noreferrer' target='_blank'>
+                <i aria-hidden='true' class='fab fa-amazon'/> Check Price
+              </a>
+            </div>
+          </div>
+          </b:if>
+
+          <div class='comments-section'>
+            <b:include data='post' name='comments'/>
+          </div>
+
+        </article>
+
+        <!-- &#9552;&#9552; RELATED POSTS &#9552;&#9552; -->
+        <b:if cond='data:post.labels and !data:view.isPage'>
+          <div class='related-posts' id='relatedPosts'>
+            <h3><i aria-hidden='true' class='fas fa-layer-group'/> Related Reviews</h3>
+            <div class='related-grid' id='relatedGrid'/>
+            <div class='related-more-wrap'><a class='related-more' href='#' id='relatedMore'>View all related reviews</a></div>
+          </div>
+          <script type='text/javascript'>
+          //<![CDATA[
+          (function() {
+            var rawLabels = [<b:loop values='data:post.labels' var='label'>'<data:label.name/>',</b:loop>];
+            var labels = rawLabels.map(function(s){ return s.replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/&quot;/g,'"').trim(); }).filter(Boolean);
+            var isGeneric = function(l){ return /^(deals|best deals|electronics)$/i.test(l.trim()); };
+            var label = labels.filter(function(l){ return !isGeneric(l); })[0] || labels[0];
+            if (!label) { var rp=document.getElementById('relatedPosts'); if(rp) rp.style.display='none'; return; }
+            var currentUrl = "<data:post.url/>";
+            var moreEl = document.getElementById('relatedMore');
+            if (moreEl) { moreEl.href = '/search/label/' + encodeURIComponent(label); moreEl.textContent = 'View all in ' + label; }
+            function cardHtml(entry) {
+              var link = '';
+              for (var j = 0; j < entry.link.length; j++) {
+                if (entry.link[j].rel == 'alternate') { link = entry.link[j].href; break; }
+              }
+              if (!link || link == currentUrl) return '';
+              var title = entry.title.$t;
+              var img = entry.media$thumbnail ? entry.media$thumbnail.url.replace(/\/s72-c/, '/s400-c') : 'https://placehold.co/400x300/F8F9FB/9CA3AF?text=NestDeal';
+              var esc = title.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+              return '<a class="related-card" href="' + link + '"><img src="' + img + '" alt="' + esc + '" loading="lazy" decoding="async" width="400" height="300"/><h4>' + esc + '</h4></a>';
+            }
+            function renderRelated(data) {
+              var entries = (data && data.feed && data.feed.entry) || [];
+              var html = ''; var count = 0;
+              for (var i = 0; i < entries.length && count < 3; i++) {
+                html += cardHtml(entries[i]);
+                if (cardHtml(entries[i])) count++;
+              }
+              if (html) { var g=document.getElementById('relatedGrid'); if(g) g.innerHTML=html; return true; }
+              return false;
+            }
+            function hideRelated() { var rp2=document.getElementById('relatedPosts'); if(rp2) rp2.style.display='none'; }
+            window.ndRelatedCb = function(data) {
+              if (renderRelated(data)) return;
+              var s2=document.createElement('script');
+              s2.onerror = hideRelated;
+              s2.src='/feeds/posts/default?alt=json-in-script&max-results=6&callback=ndRelatedCbAll';
+              document.head.appendChild(s2);
+            };
+            window.ndRelatedCbAll = function(data) {
+              if (!renderRelated(data)) hideRelated();
+            };
+            var feedUrl = "/feeds/posts/default/-/" + encodeURIComponent(label) + "?alt=json-in-script&max-results=4&callback=ndRelatedCb";
+            var s=document.createElement('script'); s.onerror=function(){ window.ndRelatedCb(null); }; s.src=feedUrl; document.head.appendChild(s);
+          })();
+          //]]>
+          </script>
+        </b:if>
+
+      </b:includable>
+      <b:includable id='postCommentsLink'>
+        <b:if cond='data:view.isMultipleItems'>
+          <span class='byline post-comment-link container'>
+            <b:include cond='data:post.commentSource != 1' name='commentsLink'/>
+          </span>
+        </b:if>
+      </b:includable>
+      <b:includable id='postFooter' var='post'>
+        <div class='post-footer'><b:include name='footerBylines'/><b:include data='post' name='postFooterAuthorProfile'/></div>
+      </b:includable>
+      <b:includable id='postFooterAuthorProfile' var='post'>
+        <b:if cond='data:post.author.aboutMe and data:view.isPost'>
+          <div class='author-profile'>
+            <b:if cond='data:post.author.authorPhoto.url'>
+              <img class='author-image' expr:src='data:post.author.authorPhoto.url' width='50px'/>
+              <div class='author-about'><b:include data='post' name='aboutPostAuthor'/></div>
+            <b:else/><b:include data='post' name='aboutPostAuthor'/></b:if>
+          </div>
+        </b:if>
+      </b:includable>
+      <b:includable id='postHeader' var='post'><b:include name='headerByline'/></b:includable>
+      <b:includable id='postJumpLink' var='post'>
+        <div class='jump-link flat-button'>
+          <a expr:href='data:post.url fragment &quot;more&quot;' expr:title='data:post.title'><b:eval expr='data:blog.jumpLinkMessage'/></a>
+        </div>
+      </b:includable>
+      <b:includable id='postLabels'>
+        <span class='byline post-labels'>
+          <span class='byline-label'><data:byline.label/></span>
+          <b:loop index='i' values='data:post.labels' var='label'>
+            <a expr:href='data:label.url' rel='tag'><data:label.name/></a>
+          </b:loop>
+        </span>
+      </b:includable>
+      <b:includable id='postLocation'>
+        <span class='byline post-location'>
+          <data:byline.label/>
+          <a expr:href='data:post.location.mapsUrl' target='_blank'><data:post.location.name/></a>
+        </span>
+      </b:includable>
+      <b:includable id='postMeta' var='post'><b:include data='post' name='postMetadataJSON'/></b:includable>
+      <b:includable id='postMetadataJSONImage'>
+        &quot;image&quot;: {
+          &quot;@type&quot;: &quot;ImageObject&quot;,
+          <b:if cond='data:post.featuredImage.isResizable'>
+            &quot;url&quot;: &quot;<b:eval expr='resizeImage(data:post.featuredImage, 1200, &quot;1200:630&quot;)'/>&quot;,
+            &quot;height&quot;: 630, &quot;width&quot;: 1200
+          <b:else/>
+            &quot;url&quot;: &quot;<data:post.firstImageUrl/>&quot;,
+            &quot;height&quot;: 630, &quot;width&quot;: 1200
+          </b:if>
+        },
+      </b:includable>
+      <b:includable id='postMetadataJSONPublisher'>
+        &quot;publisher&quot;: {
+          &quot;@type&quot;: &quot;Organization&quot;,
+          &quot;name&quot;: &quot;Blogger&quot;,
+          &quot;logo&quot;: {
+            &quot;@type&quot;: &quot;ImageObject&quot;,
+            &quot;url&quot;: &quot;https://blogger.googleusercontent.com/img/b/U2hvZWJveA/AVvXsEgfMvYAhAbdHksiBA24JKmb2Tav6K0GviwztID3Cq4VpV96HaJfy0viIu8z1SSw_G9n5FQHZWSRao61M3e58ImahqBtr7LiOUS6m_w59IvDYwjmMcbq3fKW4JSbacqkbxTo8B90dWp0Cese92xfLMPe_tg11g/h60/&quot;,
+            &quot;width&quot;: 206, &quot;height&quot;: 60
+          }
+        },
+      </b:includable>
+      <b:includable id='postPagination'>
+        <div class='blog-pager container' id='blog-pager'>
+          <b:include cond='data:newerPageUrl' name='previousPageLink'/>
+          <b:include cond='data:olderPageUrl' name='nextPageLink'/>
+          <b:include cond='data:view.url != data:blog.homepageUrl' name='homePageLink'/>
+        </div>
+      </b:includable>
+      <b:includable id='postReactions'/>
+      <b:includable id='postShareButtons'>
+        <div class='byline post-share-buttons goog-inline-block'>
+          <b:with value='data:sharingId ?: ((data:widget.instanceId ?: &quot;sharing&quot;) + &quot;-&quot; + (data:regionName ?: &quot;byline&quot;) + &quot;-&quot; + data:post.id)' var='sharingId'>
+            <b:include data='{ sharingId: data:sharingId, originalUrl: data:post.url, platforms: data:this.sharing.platforms, shareUrl: data:post.shareUrl, shareTitle: data:post.title }' name='sharingButtons'/>
+          </b:with>
+        </div>
+      </b:includable>
+      <b:includable id='postTimestamp'>
+        <span class='byline post-timestamp'>
+          <data:byline.label/>
+          <b:if cond='data:post.url'>
+            <meta expr:content='data:post.url.canonical'/>
+            <a class='timestamp-link' expr:href='data:post.url' rel='bookmark' title='permanent link'>
+              <time class='published' expr:datetime='data:post.date.iso8601' expr:title='data:post.date.iso8601'><data:post.date/></time>
+            </a>
+          </b:if>
+        </span>
+      </b:includable>
+      <b:includable id='postTitle' var='post'>
+        <a expr:name='data:post.id'/>
+        <b:if cond='data:post.title != &quot;&quot;'>
+          <h3 class='post-title entry-title'>
+            <b:if cond='data:post.link or (data:post.url and data:view.url != data:post.url)'>
+              <a expr:href='data:post.link ?: data:post.url'><data:post.title/></a>
+            <b:else/><data:post.title/></b:if>
+          </h3>
+        </b:if>
+      </b:includable>
+      <b:includable id='previousPageLink'>
+        <a class='blog-pager-newer-link' expr:href='data:newerPageUrl' expr:id='data:widget.instanceId + &quot;_blog-pager-newer-link&quot;' expr:title='data:messages.newerPosts'><data:messages.newerPosts/></a>
+      </b:includable>
+      <b:includable id='sharingButton'>
+        <span expr:aria-label='data:platform.shareMessage' expr:class='&quot;sharing-platform-button sharing-element-&quot; + data:platform.key' expr:data-href='data:shareUrl + &quot;&amp;target=&quot; + data:platform.target' expr:data-url='data:originalUrl' expr:title='data:platform.shareMessage' role='menuitem' tabindex='-1'>
+          <b:include name='sharingPlatformIcon'/>
+          <span class='platform-sharing-text'><data:platform.name/></span>
+        </span>
+      </b:includable>
+      <b:includable id='sharingButtonContent'>
+        <div class='flat-icon-button ripple'><b:include name='shareIcon'/></div>
+      </b:includable>
+      <b:includable id='sharingButtons'>
+        <div class='sharing' expr:aria-owns='&quot;sharing-popup-&quot; + data:sharingId' expr:data-title='data:shareTitle'>
+          <button class='sharing-button touch-icon-button' expr:aria-controls='&quot;sharing-popup-&quot; + data:sharingId' expr:aria-label='data:messages.share.escaped' expr:id='&quot;sharing-button-&quot; + data:sharingId' role='button'>
+            <b:include name='sharingButtonContent'/>
+          </button>
+          <b:include name='sharingButtonsMenu'/>
+        </div>
+      </b:includable>
+      <b:includable id='sharingButtonsMenu'>
+        <div class='share-buttons-container'>
+          <ul aria-hidden='true' class='share-buttons hidden' expr:aria-label='data:messages.share.escaped' expr:id='&quot;sharing-popup-&quot; + data:sharingId' role='menu'>
+            <b:loop values='(data:platforms ?: data:blog.sharing.platforms) filter (p =&gt; p.key not in {&quot;blogThis&quot;})' var='platform'>
+              <li><b:include name='sharingButton'/></li>
+            </b:loop>
+            <li aria-hidden='true' class='hidden'><b:include name='otherSharingButton'/></li>
+          </ul>
+        </div>
+      </b:includable>
+      <b:includable id='sharingPlatformIcon'>
+        <b:include data='{ iconClass: (&quot;touch-icon sharing-&quot; + data:platform.key) }' expr:name='data:platform.key + &quot;Icon&quot;'/>
+      </b:includable>
+      <b:includable id='threadedCommentForm' var='post'>
+        <div class='comment-form'>
+          <a name='comment-form'/>
+          <h4 id='comment-post-message'><data:messages.postAComment/></h4>
+          <b:if cond='data:this.messages.blogComment != &quot;&quot;'><p><data:this.messages.blogComment/></p></b:if>
+          <b:include data='post' name='commentFormIframeSrc'/>
+          <iframe allowtransparency='allowtransparency' class='blogger-iframe-colorize blogger-comment-from-post' expr:height='data:cmtIframeInitialHeight ?: &quot;90px&quot;' frameborder='0' id='comment-editor' name='comment-editor' src='' width='100%'/>
+          <data:post.cmtfpIframe/>
+          <script type='text/javascript'>BLOG_CMT_createIframe(&#39;<data:post.appRpcRelayPath/>&#39;);</script>
+        </div>
+      </b:includable>
+      <b:includable id='threadedCommentJs' var='post'>
+        <script async='async' expr:src='data:post.commentSrc' type='text/javascript'/>
+        <b:template-script inline='true' name='threaded_comments'/>
+        <script type='text/javascript'>
+          blogger.widgets.blog.initThreadedComments(<data:post.commentJso/>, <data:post.commentMsgs/>, <data:post.commentConfig/>);
+        </script>
+      </b:includable>
+      <b:includable id='threadedComments' var='post'>
+        <section class='comments threaded' expr:data-embed='data:post.embedCommentForm' expr:data-num-comments='data:post.numberOfComments' id='comments'>
+          <a name='comments'/>
+          <b:include name='commentsTitle'/>
+          <div class='comments-content'>
+            <b:if cond='data:post.embedCommentForm'><b:include data='post' name='threadedCommentJs'/></b:if>
+            <div id='comment-holder'><data:post.commentHtml/></div>
+          </div>
+          <p class='comment-footer'>
+            <b:if cond='data:post.allowNewComments'><b:include data='post' name='threadedCommentForm'/><b:else/><data:post.noNewCommentsText/></b:if>
+            <b:if cond='data:post.showManageComments'><b:include data='post' name='manageComments'/></b:if>
+          </p>
+          <b:if cond='data:showCmtPopup'>
+            <div id='comment-popup'><iframe allowtransparency='allowtransparency' frameborder='0' id='comment-actions' name='comment-actions' scrolling='no'/></div>
+          </b:if>
+        </section>
+      </b:includable>
+      <b:includable id='tooltipCss'>
+        <style>
+          .post-body a.b-tooltip-container { position: relative; display: inline-block; }
+          .post-body a.b-tooltip-container .b-tooltip { display: block !important; position: absolute; top: 100%; left: 50%; transform: translate(-20%, 1px); visibility: hidden; opacity: 0; z-index: 1; transition: opacity 0.2s ease-in-out; }
+          .post-body a.b-tooltip-container .b-tooltip iframe { width: 200px; height: 198px; max-width: none; border: none; border-radius: 20px; box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.2); }
+          @media (hover: hover) { .post-body a.b-tooltip-container:hover .b-tooltip { visibility: visible; opacity: 1; } }
+        </style>
+      </b:includable>
+    </b:widget>
+  </b:section>
+
+</main>
+
+<!-- FOOTER (hidden on product pages) -->
+<b:if cond='!data:view.isSingleItem'>
+<footer class='site-footer' role='contentinfo'>
+  <div class='container'>
+    <div class='footer-top'>
+      <div class='footer-brand'>
+        <div style='display:flex;align-items:center;gap:9px;margin-bottom:10px;'>
+          <span style='background:var(--orange);border-radius:6px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--navy);'><i aria-hidden='true' class='fas fa-home'/></span>
+          <span class='footer-brand-name'>Nest<span>Deal</span></span>
+        </div>
+        <p>Research, compare and choose smart home and security products &#8212; local control, privacy first, no unnecessary subscriptions.</p>
+      </div>
+      <div class='footer-col'>
+        <h4>Categories</h4>
+        <ul>
+          <li><a href='/search/label/Smart%20Home'><i aria-hidden='true' class='fas fa-wifi'/> Smart Home</a></li>
+          <li><a href='/search/label/Home%20Security'><i aria-hidden='true' class='fas fa-shield-alt'/> Home Security</a></li>
+          <li><a href='/search/label/Video%20Doorbells'><i aria-hidden='true' class='fas fa-video'/> Video Doorbells</a></li>
+          <li><a href='/search/label/Security%20Cameras'><i aria-hidden='true' class='fas fa-camera'/> Security Cameras</a></li>
+          <li><a href='/search/label/Smart%20Locks'><i aria-hidden='true' class='fas fa-lock'/> Smart Locks</a></li>
+        </ul>
+      </div>
+      <div class='footer-col'>
+        <h4>Content</h4>
+        <ul>
+          <li><a href='/search/label/Reviews'><i aria-hidden='true' class='fas fa-star'/> Reviews</a></li>
+          <li><a href='/search/label/Comparisons'><i aria-hidden='true' class='fas fa-balance-scale'/> Comparisons</a></li>
+          <li><a href='/search/label/Buying%20Guides'><i aria-hidden='true' class='fas fa-book-open'/> Buying Guides</a></li>
+        </ul>
+      </div>
+      <div class='footer-col'>
+        <h4>Legal</h4>
+        <ul>
+          <li><a href='/p/affiliate-disclosure_0434830275.html'><i aria-hidden='true' class='fas fa-handshake'/> Affiliate Disclosure</a></li>
+          <li><a href='/p/privacy-policy_01937315203.html'><i aria-hidden='true' class='fas fa-shield-alt'/> Privacy Policy</a></li>
+          <li><a href='/p/disclaimer_0696215407.html'><i aria-hidden='true' class='fas fa-exclamation-circle'/> Disclaimer</a></li>
+          <li><a href='/p/terms-of-use_0804674462.html'><i aria-hidden='true' class='fas fa-file-alt'/> Terms of Use</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class='footer-disclaimer'>
+      <strong style='color:rgba(255,255,255,.55);'>Affiliate Disclosure:</strong>
+      As an Amazon Associate I earn from qualifying purchases. Prices and availability are accurate as of the date published and may change.
+      <a href='/p/affiliate-disclosure_0434830275.html'>Learn more.</a>
+    </div>
+    <div class='footer-bottom'>
+      <div class='footer-bottom-inner'>
+        <span>&#169; 2026 <data:blog.title/> &#8212; All Rights Reserved.</span>
+        <span>
+          <a href='/p/privacy-policy_01937315203.html'>Privacy</a> &#183;
+          <a href='/p/disclaimer_0696215407.html'>Disclaimer</a> &#183;
+          <a href='/p/affiliate-disclosure_0434830275.html'>Affiliate Disclosure</a>
+        </span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- Mobile Bottom Nav -->
+<nav aria-label='Mobile navigation' class='mob-bottom-nav'>
+  <div class='mob-bottom-inner'>
+    <a aria-label='Home' expr:href='data:blog.homepageUrl' title='Home'><i aria-hidden='true' class='fas fa-home'/> Home</a>
+    <a aria-label='Security Cameras' href='/search/label/Security%20Cameras' title='Cameras'><i aria-hidden='true' class='fas fa-camera'/> Cameras</a>
+    <a aria-label='Video Doorbells' href='/search/label/Video%20Doorbells' title='Doorbells'><i aria-hidden='true' class='fas fa-video'/> Doorbells</a>
+    <a aria-label='Compare Products' href='/search/label/Comparisons' title='Compare'><i aria-hidden='true' class='fas fa-balance-scale'/> Compare</a>
+    <a aria-label='Buying Guides' href='/search/label/Buying%20Guides' title='Guides'><i aria-hidden='true' class='fas fa-book-open'/> Guides</a>
+  </div>
+</nav>
+</b:if>
+
+<!-- Back to Top Button -->
+<button aria-label='Back to top' class='back-to-top' id='backToTop' type='button'><i aria-hidden='true' class='fas fa-arrow-up'/></button>
+
+<!-- SCRIPTS -->
+<script type='text/javascript'>
+//<![CDATA[
+(function() {
+  'use strict';
+
+  /* ═══ MOBILE MENU ═══ */
+  var mobToggle = document.getElementById('mobMenuToggle');
+  var mobDrawer = document.getElementById('mobDrawer');
+  var mobOverlay = document.getElementById('mobOverlay');
+  var mobClose = document.getElementById('mobDrawerClose');
+
+  function openMenu() {
+    if (mobDrawer) { mobDrawer.classList.add('is-open'); mobDrawer.setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden'; }
+    if (mobOverlay) { mobOverlay.classList.add('is-open'); mobOverlay.setAttribute('aria-hidden', 'false'); }
+  }
+  function closeMenu() {
+    if (mobDrawer) { mobDrawer.classList.remove('is-open'); mobDrawer.setAttribute('aria-hidden', 'true'); document.body.style.overflow = ''; }
+    if (mobOverlay) { mobOverlay.classList.remove('is-open'); mobOverlay.setAttribute('aria-hidden', 'true'); }
+  }
+  if (mobToggle) mobToggle.addEventListener('click', openMenu);
+  if (mobOverlay) mobOverlay.addEventListener('click', closeMenu);
+  if (mobClose) mobClose.addEventListener('click', closeMenu);
+
+  // Close on swipe right
+  var touchStartX = 0;
+  if (mobDrawer) {
+    mobDrawer.addEventListener('touchstart', function(e){ touchStartX = e.changedTouches[0].screenX; }, {passive:true});
+    mobDrawer.addEventListener('touchend', function(e){ if (e.changedTouches[0].screenX - touchStartX > 60) closeMenu(); }, {passive:true});
+  }
+  // Close on Escape key
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeMenu(); });
+
+  /* ═══ BACK TO TOP ═══ */
+  var backToTop = document.getElementById('backToTop');
+  if (backToTop) {
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 300) backToTop.classList.add('is-visible');
+      else backToTop.classList.remove('is-visible');
+    }, {passive:true});
+    backToTop.addEventListener('click', function() { window.scrollTo({top:0, behavior:'smooth'}); });
+  }
+
+  /* ═══ INFINITE SCROLL ═══ */
+  // Only run on index pages (not single posts or static pages)
+  if (!document.querySelector('.single-item-page')) {
+    var grid = document.getElementById('nestdeal-products');
+    var feedActions = document.getElementById('feedActions');
+    var loadMoreBtn = document.getElementById('loadMoreBtn');
+    var infSpinner = document.getElementById('infSpinner');
+    var nextUrl = loadMoreBtn ? loadMoreBtn.href : null;
+    var isLoading = false;
+    var sentinel = document.createElement('div');
+    sentinel.id = 'inf-scroll-sentinel';
+    sentinel.style.cssText = 'height:2px;margin:0;';
+
+    if (grid && nextUrl) {
+      // Insert sentinel after grid
+      grid.parentNode.insertBefore(sentinel, grid.nextSibling);
+      // Move spinner after sentinel
+      if (infSpinner) grid.parentNode.insertBefore(infSpinner, sentinel.nextSibling);
+
+      function loadMore() {
+        if (isLoading || !nextUrl) return;
+        isLoading = true;
+        if (infSpinner) infSpinner.classList.add('is-visible');
+        if (feedActions) feedActions.style.display = 'none';
+
+        fetch(nextUrl)
+          .then(function(r) { return r.text(); })
+          .then(function(html) {
+            var parser = new DOMParser();
+            var doc = parser.parseFromString(html, 'text/html');
+            var newGrid = doc.getElementById('nestdeal-products');
+            var newCards = newGrid ? newGrid.querySelectorAll('.product-card') : [];
+
+            newCards.forEach(function(card) { grid.appendChild(card); });
+
+            var newBtn = doc.querySelector('#loadMoreBtn');
+            if (newBtn) {
+              nextUrl = newBtn.href;
+              if (feedActions) feedActions.style.display = 'flex';
+            } else {
+              nextUrl = null;
+              if (feedActions) feedActions.style.display = 'none';
+              if (infSpinner) {
+                infSpinner.innerHTML = '<p style="text-align:center;color:var(--ink-soft);padding:20px;font-size:14px;">No more deals to load.</p>';
+                infSpinner.classList.add('is-visible');
+              }
+            }
+
+            isLoading = false;
+            if (infSpinner && nextUrl) infSpinner.classList.remove('is-visible');
+
+            // Update URL for analytics
+            if (window.history && window.history.replaceState && nextUrl) {
+              window.history.replaceState({}, '', nextUrl);
+            }
+          })
+          .catch(function(err) {
+            console.error('Infinite scroll error:', err);
+            isLoading = false;
+            if (infSpinner) infSpinner.classList.remove('is-visible');
+            if (feedActions) feedActions.style.display = 'flex';
+          });
+      }
+
+      if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function(entries) {
+          if (entries[0].isIntersecting && !isLoading && nextUrl) loadMore();
+        }, { rootMargin: '400px' });
+        observer.observe(sentinel);
+      } else {
+        // Fallback: show button
+        if (feedActions) feedActions.style.display = 'flex';
+      }
+    }
+  }
+
+  /* ════════════════════════════════════════════════════════
+   NESTDEAL v4.1 — REVIEW ENGINE JS
+   Reads data-* attributes written by AI article generator,
+   populates sidebar, verdict box, sticky CTA, score bars,
+   validates affiliate tags, tracks clicks with GA4.
+   Zero external dependencies — vanilla JS only.
+════════════════════════════════════════════════════════ */
+(function() {
+  'use strict';
+
+  /* ── 1. READ REVIEW DATA from article data attributes ── */
+  var body = document.getElementById('postBodyContent');
+  var reviewEl = body ? body.querySelector('[data-nd-review]') : null;
+
+  var nd = {
+    score:        null,
+    verdict:      null,
+    recommend:    null,  /* 'buy' | 'consider' | 'skip' */
+    amazonUrl:    null,
+    altName:      null,
+    altUrl:       null,
+    altWhy:       null,
+    scores: {
+      value:    null,
+      build:    null,
+      features: null,
+      privacy:  null
+    }
+  };
+
+  if (reviewEl) {
+    nd.score     = reviewEl.getAttribute('data-score');
+    nd.verdict   = reviewEl.getAttribute('data-verdict');
+    nd.recommend = reviewEl.getAttribute('data-recommend') || 'consider';
+    nd.amazonUrl = reviewEl.getAttribute('data-amazon-url');
+    nd.altName   = reviewEl.getAttribute('data-alt-name');
+    nd.altUrl    = reviewEl.getAttribute('data-alt-url');
+    nd.altWhy    = reviewEl.getAttribute('data-alt-why');
+    nd.scores.value    = reviewEl.getAttribute('data-score-value');
+    nd.scores.build    = reviewEl.getAttribute('data-score-build');
+    nd.scores.features = reviewEl.getAttribute('data-score-features');
+    nd.scores.privacy  = reviewEl.getAttribute('data-score-privacy');
+  }
+
+  /* Fallback: scrape first amazon link from post body */
+  if (!nd.amazonUrl) {
+    var firstAmz = document.querySelector(
+      '.post-body-content a[href*="amazon.com"], .post-body-content a[href*="amzn.to"], .rvw-wrapper a[href*="amazon.com"]'
+    );
+    if (firstAmz) nd.amazonUrl = firstAmz.href;
+  }
+
+  /* ── 2. SIDEBAR VERDICT CARD ── */
+  var verdictCard = document.getElementById('verdictCard');
+  var verdictContent = document.getElementById('sidebarVerdictContent');
+  if (verdictCard && verdictContent && nd.verdict) {
+    var recommendMap = {
+      buy:      { cls: 'buy',      icon: 'fa-check-circle', text: 'We Recommend' },
+      consider: { cls: 'consider', icon: 'fa-info-circle',  text: 'Worth Considering' },
+      skip:     { cls: 'skip',     icon: 'fa-times-circle', text: 'We Say Skip It' }
+    };
+    var rec = recommendMap[nd.recommend] || recommendMap.consider;
+    var scoreHtml = nd.score ? '<div class="score-circle" style="margin:0 auto 12px;"><span class="val">' + nd.score + '</span><span class="max">/10</span></div>' : '';
+    verdictContent.innerHTML = scoreHtml
+      + '<p style="font-size:13px;line-height:1.6;color:var(--ink-mid);margin-bottom:12px;">' + nd.verdict + '</p>'
+      + '<div class="verdict-recommend ' + rec.cls + '"><i class="fas ' + rec.icon + '"></i> ' + rec.text + '</div>';
+    verdictCard.style.display = 'block';
+  }
+
+  /* ── 3. SCORE BARS ── */
+  var scoresCard = document.getElementById('scoreBarsCard');
+  var scoresEl   = document.getElementById('sidebarScores');
+  var scoreKeys  = ['value', 'build', 'features', 'privacy'];
+  var scoreLabels= { value:'Value', build:'Build Quality', features:'Features', privacy:'Privacy' };
+  var hasScores  = scoreKeys.some(function(k){ return nd.scores[k]; });
+
+  if (scoresCard && scoresEl && hasScores) {
+    var barsHtml = '';
+    scoreKeys.forEach(function(k) {
+      var v = parseFloat(nd.scores[k]);
+      if (isNaN(v)) return;
+      var pct = Math.min(100, v * 10);
+      var cls = v >= 7.5 ? 'high' : v >= 5 ? 'mid' : 'low';
+      barsHtml += '<div class="score-bar-row">'
+        + '<span class="score-bar-label">' + scoreLabels[k] + '</span>'
+        + '<div class="score-bar-track"><div class="score-bar-fill ' + cls + '" style="width:' + pct + '%"></div></div>'
+        + '<span class="score-bar-val">' + v.toFixed(1) + '</span></div>';
+    });
+    scoresEl.innerHTML = barsHtml;
+    scoresCard.style.display = 'block';
+  }
+
+  /* ── 4. SIDEBAR AMAZON BUTTON ── */
+  var sidebarWrap = document.getElementById('sidebarAmazonWrap');
+  var sidebarBtn  = document.getElementById('sidebarAmazonBtn');
+  if (sidebarWrap && sidebarBtn && nd.amazonUrl) {
+    sidebarBtn.href = nd.amazonUrl;
+    sidebarWrap.style.display = 'block';
+  }
+
+  /* ── 5. STICKY BOTTOM CTA ── */
+  var stickyCta  = document.getElementById('stickyCta');
+  var stickyLink = document.getElementById('stickyCtaLink');
+  var stickyName = document.getElementById('stickyProductName');
+  if (stickyCta && stickyLink && nd.amazonUrl) {
+    stickyLink.href = nd.amazonUrl;
+    if (stickyName) {
+      var title = document.querySelector('.post-title');
+      if (title) stickyName.textContent = (title.textContent || '').slice(0, 50);
+    }
+    stickyCta.style.display = 'block';
+    /* Hide on scroll down, show on scroll up */
+    var lastY = 0;
+    window.addEventListener('scroll', function() {
+      var y = window.scrollY;
+      stickyCta.style.transform = (y > lastY && y > 300) ? 'translateY(110%)' : 'translateY(0)';
+      stickyCta.style.transition = 'transform .3s ease';
+      lastY = y;
+    }, { passive: true });
+  } else if (stickyCta) {
+    stickyCta.style.display = 'none';
+  }
+
+  /* ── 5b. META FILLER (SEO/social when head vars resolve empty) ── */
+  (function() {
+    function setIfEmpty(sel, attr, val) {
+      var el = document.querySelector(sel);
+      if (el && !el.getAttribute(attr)) el.setAttribute(attr, val);
+    }
+    setIfEmpty('meta[name="theme-color"]', 'content', '#1E293B');
+    var nav = document.querySelector('meta[name="msapplication-navbutton-color"]');
+    if (!nav) {
+      nav = document.createElement('meta');
+      nav.setAttribute('name', 'msapplication-navbutton-color');
+      document.head.appendChild(nav);
+    }
+    if (!nav.getAttribute('content')) nav.setAttribute('content', '#1E293B');
+    var v = document.querySelector('.verdict-summary');
+    if (!v) return;
+    var desc = v.textContent.replace(/\s+/g, ' ').trim().slice(0, 155);
+    if (!desc) return;
+    ['#nd-meta-desc', '#nd-og-desc', '#nd-tw-desc'].forEach(function(id) {
+      var m = document.querySelector(id);
+      if (m && !m.getAttribute('content')) m.setAttribute('content', desc);
+    });
+    var ogT = document.querySelector('meta[property="og:title"]');
+    if (ogT && !ogT.getAttribute('content')) ogT.setAttribute('content', document.title);
+    var twT = document.querySelector('meta[name="twitter:title"]');
+    if (twT && !twT.getAttribute('content')) twT.setAttribute('content', document.title);
+  })();
+
+  /* ── 6. AMAZON CLICK TRACKING (GA4) ── */
+  document.querySelectorAll('a[href*="amazon."]').forEach(function(link) {
+    if (!/https?:\/\/(?:www\.)?amazon\.[a-z.]+\//i.test(link.href)) return;
+    link.setAttribute('rel', 'sponsored nofollow noopener noreferrer');
+    link.addEventListener('click', function() {
+      if (typeof gtag !== 'function') return;
+      gtag('event', 'amazon_click', {
+        event_category: 'affiliate',
+        link_url: link.href,
+        link_text: (link.textContent || '').trim().slice(0, 100),
+        page_location: window.location.href,
+        recommendation: nd.recommend || 'unknown'
+      });
+    }, { passive: true });
+  });
+
+  if (stickyLink) {
+    stickyLink.addEventListener('click', function() {
+      if (typeof gtag === 'function') {
+        gtag('event', 'amazon_sticky_cta', {
+          event_category: 'affiliate',
+          link_url: nd.amazonUrl,
+          page_location: window.location.href
+        });
+      }
+    });
+  }
+
+  /* ── 7. AFFILIATE TAG AUDIT (dev console only) ── */
+  (function() {
+    var links = document.querySelectorAll('.post-body-content a[href*="amazon."], .rvw-wrapper a[href*="amazon."]');
+    var missing = [];
+    links.forEach(function(l) {
+      if (l.href.indexOf('amazon.') !== -1 && !/[?&]tag=[\w-]+-\d+/.test(l.href)) missing.push(l.href);
+    });
+    if (missing.length) console.warn('[NestDeal] ' + missing.length + ' Amazon link(s) missing affiliate tag:', missing);
+  })();
+
+  /* ── 8. NAV CATEGORY CLICK TRACKING ── */
+  document.querySelectorAll('.nav-strip a, .cat-strip a').forEach(function(link) {
+    link.addEventListener('click', function() {
+      if (typeof gtag !== 'function') return;
+      gtag('event', 'category_click', {
+        event_category: 'navigation',
+        event_label: link.textContent.trim(),
+        page_location: window.location.href
+      });
+    });
+  });
+
+  /* ── 9. EXTRACT PRODUCT IMAGE from post body if hero is missing ── */
+  var heroWrap = document.getElementById('reviewImageWrap');
+  var heroImg  = heroWrap ? heroWrap.querySelector('img') : null;
+  var placeholder = document.getElementById('imgPlaceholder');
+  if (placeholder) {
+    var bodyImgs = document.querySelectorAll('.post-body-content img');
+    var found = false;
+    for (var i = 0; i < bodyImgs.length; i++) {
+      var src = bodyImgs[i].src || '';
+      if (src && src.indexOf('placehold') === -1 && src.indexOf('blogblog') === -1) {
+        var newImg = document.createElement('img');
+        newImg.src = src;
+        newImg.alt = bodyImgs[i].alt || document.title;
+        newImg.style.cssText = 'width:100%;aspect-ratio:1/1;object-fit:contain;display:block;';
+        placeholder.replaceWith(newImg);
+        bodyImgs[i].style.display = 'none';
+        found = true;
+        break;
+      }
+    }
+    if (!found) heroWrap.style.display = 'none';
+  }
+
+})();
+
+})();
+//]]>
+</script>
+
+</body>
+</html>
