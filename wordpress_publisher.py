@@ -210,14 +210,14 @@ def _build_wp_article(product: dict, description: str) -> tuple[str, str, str]:
         except Exception:
             pass
 
-    # Pros HTML
+    # Pros/Cons HTML — plain text only (icons come from theme CSS, single source)
     pros_html = "".join(
-        f"<li style='margin-bottom:8px;font-size:15px;'>&#10003; {p}</li>"
+        f"<li style='margin-bottom:8px;font-size:15px;'>{p}</li>"
         for p in pros
     )
     # Cons HTML
     cons_html = "".join(
-        f"<li style='margin-bottom:8px;font-size:15px;'>&#9888; {c}</li>"
+        f"<li style='margin-bottom:8px;font-size:15px;'>{c}</li>"
         for c in cons
     )
     # FAQ HTML — no raw & in text

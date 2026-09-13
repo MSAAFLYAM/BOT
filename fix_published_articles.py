@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 # Rate limit tracking
 _consecutive_429s = 0
-_MAX_CONSECUTIVE_429S = 5  # Stop after 5 consecutive rate limits
+_MAX_CONSECUTIVE_429S = 10  # Stop after 10 consecutive rate limits
 
 
 def _check_rate_limit():
@@ -41,7 +41,18 @@ def _increment_rate_limit():
 
 
 def _extract_product(html: str, title: str) -> dict | None:
-    product = {"title": title}
+    import html as _h
+
+    def _un(s: str) -> str:
+        t = _h.unescape(s or "")
+        for _ in range(3):
+            u = _h.unescape(t)
+            if u == t:
+                break
+            t = u
+        return t.replace("�", "").strip()
+
+    product = {"title": _un(title)}
 
     asin_match = re.search(r'amazon\.com/dp/([A-Z0-9]{10})', html)
     if not asin_match:
@@ -74,7 +85,7 @@ def _extract_product(html: str, title: str) -> dict | None:
 
     features = []
     for f in re.findall(r'<li[^>]*>([^<]+)</li>', html):
-        f = f.strip()
+        f = _un(f)
         if 10 < len(f) < 200 and "$" not in f and "Amazon" not in f:
             features.append(f)
     product["features"] = features[:6]
@@ -82,12 +93,43 @@ def _extract_product(html: str, title: str) -> dict | None:
     return product
 
 
-def fix_all():
+def fix_all(niche_only: bool = False, off_niche_only: bool = False, template_only: bool = False):
+    if template_only:
+        os.environ["GROQ_API_KEY"] = ""
+        os.environ["OPENROUTER_API_KEY"] = ""
+        logger.info("[mode] Template-only (free local, no API)")
     if not blogger.is_configured():
         logger.error("Blogger API not configured!")
         return
 
-    posts = blogger.list_recent_posts(max_results=50)
+    # Get ALL posts (paginate)
+    all_posts = []
+    page_token = None
+    while True:
+        try:
+            token = blogger._get_access_token()
+            params = {"maxResults": 50, "status": "live"}
+            if page_token:
+                params["pageToken"] = page_token
+            resp = blogger._api_request_with_retry(
+                "GET",
+                f"{blogger.BLOGGER_BASE}/blogs/{blogger.BLOG_ID}/posts",
+                headers={"Authorization": f"Bearer {token}"},
+                params=params,
+                timeout=15,
+            )
+            if resp.status_code != 200:
+                break
+            data = resp.json()
+            items = data.get("items", [])
+            all_posts.extend(items)
+            page_token = data.get("nextPageToken")
+            if not page_token:
+                break
+        except Exception as e:
+            logger.error(f"Error fetching posts: {e}")
+            break
+    posts = all_posts
     logger.info(f"Found {len(posts)} articles to update")
 
     updated = skipped = errors = 0
@@ -103,9 +145,19 @@ def fix_all():
         content = post.get("content", "")
         url = post.get("url", "")
 
-        # Skip only fully-updated articles (new template uses nd-article class)
-        if "nd-article" in content or "nd-img-grid" in content:
+        # Skip only fully-updated articles (new template uses rvw-wrapper class)
+        if "rvw-wrapper" in content:
             logger.info(f"[{i}/{len(posts)}] SKIP (already updated): {title[:50]}")
+            skipped += 1
+            continue
+
+        # Action 10A filter: niche vs off-niche per controlled labels
+        _labels_tmp = blogger._map_labels(title)
+        _is_niche = any(l in _labels_tmp for l in ["Smart Home", "Home Security", "Home Assistant", "Video Doorbells", "Security Cameras", "Smart Locks"])
+        if niche_only and not _is_niche:
+            skipped += 1
+            continue
+        if off_niche_only and _is_niche:
             skipped += 1
             continue
 
@@ -125,10 +177,6 @@ def fix_all():
             if issues:
                 logger.warning(f"  Validation: {issues}")
 
-            logger.info("  Deleting old post...")
-            blogger.delete_post(post_id)
-            time.sleep(10)  # Increased from 8s
-
             logger.info("  Publishing new article...")
             result = blogger.publish_post(
                 product=product,
@@ -141,16 +189,18 @@ def fix_all():
 
             if result.get("status") == "success":
                 logger.info(f"  DONE: {result.get('post_url', '')}")
+                time.sleep(5)
+                logger.info("  Deleting old post...")
+                blogger.delete_post(post_id)
                 updated += 1
-                _reset_rate_limit()  # Reset on success
+                _reset_rate_limit()
             else:
                 error = str(result.get("error", ""))
                 logger.error(f"  FAILED: {error}")
                 errors += 1
-                # If rate limited, wait extra time and track
                 if "429" in error or "rateLimitExceeded" in error:
                     _increment_rate_limit()
-                    wait_time = min(120 * _consecutive_429s, 600)  # 120s, 240s, 360s, max 600s
+                    wait_time = min(60 * _consecutive_429s, 600)
                     logger.info(f"  Rate limited — waiting {wait_time}s (consecutive: {_consecutive_429s})...")
                     time.sleep(wait_time)
 
@@ -159,7 +209,7 @@ def fix_all():
             errors += 1
 
         # Longer delay between articles to stay under quota
-        time.sleep(15)  # Increased from 10s
+        time.sleep(10)
 
     logger.info(f"\n{'='*50}")
     logger.info(f"SUMMARY: {updated} updated, {skipped} skipped, {errors} errors")
@@ -167,4 +217,10 @@ def fix_all():
 
 
 if __name__ == "__main__":
-    fix_all()
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--niche-only", action="store_true", help="Only Smart Home / Home Security")
+    ap.add_argument("--off-niche-only", action="store_true", help="Only off-niche (generic)")
+    ap.add_argument("--template-only", action="store_true", help="Force local template (no Groq/OpenRouter)")
+    args = ap.parse_args()
+    fix_all(niche_only=args.niche_only, off_niche_only=args.off_niche_only, template_only=args.template_only)

@@ -1,150 +1,155 @@
+# NestDeal — Amazon Affiliate Review Bot
+
+Fully automated product review platform: discover Amazon products, generate strict AI reviews
+with real buyer feedback, publish premium articles to Blogger, and notify Telegram — with
+or without a PC (Koyeb cloud).
+
+- **Blog:** https://nestdeal.blogspot.com/
+- **Runtime:** Python 3.13+ · python-telegram-bot · Flask · Gunicorn (Docker)
+- **Affiliate tag:** `dazzledeals00-20` (all Amazon links)
+
 ---
-title: Amazon Bot Pin
-emoji: 🤖
-colorFrom: blue
-colorTo: green
-sdk: docker
-pinned: false
+
+## 1. What it does
+
+```
+Amazon URL / keyword
+  → 5-layer scrape (Desktop → Mobile → AW → Jina AI → Apify)
+  → title, USD price, rating, review count, features, images, buyer reviews
+  → enrichment: Amazon critical reviews + Reddit community feedback (auto, free)
+  → Groq AI review (strict honesty: bad products get told so + Skip verdict)
+  → premium HTML article (scores, sidebar, alternatives, comparison, FAQ, JSON-LD)
+  → Blogger publish + Telegram channel alert + Pinterest
+```
+
 ---
 
-# 🤖 Amazon Affiliate Bot
+## 2. Article template (review standard)
 
-Fully automated Amazon product review platform that scrapes products, generates AI content, transforms images to avoid copyright, and publishes to Blogger.
+Every article is a full review page:
 
-## ✨ Features
+| Block | Content |
+|---|---|
+| Hero | 1 featured picture, stars + rating count, Editor's Score /10, price, discount, Amazon CTA |
+| Table of contents | Anchor links (Scores, Pros & Cons, Specs, Alternatives, Comparison, FAQ, Verdict) |
+| Our Scores | 4 criteria bars (Value, Build, Features, Ease) + final score circle + We Recommend / Skip badge |
+| Pros & Cons | Cons grounded in real buyer complaints, symbols sanitized |
+| Analysis / Who / Specs / FAQ | AI content, all text sanitized |
+| Top Alternatives | 2 real competing products with Amazon affiliate links |
+| Head-to-Head Comparison | Reviewed product vs alternatives table |
+| Sticky sidebar (PC) | Buy box, mini scores, more picks, key specs, trust card |
+| SEO | JSON-LD Product+Review schema, `data-nd-review` span feeds theme sidebar/sticky CTA |
+| Layout | Full-width 1160px PC, responsive mobile |
 
-- **Smart Scraping** — 5-layer fallback: Desktop → Mobile → AW → Jina AI → Apify
-- **AI Content** — Generates Pros, Cons, Specs, FAQ, Verdict via Groq (free)
-- **Image Transformation** — Oil painting, watercolor, vintage effects to avoid copyright
-- **Batch Publishing** — Send .txt file with keywords, get 1 product per keyword
-- **Affiliate Links** — Auto-attaches your Amazon affiliate tag
-- **Multi-Platform** — Publishes to Blogger, Telegram, Pinterest
+---
 
-## 🚀 Quick Start
+## 3. Bot commands
 
-### 1. Clone & Install
-```bash
-git clone <your-repo-url>
-cd bot-working
-pip install -r requirements.txt
-```
-
-### 2. Configure `.env`
-```bash
-# Required
-BOT_TOKEN=your_telegram_bot_token
-CHANNEL_ID=@your_channel
-ADMIN_CHAT_ID=your_telegram_id
-
-# Blogger API
-BLOGGER_CLIENT_ID=your_client_id
-BLOGGER_CLIENT_SECRET=your_secret
-BLOGGER_REFRESH_TOKEN=your_refresh_token
-BLOG_ID=your_blog_id
-
-# AI (free tier)
-GROQ_API_KEY=your_groq_key
-
-# Affiliate
-AFFILIATE_TAG=yourtag-20
-
-# Image Transformation
-IMAGE_TRANSFORM_PRESET=auto
-IMAGE_TRANSFORM_ENABLED=1
-```
-
-### 3. Run
-```bash
-python main.py
-```
-
-## 📋 Bot Commands
-
-| Command | Description |
-|---------|-------------|
-| `/start` | Welcome message |
-| `/help` | Show all commands |
+| Command | Effect |
+|---|---|
 | `/discover [url] [n]` | Discover & publish n products |
-| `/addurl <url>` | Process single Amazon URL |
-| `/batch` | Batch publish from .txt file |
-| `/testimage [url]` | Test image transformation |
-| `/health` | Check all services |
-| `/testai` | Test AI providers |
+| `/addurl <url>` | Process one Amazon URL |
+| `/batch` | Publish from .txt keywords file |
+| `/testai` · `/testimage` | Test AI / image pipeline |
+| `/telegramcheck` · `/sendtest` | Test channel connection |
+| `/health` · `/stats` | Service status |
+| `/start` · `/help` | Welcome / help |
 
-## 📁 Project Structure
+Send any Amazon URL directly — the bot auto-processes it.
+
+---
+
+## 4. Auto-posting (live, not drafts)
+
+- `daily_scheduler.py` runs sessions automatically: mixes niches, max 10 articles/day,
+  ASIN dedup, 8s between posts, Telegram notifications per success/failure.
+- Local `.env`: `AUTO_DISCOVER_ENABLED=true` (a session starts immediately on boot).
+- Scheduler publishes **live** (`publish_now=True`) — drafts only when explicitly requested.
+
+---
+
+## 5. Setup — local (Windows)
+
+```powershell
+cd C:\Users\user\Desktop\bot-working
+C:\Python314\python.exe main.py
+# or double-click: start_auto_post.bat
+```
+
+Dashboard + bot polling start together. Keep the window open and the PC on.
+
+## 6. Setup — cloud (Koyeb, PC off)
+
+1. Push to GitHub (Koyeb auto-deploys `Dockerfile` → `gunicorn main:flask_app`, port 8080).
+2. In Koyeb service settings, set **all** variables from `.env.example` with your real values
+   (`BOT_TOKEN`, `BLOGGER_*`, `GROQ_API_KEY`, `AFFILIATE_TAG`, `AUTO_DISCOVER_ENABLED=true`, …).
+3. `.env` is never committed — secrets live only in Koyeb env settings.
+
+---
+
+## 7. Environment variables
+
+See `.env.example` for the full list. Key groups:
+
+| Group | Vars |
+|---|---|
+| Telegram | `BOT_TOKEN`, `ADMIN_CHAT_ID`, `CHANNEL_ID` |
+| Blogger API | `BLOGGER_CLIENT_ID`, `BLOGGER_CLIENT_SECRET`, `BLOGGER_REFRESH_TOKEN`, `BLOGGER_BLOG_ID` |
+| AI | `GROQ_API_KEY` (+ optional `OPENROUTER_API_KEY`) |
+| Affiliate | `AFFILIATE_TAG=dazzledeals00-20` |
+| Auto-post | `AUTO_DISCOVER_ENABLED`, `AUTO_DISCOVER_INTERVAL_HOURS` (4), `AUTO_ARTICLES_PER_RUN` (3), `AUTO_DAILY_MAX` (10), `AUTO_KEYWORDS` (JSON, optional) |
+| Server | `PORT=8080`, `PUBLIC_DOMAIN` (empty = polling) |
+
+---
+
+## 8. Project structure
 
 ```
 bot-working/
-├── main.py                 # Entry point
-├── scraper.py              # Amazon scraper (5-layer fallback)
-├── blogger_api_publisher.py # Blogger publisher + article builder
-├── image_transformer.py    # Image effects (oil, watercolor, etc.)
-├── image_processor.py      # Image upload (ImgBB/Telegraph/Catbox)
-├── content_generator.py    # AI description generator
-├── config.py               # Environment variables
-└── sample_keywords.txt     # Example batch file
+├── main.py                  # Entry: Flask + Telegram polling + schedulers
+├── start_auto_post.bat      # One-click local launcher
+├── daily_scheduler.py       # Auto-discover sessions, daily limits, Telegram reports
+├── scheduler.py             # Telegram/Pinterest schedulers
+├── scraper.py               # 5-layer Amazon scraper (USD prices, affiliate URLs, reviews)
+├── review_enrichment.py     # Amazon critical reviews + Reddit feedback (free, auto)
+├── content_generator.py     # AI product descriptions
+├── blogger_api_publisher.py # Review template + Blogger API v3 publish + Telegram alert
+├── blogger_publisher.py     # Backward-compat wrapper
+├── config.py / core/config.py
+├── core/db.py / core/cache.py  # SQLite + file cache (no cloud services)
+├── handlers/                # /start /discover /addurl /testai /health /stats /sources
+├── dashboard/               # Flask web dashboard
+├── image_processor.py / image_transformer.py
+├── wordpress_publisher.py / pinterest_api / pins.py
+├── fix_published_articles.py# Bulk re-publish with current template
+├── publish_pages.py / fix_pages.py / update_pages_banner.py
+├── remove_page_breadcrumbs.py
+├── Dockerfile / requirements.txt / .env.example
+└── data/cache/              # Local file cache
 ```
 
-## 🎨 Image Transformation
+---
 
-To avoid copyright detection, all product images are automatically transformed:
+## 9. Key behaviors & safeguards
 
-- **Oil Painting** — Brush stroke effect
-- **Watercolor** — Soft painting effect
-- **Soft Glow** — Professional bloom
-- **Vintage** — Retro filter
-- **Sketch** — Pencil drawing effect
+- Prices always normalized to USD (`$`); MAD/EUR/GBP converted.
+- Every Amazon URL gets `tag=dazzledeals00-20` (+ `rel="nofollow sponsored noopener"`).
+- AI text sanitized: entities decoded, leading symbols stripped (theme/SVG provides icons),
+  quotes escaped — no `&#10003;` ever visible, no broken markup.
+- Blogger 429 rate limits: exponential backoff + min 3s between calls, never crashes.
+- Strict reviews: repeated real complaints force cons, low scores, and Skip verdicts.
+- Daily caps + ASIN dedup prevent spam and duplicates.
 
-Configure in `.env`:
-```bash
-IMAGE_TRANSFORM_PRESET=auto  # or oil_painting, watercolor, etc.
-IMAGE_TRANSFORM_ENABLED=1    # set to 0 to disable
+---
+
+## 10. Testing
+
+```powershell
+# Blogger connection
+C:\Python314\python.exe -c "from dotenv import load_dotenv; load_dotenv(); import blogger_api_publisher as b; print(b.is_configured(), b.test_connection())"
+
+# Template build check
+C:\Python314\python.exe -c "from dotenv import load_dotenv; load_dotenv(); import blogger_api_publisher as b; print(b._build_article({'title':'T','price':'$1','rating':4,'review_count':10,'features':[],'img_url':'','clean_url':'#','category':'x'}, 'd')[0])"
 ```
 
-## 📋 Batch Publishing
-
-1. Send `/batch` to the bot
-2. Send a .txt file with keywords (one per line):
-```
-wireless earbuds
-phone case iphone 15
-usb c hub
-laptop stand
-```
-
-Bot will:
-- Search Amazon for each keyword
-- Get ONE best product per keyword
-- Transform image automatically
-- Publish to Blogger
-
-## ⚙️ Environment Variables
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `BOT_TOKEN` | ✅ | Telegram bot token |
-| `CHANNEL_ID` | ✅ | Telegram channel ID |
-| `ADMIN_CHAT_ID` | ✅ | Your Telegram user ID |
-| `BLOGGER_CLIENT_ID` | ✅ | Google OAuth client ID |
-| `BLOGGER_CLIENT_SECRET` | ✅ | Google OAuth secret |
-| `BLOGGER_REFRESH_TOKEN` | ✅ | Google OAuth refresh token |
-| `BLOG_ID` | ✅ | Blogger blog ID |
-| `GROQ_API_KEY` | ✅ | Groq API key (free) |
-| `AFFILIATE_TAG` | ✅ | Amazon affiliate tag |
-| `IMAGE_TRANSFORM_PRESET` | ❌ | auto/oil_painting/watercolor/vintage/soft_glow |
-| `IMAGE_TRANSFORM_ENABLED` | ❌ | 1=enabled, 0=disabled |
-| `IMGBB_API_KEY` | ❌ | ImgBB API key for image hosting |
-
-## 🛠 Tech Stack
-
-- **Python 3.13**
-- **python-telegram-bot** — Telegram integration
-- **Flask** — Web dashboard
-- **Groq** — Free AI content generation
-- **BeautifulSoup** — Web scraping
-- **Pillow** — Image transformation
-- **Blogger API v3** — Publishing
-
-## 📄 License
-
-MIT
+Draft tests publish with `publish_now=False` — check Blogger → Posts → Drafts.

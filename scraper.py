@@ -1,7 +1,7 @@
 # scraper.py — 2026 Ultra Anti-Detection Amazon Scraper (FIXED)
 # ================================================================
 
-import re, time, random, logging, json, gzip
+import re, time, random, logging, json, gzip, os
 from urllib.parse import quote, urlparse
 
 try:

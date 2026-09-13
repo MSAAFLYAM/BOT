@@ -359,8 +359,8 @@ def build_complete_schema(product: dict, faqs: list = None, article_url: str = "
         "mainEntity": [],
     }
     for faq in (faqs or []):
-        q = faq.get("question", "")
-        a = faq.get("answer", "")
+        q = faq.get("question") or faq.get("q") or ""
+        a = faq.get("answer") or faq.get("a") or ""
         if q and a:
             faq_schema["mainEntity"].append({
                 "@type": "Question",
@@ -423,6 +423,16 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
         logger.info(f"[enrich] skipped: {_e}")
         _feedback = ""
     ai = _ai_generate_content(title, price, description, feedback=_feedback)
+
+    # ── Real pros/cons from customer reviews (Task 11) — override AI when available
+    _review_pc = {}
+    if customer_reviews:
+        try:
+            _review_pc = _enrich_mod.extract_pros_cons_from_reviews(customer_reviews, rating)
+        except Exception as _e:
+            logger.info(f"[pros_cons] skip: {_e}")
+            _review_pc = {}
+    _pros_source = _review_pc.get("source", "ai_generated")
 
     # Sanitized display strings (AI may emit entities; decode + escape)
     safe_title   = _safe_text(short_title)
@@ -491,15 +501,19 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
     svg_shield  = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>'
     svg_clock   = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>'
 
-    # ── Build Pros & Cons ──
-    pros_list = ai.get("pros", [])
-    cons_list = ai.get("cons", [])
+    # ── Build Pros & Cons (real reviews first, AI fallback) ──
+    pros_list = _review_pc.get("pros") or ai.get("pros", [])
+    cons_list = _review_pc.get("cons") or ai.get("cons", [])
 
     pros_html = "".join([f'<li class="rvw-pc-item"><span class="rvw-pc-icon pros">{svg_check}</span><span>{_li_text(p)}</span></li>' for p in pros_list if p])
     cons_html = "".join([f'<li class="rvw-pc-item"><span class="rvw-pc-icon cons">{svg_x}</span><span>{_li_text(c)}</span></li>' for c in cons_list if c])
 
     if not cons_html:
         cons_html = f'<li class="rvw-pc-item"><span class="rvw-pc-icon cons">{svg_info}</span><span>No major drawbacks identified for this price range.</span></li>'
+    _pc_source_note = (
+        '<div class="rvw-pc-note">Based on verified buyer reviews</div>'
+        if _pros_source == "real_reviews" else ""
+    )
 
     # ── Build Specs Table ──
     specs = ai.get("specs", {})
@@ -763,6 +777,7 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
 .rvw-pc-icon {{ flex-shrink: 0; margin-top: 2px; display: flex; }}
 .rvw-pc-icon.pros {{ color: var(--rvw-good); }}
 .rvw-pc-icon.cons {{ color: var(--rvw-bad); }}
+.rvw-pc-note {{ margin: 12px 0 0; font-size: 0.8rem; color: var(--rvw-muted); text-align: center; border-top: 1px dashed var(--rvw-border); padding-top: 10px; }}
 
 /* Analysis */
 .rvw-analysis-box {{ background: var(--rvw-surface); border: 1px solid var(--rvw-border); padding: 24px 26px; margin: 28px 0; border-radius: 14px; }}
@@ -961,6 +976,7 @@ def _build_article(product: dict, description: str) -> tuple[str, str]:
             <h3 class="rvw-pc-title">{svg_x} What Could Be Better</h3>
             <ul class="rvw-pc-list">{cons_html}</ul>
         </div>
+        {_pc_source_note}
     </div>
 
     <!-- IN-DEPTH ANALYSIS -->
