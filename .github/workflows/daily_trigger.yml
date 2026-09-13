@@ -1,6 +1,6 @@
 name: NestDeal Daily Auto-Post Trigger
 # Runs daily at 8:00 UTC (10:00 Morocco time)
-# Triggers the Koyeb bot to run a publishing session
+# Wakes up the Render bot (webhook mode) and runs a publishing session.
 
 on:
   schedule:
@@ -16,7 +16,7 @@ jobs:
       - name: Trigger NestDeal Bot Daily Session
         run: |
           response=$(curl -s -o /dev/null -w "%{http_code}" \
-            -X POST "${{ secrets.KOYEB_APP_URL }}/trigger-daily" \
+            -X POST "${{ secrets.RENDER_APP_URL }}/trigger-daily" \
             -H "Authorization: Bearer ${{ secrets.TRIGGER_SECRET }}" \
             -H "Content-Type: application/json" \
             -d '{"source": "github_actions", "max_articles": 3}')
@@ -31,4 +31,4 @@ jobs:
       - name: Health Check
         if: always()
         run: |
-          curl -s "${{ secrets.KOYEB_APP_URL }}/health" || echo "Health check failed"
+          curl -s "${{ secrets.RENDER_APP_URL }}/health" || echo "Health check failed"

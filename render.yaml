@@ -1,0 +1,55 @@
+# render.yaml -- Amazon Affiliate Bot (Free Web Service)
+# Deploy: connect this GitHub repo on Render -> "Blueprint" -> it uses this file.
+# Free tier: 0.1 CPU / 512 MB RAM, 750 h/month, no credit card required.
+
+services:
+  - type: web
+    name: amazon-affiliate-bot
+    runtime: python
+    plan: free
+    region: frankfurt
+    healthCheckPath: /health
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn main:flask_app --bind 0.0.0.0:$PORT --workers 1 --threads 4 --timeout 120 --access-logfile - --error-logfile -
+    envVars:
+      # ── Secrets (vides au déploiement, à remplir dans le dashboard Render) ──
+      - key: BOT_TOKEN
+        sync: false
+      - key: WEBHOOK_SECRET
+        sync: false
+      - key: TRIGGER_SECRET
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: BLOGGER_CLIENT_ID
+        sync: false
+      - key: BLOGGER_CLIENT_SECRET
+        sync: false
+      - key: BLOGGER_REFRESH_TOKEN
+        sync: false
+      - key: BLOGGER_BLOG_ID
+        sync: false
+
+      # ── Configuration publique (pas un secret) ──
+      - key: PUBLIC_DOMAIN
+        value: amazon-affiliate-bot.onrender.com
+      - key: CHANNEL_ID
+        value: "-1002366175623"
+      - key: ADMIN_CHAT_ID
+        value: "963761857"
+      - key: AFFILIATE_TAG
+        value: dazzledeals00-20
+      - key: IMAGE_TRANSFORM_ENABLED
+        value: "1"
+      - key: IMAGE_TRANSFORM_PRESET
+        value: auto
+      - key: TEST_MODE
+        value: "0"
+      - key: AUTO_DISCOVER_ENABLED
+        value: "false"
+      - key: MAX_RESULTS
+        value: "5"
+      - key: SCRAPE_DELAY_MIN
+        value: "2.0"
+      - key: SCRAPE_DELAY_MAX
+        value: "5.0"

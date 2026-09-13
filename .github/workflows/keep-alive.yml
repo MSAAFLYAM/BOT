@@ -1,14 +1,14 @@
 # ════════════════════════════════════════════════════════════════
-# GitHub Action: Keep-Alive Ping for Hugging Face Spaces
+# GitHub Action: Keep-Alive Ping for Render (free web service)
 # ════════════════════════════════════════════════════════════════
-# Pings the HF Space every 10 minutes to prevent sleep.
-# No secrets needed — just the public URL of your Space.
+# Pings the Render app every 10 minutes to prevent free-tier sleep
+# (Render free spins down after 15 min without inbound traffic).
+# Secret needed: RENDER_APP_URL (e.g. https://amazon-affiliate-bot.onrender.com)
 
-name: Keep HF Space Alive
+name: Keep Render App Alive
 
 on:
   schedule:
-    # Run every 10 minutes
     - cron: '*/10 * * * *'
   workflow_dispatch:  # Allow manual trigger
 
@@ -16,21 +16,21 @@ jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping HF Space
+      - name: Ping Render App
         run: |
-          SPACE_URL="https://medmml-amazon-bot-pin.hf.space"
+          APP_URL="${{ secrets.RENDER_APP_URL }}"
 
-          echo "Pinging: $SPACE_URL/health"
+          echo "Pinging: $APP_URL/health"
           HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
             --max-time 30 \
-            "$SPACE_URL/health" || echo "000")
+            "$APP_URL/health" || echo "000")
 
           echo "Response code: $HTTP_CODE"
 
           if [ "$HTTP_CODE" = "200" ]; then
-            echo "✅ Space is alive!"
+            echo "✅ App is alive!"
           elif [ "$HTTP_CODE" = "000" ]; then
-            echo "⚠️ Connection failed — Space may be starting up"
+            echo "⚠️ Connection failed — app may be sleeping/starting"
           else
             echo "⚠️ Unexpected response code: $HTTP_CODE"
           fi
